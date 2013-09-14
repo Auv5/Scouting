@@ -1,0 +1,37 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:background="@drawable/scout_bg"
+    tools:context=".ScoutEdit">
+
+    <TextView android:id="@+id/scouting_team"
+              android:layout_centerHorizontal="true"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:text="@string/scouting_team"
+              android:paddingBottom="12dp"
+              android:textStyle="bold"/>
+
+    <ScrollView android:id="@+id/questions_scroll"
+                android:layout_width="fill_parent"
+                android:layout_height="0dip"
+                android:layout_below="@id/scouting_team"
+                android:layout_alignParentBottom="true">
+        <LinearLayout android:id="@+id/questions"
+                      android:layout_width="fill_parent"
+                      android:layout_height="wrap_content"
+                      android:orientation="vertical">
+            <!-- The code will insert the questions here. -->
+        </LinearLayout>
+    </ScrollView>
+
+    <ImageView android:src="@drawable/scout_footer"
+               android:layout_alignParentBottom="true"
+               android:layout_width="wrap_content"
+               android:layout_height="wrap_content"/>
+</RelativeLayout>

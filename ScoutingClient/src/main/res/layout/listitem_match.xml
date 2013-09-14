@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+    <TextView android:id="@+id/matchnum"
+              android:text="@string/default_matchnum"
+              android:textSize="15sp"
+              android:layout_centerHorizontal="true"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"/>
+
+    <!--<TextView android:id="@+id/autonomous_team"-->
+              <!--android:text="+ Autonomous: 15"-->
+              <!--android:layout_width="wrap_content"-->
+              <!--android:layout_height="wrap_content"-->
+              <!--android:layout_below="@id/matchnum"-->
+              <!--android:layout_centerHorizontal="true"/>-->
+    <TextView android:id="@+id/points_team"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:layout_below="@id/matchnum"
+              android:layout_centerHorizontal="true"
+              android:text="@string/default_teampoints"/>
+    <TextView android:id="@+id/fouls_team"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:layout_below="@id/points_team"
+              android:layout_centerHorizontal="true"
+              android:text="@string/default_fouls"/>
+
+    <LinearLayout android:id="@+id/blue_box"
+                  android:layout_alignParentTop="true"
+                  android:layout_alignParentRight="true"
+                  android:layout_width="wrap_content"
+                  android:orientation="vertical"
+                  android:layout_height="0dp"
+                  android:layout_alignBottom="@id/fouls_team"
+                  android:paddingLeft="12dp"
+                  android:background="#2B60DE">
+        <TextView android:id="@+id/blue1"
+                  android:text="@string/default_blue1"
+                  android:layout_width="match_parent"
+                  android:layout_height="wrap_content"
+                  android:layout_weight="1"
+                  android:gravity="right"/>
+        <TextView android:id="@+id/blue2"
+                  android:text="@string/default_blue2"
+                  android:layout_width="match_parent"
+                  android:layout_height="wrap_content"
+                  android:layout_weight="1"
+                  android:gravity="right"/>
+        <TextView android:id="@+id/blue3"
+                  android:text="@string/default_blue3"
+                  android:layout_width="match_parent"
+                  android:layout_height="wrap_content"
+                  android:layout_weight="1"
+                  android:gravity="right"/>
+    </LinearLayout>
+
+    <TextView android:id="@+id/total_blue"
+              android:text="@string/default_bluescore"
+              android:textSize="25sp"
+              android:paddingRight="5dp"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:layout_toLeftOf="@id/blue_box"
+              android:layout_centerVertical="true"/>
+
+    <LinearLayout android:id="@+id/red_box"
+                  android:layout_alignParentTop="true"
+                  android:layout_alignParentLeft="true"
+                  android:layout_width="wrap_content"
+                  android:orientation="vertical"
+                  android:layout_height="0dp"
+                  android:layout_alignBottom="@id/fouls_team"
+                  android:background="#FF0000"
+                  android:paddingRight="12dp">
+        <TextView android:id="@+id/red1"
+                  android:text="@string/default_red1"
+                  android:layout_width="wrap_content"
+                  android:layout_height="wrap_content"
+                  android:layout_weight="1"
+                  android:gravity="left"/>
+        <TextView android:id="@+id/red2"
+                  android:text="@string/default_red2"
+                  android:layout_width="wrap_content"
+                  android:layout_height="wrap_content"
+                  android:layout_weight="1"
+                  android:gravity="left"/>
+        <TextView android:id="@+id/red3"
+                  android:text="@string/default_red3"
+                  android:layout_width="wrap_content"
+                  android:layout_height="wrap_content"
+                  android:layout_weight="1"
+                  android:gravity="left"/>
+    </LinearLayout>
+
+    <TextView android:id="@+id/total_red"
+              android:text="@string/default_redscore"
+              android:textSize="25sp"
+              android:paddingLeft="5dp"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:layout_toRightOf="@id/red_box"
+              android:layout_centerVertical="true"/>
+</RelativeLayout>

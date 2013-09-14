@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="new_match">New Match</string>
+    <string name="gen_stats">General Scouting</string>
+    <string name="match_stats">Matches</string>
+    <string name="default_red3">2013</string>
+    <string name="default_red2">2013</string>
+    <string name="default_red1">2994</string>
+    <string name="default_blue1">2056</string>
+    <string name="default_blue2">1313</string>
+    <string name="default_blue3">610</string>
+    <string name="default_redscore">93</string>
+    <string name="default_question">What is your robot\'s favourite colour?</string>
+    <string name="default_answer">Obviously yellow sunshine puppies!</string>
+    <string name="match_id">Match #%d</string>
+    <string name="team_total">Team Total: %d</string>
+</resources>
