@@ -17,11 +17,17 @@
               android:paddingBottom="12dp"
               android:textStyle="bold"/>
 
+    <ImageView android:id="@+id/footer"
+        android:src="@drawable/scout_footer"
+        android:layout_alignParentBottom="true"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
     <ScrollView android:id="@+id/questions_scroll"
                 android:layout_width="fill_parent"
                 android:layout_height="0dip"
                 android:layout_below="@id/scouting_team"
-                android:layout_alignParentBottom="true">
+                android:layout_above="@id/footer">
         <LinearLayout android:id="@+id/questions"
                       android:layout_width="fill_parent"
                       android:layout_height="wrap_content"
@@ -29,9 +35,4 @@
             <!-- The code will insert the questions here. -->
         </LinearLayout>
     </ScrollView>
-
-    <ImageView android:src="@drawable/scout_footer"
-               android:layout_alignParentBottom="true"
-               android:layout_width="wrap_content"
-               android:layout_height="wrap_content"/>
 </RelativeLayout>

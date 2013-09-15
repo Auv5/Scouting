@@ -382,7 +382,7 @@ public class DatabaseManager extends SQLiteOpenHelper {
         ContentValues cv = new ContentValues();
 
         cv.put("qid", question.getId());
-        cv.put("tid", t.getNumber());
+        cv.put("team", t.getNumber());
         cv.put("answer", answer.toString());
 
         mDb.insert("answers", "answer", cv);

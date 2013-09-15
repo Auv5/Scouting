@@ -42,6 +42,9 @@
         <activity
             android:name="com.allsaintsrobotics.scouting.ScoutEdit"
             android:label="@string/title_activity_scout_edit" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.allsaintsrobotics.scouting.TeamDetail" />
         </activity>
         <activity
             android:name="com.allsaintsrobotics.scouting.NewTeam"
