@@ -27,7 +27,7 @@ public class FreeResponseForm extends Form {
 
     @Override
     public View getAnswerView(Context c, ViewGroup parent) {
-        if (view != null)
+        if (view == null)
         {
             LayoutInflater li = (LayoutInflater) c.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
@@ -40,7 +40,7 @@ public class FreeResponseForm extends Form {
 
         label.setText(question.getLabel());
 
-        label.addTextChangedListener(new TextWatcher() {
+        response.addTextChangedListener(new TextWatcher() {
             @Override
             public void afterTextChanged(Editable s) {
                 FreeResponseForm.this.validate();
@@ -56,6 +56,13 @@ public class FreeResponseForm extends Form {
 
             }
         });
+
+        String answer = question.getAnswer(team);
+
+        if (answer != null)
+        {
+            response.setText(answer);
+        }
 
         return view;
     }

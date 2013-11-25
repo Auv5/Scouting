@@ -138,8 +138,8 @@ public class TeamDetail extends Activity {
         }
 
         public void gotResult(Intent data) {
-            // No actual results for now. Just tell the listview that it might need to check itself.
-
+            // No actual results for now. Just tell the adapter to check for changes.
+            qa.notifyDataSetChanged();
         }
 
         @Override

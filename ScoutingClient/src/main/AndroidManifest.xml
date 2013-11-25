@@ -29,8 +29,7 @@
 
         <activity
             android:name=".ScoutEdit"
-            android:label="Scouting Edit"
-            android:parentActivityName=".TeamDetail"/>
+            android:label="Scouting Edit"/>
     </application>
 
 </manifest>
