@@ -7,7 +7,11 @@ import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
@@ -22,10 +26,13 @@ import java.util.List;
  * Created by jack on 11/24/13.
  */
 public class TeamDetail extends Activity {
-    Team team;
+    private static final String TAG = "TeamDetail";
+    private Team team;
 
-    PitFragment pf;
-    MatchFragment mf;
+    private PitFragment pf;
+    private MatchFragment mf;
+
+    private boolean menuRender = true;
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -39,7 +46,7 @@ public class TeamDetail extends Activity {
 
         ActionBar actionBar = getActionBar();
         actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
-        actionBar.setTitle("Team " + team.getNumber());
+        actionBar.setTitle(String.format(getString(R.string.td_actionbar_title), team.getNumber()));
 
         ActionBar.Tab pitTab = actionBar.newTab().setText("Pit");
         ActionBar.Tab matchTab = actionBar.newTab().setText("Matches");
@@ -54,8 +61,44 @@ public class TeamDetail extends Activity {
         actionBar.addTab(matchTab);
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        if (menuRender)
+        {
+            MenuInflater mi = this.getMenuInflater();
+            mi.inflate(R.menu.pit_scout, menu);
+
+            return true;
+        }
+        else
+        {
+            return super.onCreateOptionsMenu(menu);
+        }
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_editscout:
+                pf.openEditActivity();
+                return true;
+        }
+        return false;
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == PitFragment.REQUEST_EDIT_TEAM && resultCode == RESULT_OK) {
+            pf.gotResult(data);
+        }
+    }
+
     public class PitFragment extends Fragment {
         private ListView lv;
+
+        private QuestionAdapter qa;
+
+        public static final int REQUEST_EDIT_TEAM = 1;
 
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -69,7 +112,8 @@ public class TeamDetail extends Activity {
         }
 
         public void populateQuestionList(List<Question> questions) {
-            lv.setAdapter(new QuestionAdapter(TeamDetail.this, questions));
+            qa = new QuestionAdapter(TeamDetail.this, team, questions);
+            lv.setAdapter(qa);
         }
 
         private class QuestionPopulateTask extends AsyncTask<Void, Void, List<Question>> {
@@ -81,6 +125,28 @@ public class TeamDetail extends Activity {
             @Override
             protected void onPostExecute(List<Question> questions) {
                 populateQuestionList(questions);
+            }
+        }
+
+        public void openEditActivity() {
+            Intent intent = new Intent();
+            intent.setClass(TeamDetail.this, ScoutEdit.class);
+
+            intent.putExtra("team", team);
+
+            startActivityForResult(intent, REQUEST_EDIT_TEAM);
+        }
+
+        public void gotResult(Intent data) {
+            // No actual results for now. Just tell the listview that it might need to check itself.
+
+        }
+
+        @Override
+        public void onActivityResult(int requestCode, int resultCode, Intent data) {
+            Log.wtf(TAG, "Well, Stack Overflow lied...");
+            if (requestCode == REQUEST_EDIT_TEAM && resultCode == RESULT_OK) {
+                gotResult(data);
             }
         }
     }
@@ -101,6 +167,15 @@ public class TeamDetail extends Activity {
 
         @Override
         public void onTabSelected(ActionBar.Tab tab, FragmentTransaction ft) {
+            if (fragment instanceof PitFragment) {
+                menuRender = true;
+            }
+            else {
+                menuRender = false;
+            }
+
+            TeamDetail.this.invalidateOptionsMenu();
+
             ft.replace(R.id.detail_fragcont, fragment);
         }
 

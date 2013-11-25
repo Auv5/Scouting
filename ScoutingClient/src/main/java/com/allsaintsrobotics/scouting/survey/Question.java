@@ -2,6 +2,7 @@ package com.allsaintsrobotics.scouting.survey;
 
 import android.content.Context;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.allsaintsrobotics.scouting.ScoutingDBHelper;
@@ -63,6 +64,11 @@ public class Question implements Statistic {
         }
 
         tv.setText(val);
+
+        if (tv.getParent() != null)
+        {
+            ((ViewGroup)tv.getParent()).removeView(tv);
+        }
 
         return tv;
     }

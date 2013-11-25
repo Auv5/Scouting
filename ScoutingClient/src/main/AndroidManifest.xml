@@ -21,14 +21,16 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
         <activity
                 android:name=".TeamDetail"
                 android:label="Team Detail"
-                android:parentActivityName="com.allsaintsrobotics.scouting.TeamList">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.example.myfirstapp.MainActivity" />
-        </activity>
+                android:parentActivityName=".TeamList"/>
+
+        <activity
+            android:name=".ScoutEdit"
+            android:label="Scouting Edit"
+            android:parentActivityName=".TeamDetail"/>
     </application>
 
 </manifest>

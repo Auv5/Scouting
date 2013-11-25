@@ -18,19 +18,23 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:paddingLeft="10dp"
+        android:paddingTop="15dp"
+        android:paddingBottom="15dp"
         android:text="Such placeholder."
         android:layout_alignRight="@id/pit_divider"
         android:layout_alignParentLeft="true"
         android:layout_centerVertical="true"
         android:gravity="center_vertical"/>
-    <TextView
+    <FrameLayout
         android:id="@+id/pit_value"
         android:layout_height="wrap_content"
         android:layout_width="0dip"
         android:layout_alignLeft="@id/pit_divider"
         android:layout_alignParentRight="true"
-        android:paddingLeft="10dp"
+        android:paddingLeft="15dp"
+        android:paddingTop="15dp"
+        android:paddingBottom="10dp"
         android:gravity="center_vertical"
         android:layout_centerVertical="true"
-        android:text="Much answer."/>
+        />
 </RelativeLayout>

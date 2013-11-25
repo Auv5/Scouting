@@ -30,6 +30,7 @@ public abstract class Form {
         String answer = this.getAnswer();
 
         ScoutingDBHelper.getInstance().setAnswer(question, team, answer);
+        // Update the question cache (also will allow for the list to work)
         question.cacheUpdate(team, answer);
     }
 

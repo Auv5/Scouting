@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="se_actionbar_title">Team %s - Edit</string>
+    <string name="save_data_button">Save Data</string>
+</resources>

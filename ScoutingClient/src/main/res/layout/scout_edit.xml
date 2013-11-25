@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <ScrollView
+        android:id="@+id/questions_scroll"
+        android:layout_width="match_parent"
+        android:layout_height="0dip"
+        android:layout_weight="9"/>
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dip"
+        android:layout_weight="1">
+        <Button
+            android:id="@+id/save_stats"
+            android:layout_height="match_parent"
+            android:layout_width="wrap_content"
+            android:paddingLeft="100dp"
+            android:paddingRight="100dp"
+            android:layout_centerHorizontal="true"
+            android:text="@string/save_data_button"/>
+    </RelativeLayout>
+</LinearLayout>

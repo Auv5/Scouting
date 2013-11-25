@@ -2,8 +2,8 @@
 
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
-        android:id="@+id/action_syncdata"
-        android:icon="@drawable/ic_action_refresh"
-        android:title="@string/sync_with_server"
+        android:id="@+id/action_editscout"
+        android:icon="@drawable/ic_action_edit"
+        android:title="@string/edit_scouting_data"
         android:showAsAction="always"/>
 </menu>
