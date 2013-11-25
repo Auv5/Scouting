@@ -1,95 +1,75 @@
 package com.allsaintsrobotics.scouting;
 
-import android.annotation.TargetApi;
-import android.app.ActionBar;
 import android.app.Activity;
 import android.content.Intent;
-import android.os.Build;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.Menu;
-import android.view.MenuItem;
+import android.view.MenuInflater;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
-import android.widget.Toast;
 
-import java.util.Iterator;
+import com.allsaintsrobotics.scouting.adapters.TeamAdapter;
+import com.allsaintsrobotics.scouting.models.Team;
 
-public class TeamList extends Activity implements Iterable<Team> {
-
-    private ListView teamList;
-
-    private ActionBar actionBar;
+/**
+ * Created by jack on 11/24/13.
+ */
+public class TeamList extends Activity {
+    ListView teamList;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_teamlist);
+        setContentView(R.layout.team_list);
 
-        teamList = (ListView) findViewById(R.id.teams);
+        getActionBar().setHomeButtonEnabled(true);
+        getActionBar().setDisplayHomeAsUpEnabled(false);
 
-        teamList.setAdapter(new TeamAdapter(this, R.layout.listitem_team, DatabaseManager.get().getTeams()));
+        this.teamList = (ListView) findViewById(R.id.lv_teams);
 
-        teamList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        if (!ScoutingDBHelper.isInitialized()) {
+            new DatabaseSetupTask().execute();
+        }
+        else {
+            populateTeamList();
+        }
+
+        this.teamList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                //TODO: Go to the activities for viewing and editing
-                Intent i = new Intent(TeamList.this, TeamDetail.class);
+                Intent i = new Intent();
+                i.setClass(TeamList.this, TeamDetail.class);
 
-                Team t = (Team)teamList.getItemAtPosition(position);
-
-                i.putExtra("team", t);
+                i.putExtra("team", (Team)view.getTag());
 
                 startActivity(i);
             }
         });
+    }
 
-        Toast.makeText(this, "Key: " + getIntent().getStringExtra("key"), Toast.LENGTH_SHORT).show();
+    private void populateTeamList() {
+        teamList.setAdapter(new TeamAdapter(TeamList.this, ScoutingDBHelper.getInstance().getAllTeams()));
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.activity_teamlist, menu);
+        MenuInflater mi = this.getMenuInflater();
+        mi.inflate(R.menu.team_list, menu);
         return true;
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.action_addteam:
-                Intent i = new Intent(this, NewTeam.class);
-
-                startActivityForResult(i, 0);
-
-                break;
-        }
-        return super.onOptionsItemSelected(item);
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (resultCode == RESULT_OK)
-        {
-            Team t = data.getParcelableExtra("team");
-
-            for (int i = 0; i < teamList.getAdapter().getCount(); i ++)
-            {
-                if (t.equals(teamList.getAdapter().getItem(i)))
-                {
-                    Toast.makeText(this, R.string.error_team_exists, Toast.LENGTH_LONG).show();
-                    return;
-                }
-            }
-
-            // Will notify adapter of change.
-            DatabaseManager.get().addTeam(t);
+    private class DatabaseSetupTask extends AsyncTask<Void, Void, ScoutingDBHelper>
+    {
+        @Override
+        protected ScoutingDBHelper doInBackground(Void... params) {
+            return ScoutingDBHelper.makeInstance(TeamList.this);
         }
 
-        super.onActivityResult(requestCode, resultCode, data);
-    }
-
-    @Override
-    public Iterator<Team> iterator() {
-        return new ListViewIterator<Team>(teamList);
+        protected void onPostExecute(ScoutingDBHelper result) {
+            populateTeamList();
+        }
     }
 }

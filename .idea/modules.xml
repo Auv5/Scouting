@@ -3,6 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/ScoutingClient/ScoutingClient.iml" filepath="$PROJECT_DIR$/ScoutingClient/ScoutingClient.iml" />
+      <module fileurl="file://$PROJECT_DIR$/ScoutingClient/ScoutingClient-ScoutingClient.iml" filepath="$PROJECT_DIR$/ScoutingClient/ScoutingClient-ScoutingClient.iml" />
       <module fileurl="file://$PROJECT_DIR$/ScoutingClientProject.iml" filepath="$PROJECT_DIR$/ScoutingClientProject.iml" />
     </modules>
   </component>

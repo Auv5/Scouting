@@ -5,54 +5,29 @@
     android:versionName="1.0" >
 
     <uses-sdk
-        android:minSdkVersion="8"
+        android:minSdkVersion="14"
         android:targetSdkVersion="16" />
 
     <application
         android:allowBackup="true"
-        android:icon="@drawable/astechz_logo"
+        android:icon="@drawable/astechz_launcher"
         android:label="@string/app_name"
-        android:theme="@style/AppTheme" >
+        android:theme="@android:style/Theme.Holo" >
         <activity
-            android:name="com.allsaintsrobotics.scouting.LoginActivity"
-            android:label="@string/app_name"
-            android:windowSoftInputMode="adjustResize|stateVisible" >
+            android:name=".TeamList"
+            android:label="Scouting Client">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
         <activity
-            android:name="com.allsaintsrobotics.scouting.TeamList"
-            android:label="@string/title_activity_team_list"
-            android:parentActivityName="com.allsaintsrobotics.scouting.LoginActivity" >
+                android:name=".TeamDetail"
+                android:label="Team Detail"
+                android:parentActivityName="com.allsaintsrobotics.scouting.TeamList">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.allsaintsrobotics.scouting.LoginActivity" />
-        </activity>
-        <activity
-            android:name="com.allsaintsrobotics.scouting.TeamDetail"
-            android:label="@string/title_activity_team_detail"
-            android:parentActivityName="com.allsaintsrobotics.scouting.TeamList" >
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.allsaintsrobotics.scouting.TeamList" />
-        </activity>
-        <activity
-            android:name="com.allsaintsrobotics.scouting.ScoutEdit"
-            android:label="@string/title_activity_scout_edit" >
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.allsaintsrobotics.scouting.TeamDetail" />
-        </activity>
-        <activity
-            android:name="com.allsaintsrobotics.scouting.NewTeam"
-            android:label="@string/title_activity_new_team"
-            android:parentActivityName="com.allsaintsrobotics.scouting.TeamList" >
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.allsaintsrobotics.scouting.TeamList" />
+                android:value="com.example.myfirstapp.MainActivity" />
         </activity>
     </application>
 
