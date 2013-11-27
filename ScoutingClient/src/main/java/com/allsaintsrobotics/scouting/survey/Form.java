@@ -28,10 +28,11 @@ public abstract class Form {
 
     public void write() {
         String answer = this.getAnswer();
-
-        ScoutingDBHelper.getInstance().setAnswer(question, team, answer);
-        // Update the question cache (also will allow for the list to work)
-        question.cacheUpdate(team, answer);
+        if (answer != null && !answer.isEmpty()) {
+            ScoutingDBHelper.getInstance().setAnswer(question, team, answer);
+            // Update the question cache (also will allow for the list to work)
+            question.cacheUpdate(team, answer);
+        }
     }
 
     public void setValidator(Validator v) {

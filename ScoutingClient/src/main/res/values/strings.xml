@@ -1,4 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Scouting Client</string>
+    <string name="settings_menu_title">Settings</string>
+    <string name="confirm_title">Are you sure?</string>
+    <string name="no">No</string>
+    <string name="yes">Yes</string>
+    <string name="server_addr_summary">IP address or URL of the scouting server.</string>
+    <string name="server_title_dialogtitle">Server Address</string>
 </resources>

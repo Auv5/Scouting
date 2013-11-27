@@ -30,6 +30,11 @@
         <activity
             android:name=".ScoutEdit"
             android:label="Scouting Edit"/>
+
+        <activity
+            android:name=".Preferences"
+            android:label="Settings"
+            android:parentActivityName=".TeamList"/>
     </application>
 
 </manifest>

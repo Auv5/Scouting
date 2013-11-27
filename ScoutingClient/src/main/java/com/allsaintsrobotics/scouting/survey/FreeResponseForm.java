@@ -31,7 +31,7 @@ public class FreeResponseForm extends Form {
         {
             LayoutInflater li = (LayoutInflater) c.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
-            this.view = li.inflate(R.layout.question_freeresponse, parent);
+            this.view = li.inflate(R.layout.question_freeresponse, null);
         }
 
         this.label = (TextView) view.findViewById(R.id.fr_label);

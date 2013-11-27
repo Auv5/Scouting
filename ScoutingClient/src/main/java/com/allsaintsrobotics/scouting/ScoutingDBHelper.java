@@ -113,7 +113,13 @@ public class ScoutingDBHelper extends SQLiteOpenHelper {
         cv.put(ANSWER_TEAM, team.getNumber());
         cv.put(ANSWER_TEXT, answer);
 
-        db.insert(TABLE_ANSWERS, ANSWER_TEXT, cv);
+        if (this.getAnswer(question, team) == null) {
+            db.insert(TABLE_ANSWERS, ANSWER_TEXT, cv);
+        }
+        else {
+            db.update(TABLE_ANSWERS, cv, ANSWER_QUESTION + "=? AND " + ANSWER_TEAM + "=?",
+                    new String[] {Integer.toString(question.getId()), Integer.toString(team.getNumber())});
+        }
     }
 
     public String getAnswer(Question question, Team team) {
@@ -185,7 +191,7 @@ public class ScoutingDBHelper extends SQLiteOpenHelper {
         List<String> offers = new ArrayList<String>();
 
         while (offerCursor.moveToNext()) {
-            offers.add(offerCursor.getString(offerCursor.getColumnIndex(OFFER_QUESTION)));
+            offers.add(offerCursor.getString(offerCursor.getColumnIndex(OFFER_TEXT)));
         }
 
         return offers.toArray(new String[offers.size()]);

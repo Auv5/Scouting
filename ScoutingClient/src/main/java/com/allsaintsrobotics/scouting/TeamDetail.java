@@ -86,13 +86,6 @@ public class TeamDetail extends Activity {
         return false;
     }
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == PitFragment.REQUEST_EDIT_TEAM && resultCode == RESULT_OK) {
-            pf.gotResult(data);
-        }
-    }
-
     public class PitFragment extends Fragment {
         private ListView lv;
 
@@ -144,7 +137,6 @@ public class TeamDetail extends Activity {
 
         @Override
         public void onActivityResult(int requestCode, int resultCode, Intent data) {
-            Log.wtf(TAG, "Well, Stack Overflow lied...");
             if (requestCode == REQUEST_EDIT_TEAM && resultCode == RESULT_OK) {
                 gotResult(data);
             }

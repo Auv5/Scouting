@@ -6,6 +6,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
@@ -59,6 +60,20 @@ public class TeamList extends Activity {
         MenuInflater mi = this.getMenuInflater();
         mi.inflate(R.menu.team_list, menu);
         return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_opensettings:
+                Intent i = new Intent();
+                i.setClass(this, Preferences.class);
+
+                startActivityForResult(i, 0);
+                break;
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 
     private class DatabaseSetupTask extends AsyncTask<Void, Void, ScoutingDBHelper>

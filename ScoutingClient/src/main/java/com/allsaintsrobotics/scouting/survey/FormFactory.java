@@ -23,6 +23,7 @@ public abstract class FormFactory {
         factories = new HashMap<String, Class<? extends FormFactory>>();
 
         factories.put("fr", FreeResponseForm.FreeResponseFormFactory.class);
+        factories.put("mc", MultipleChoiceForm.MultipleChoiceFormFactory.class);
     }
 
     public abstract Form getForm(Question q, Team t);
