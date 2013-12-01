@@ -52,7 +52,8 @@ public class TeamList extends Activity {
     }
 
     private void populateTeamList() {
-        teamList.setAdapter(new TeamAdapter(TeamList.this, ScoutingDBHelper.getInstance().getAllTeams()));
+        teamList.setAdapter(new TeamAdapter(TeamList.this,
+                ScoutingDBHelper.getInstance().getAllTeams(ScoutingDBHelper.TEAM_NUM)));
     }
 
     @Override

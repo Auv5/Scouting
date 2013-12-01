@@ -49,8 +49,10 @@ public class Question implements Statistic {
         else
         {
             String value = ScoutingDBHelper.getInstance().getAnswer(this, t);
+            if (value != null) {
+                this.cacheUpdate(t, value);
+            }
 
-            this.cacheUpdate(t, value);
             return value;
         }
     }
@@ -63,7 +65,7 @@ public class Question implements Statistic {
             tv = new TextView(c);
         }
 
-        tv.setText(val);
+        tv.setText(val == null ? "" : val);
 
         if (tv.getParent() != null)
         {

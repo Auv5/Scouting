@@ -36,10 +36,10 @@ public class TeamAdapter extends CursorAdapter {
         TextView tvNumber = (TextView) view.findViewById(R.id.tv_teamnumber);
         TextView tvName = (TextView) view.findViewById(R.id.tv_teamname);
 
-        int number = cursor.getInt(cursor.getColumnIndex(ScoutingDBHelper.TEAM_NUM));
-        String name = cursor.getString(cursor.getColumnIndex(ScoutingDBHelper.TEAM_NAME));
+        Team t = Team.fromCursor(cursor);
 
-        Team t = new Team(number, name);
+        int number = t.getNumber();
+        String name = t.getNickname();
 
         view.setTag(t);
 

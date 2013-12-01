@@ -1,8 +1,11 @@
 package com.allsaintsrobotics.scouting.models;
 
+import android.database.Cursor;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.util.Log;
+
+import com.allsaintsrobotics.scouting.ScoutingDBHelper;
 
 /**
  * Created by jack on 11/24/13.
@@ -77,4 +80,11 @@ public class Team implements Parcelable {
             return new Team[size];
         }
     };
+
+    public static Team fromCursor(Cursor cursor) {
+        int number = cursor.getInt(cursor.getColumnIndex(ScoutingDBHelper.TEAM_NUM));
+        String name = cursor.getString(cursor.getColumnIndex(ScoutingDBHelper.TEAM_NAME));
+
+        return new Team(number, name);
+    }
 }

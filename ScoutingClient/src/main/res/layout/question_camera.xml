@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="wrap_content" android:gravity="left">
+    <TextView
+        style="@android:style/TextAppearance.Medium"
+        android:id="@+id/cam_label"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:text="@string/camera_default"/>
+
+    <RelativeLayout
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent">
+        <ImageButton
+            android:id="@+id/take_pic_button"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:src="@drawable/ic_action_camera"
+            android:layout_alignParentRight="true"
+            android:contentDescription="@string/alt_take_pic" />
+        <ImageView
+            android:id="@+id/pic_preview"
+            android:layout_width="0dip"
+            android:layout_height="wrap_content"
+            android:layout_toLeftOf="@id/take_pic_button"
+            android:layout_alignParentLeft="true"/>
+    </RelativeLayout>
+</LinearLayout>

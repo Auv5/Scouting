@@ -6,8 +6,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.util.Log;
-import android.util.TypedValue;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
@@ -27,6 +25,8 @@ public class ScoutEdit extends Activity {
     private Team team;
 
     private List<Form> forms;
+
+    private ScrollView sv;
 
     private static final int FORM_TOP_BOTTOM_PADDING_DP = 10;
 
@@ -54,23 +54,20 @@ public class ScoutEdit extends Activity {
         cancelButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                setResult(RESULT_CANCELED);
-                // TODO: Find a better icon.
-                new AlertDialog.Builder(ScoutEdit.this).setIcon(android.R.drawable.ic_dialog_alert).
-                        setTitle(getString(R.string.confirm_title)).
-                        setMessage("Are you sure you want to cancel? You will lose any changes you have made.").
-                        setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                ScoutEdit.this.finish();
-                            }
-                        })
-                        .setNegativeButton(R.string.no, null)
-                        .show();
+                makeConfirmDialog(new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        setResult(Activity.RESULT_CANCELED);
+
+                        ScoutEdit.this.finish();
+                    }
+                });
             }
         });
 
         LinearLayout formsView = (LinearLayout) findViewById(R.id.questions_cont);
+
+        sv = (ScrollView) findViewById(R.id.questions_scroll);
 
         this.forms = new ArrayList<Form>();
 
@@ -87,6 +84,39 @@ public class ScoutEdit extends Activity {
 
             formsView.addView(answerView);
         }
+    }
+    private void makeConfirmDialog(DialogInterface.OnClickListener listener) {
+        // TODO: Find a better way to specify the icon.
+        new AlertDialog.Builder(ScoutEdit.this).setIcon(android.R.drawable.ic_dialog_alert).
+        setTitle(getString(R.string.confirm_title)).
+        setMessage("Are you sure you want to cancel? You will lose any changes you have made.").
+        setPositiveButton(R.string.yes, listener)
+        .setNegativeButton(R.string.no, null)
+        .show();
+    }
+
+    @Override
+    public void onBackPressed() {
+        makeConfirmDialog(new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                setResult(Activity.RESULT_CANCELED);
+                ScoutEdit.super.onBackPressed();
+            }
+        });
+    }
+
+    public int getScrollPos() {
+        return sv.getScrollY();
+    }
+
+    public void setScrollPos(final int value) {
+        sv.post(new Runnable() {
+            @Override
+            public void run() {
+                sv.scrollTo(0, value);
+            }
+        });
     }
 
     private class SaveFormsExitTask extends AsyncTask<Void, Void, Boolean>
@@ -113,6 +143,15 @@ public class ScoutEdit extends Activity {
                 setResult(RESULT_OK);
 
                 finish();
+            }
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        for (Form f : forms) {
+            if (f.result(this, requestCode, resultCode, data)) {
+                break;
             }
         }
     }

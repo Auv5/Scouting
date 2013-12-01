@@ -24,6 +24,7 @@ public abstract class FormFactory {
 
         factories.put("fr", FreeResponseForm.FreeResponseFormFactory.class);
         factories.put("mc", MultipleChoiceForm.MultipleChoiceFormFactory.class);
+        factories.put("cam", CameraForm.CameraFormFactory.class);
     }
 
     public abstract Form getForm(Question q, Team t);
@@ -46,7 +47,7 @@ public abstract class FormFactory {
 
                 Log.e(TAG, sb.toString());
             }
-
+            //TODO: Graceful null check
             return (FormFactory)factories.get(id).getConstructors()[0].newInstance();
         } catch (InstantiationException e) {
             //TODO: Handle with loggers

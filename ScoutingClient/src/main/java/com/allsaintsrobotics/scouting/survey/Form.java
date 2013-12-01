@@ -1,9 +1,11 @@
 package com.allsaintsrobotics.scouting.survey;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.allsaintsrobotics.scouting.ScoutEdit;
 import com.allsaintsrobotics.scouting.ScoutingDBHelper;
 import com.allsaintsrobotics.scouting.models.Team;
 
@@ -20,7 +22,7 @@ public abstract class Form {
         this.team = t;
     }
 
-    public abstract View getAnswerView(Context c, ViewGroup parent);
+    public abstract View getAnswerView(ScoutEdit c, ViewGroup parent);
 
     public abstract String getAnswer();
 
@@ -50,6 +52,10 @@ public abstract class Form {
             this.setError(validator.getError());
             return false;
         }
+    }
+
+    public boolean result(ScoutEdit c, int request, int response, Intent data) {
+        return false;
     }
 
     public interface Validator {

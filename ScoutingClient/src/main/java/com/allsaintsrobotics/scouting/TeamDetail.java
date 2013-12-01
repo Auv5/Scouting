@@ -16,6 +16,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
 
+import com.allsaintsrobotics.scouting.adapters.MatchAdapter;
 import com.allsaintsrobotics.scouting.adapters.QuestionAdapter;
 import com.allsaintsrobotics.scouting.models.Team;
 import com.allsaintsrobotics.scouting.survey.Question;
@@ -144,9 +145,17 @@ public class TeamDetail extends Activity {
     }
 
     public class MatchFragment extends Fragment {
+        private ListView lv;
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-            return inflater.inflate(R.layout.fragment_matchdata, container, false);
+            View v = inflater.inflate(R.layout.fragment_matchdata, container, false);
+
+            this.lv = (ListView)v.findViewById(R.id.match_datalist);
+
+            this.lv.setAdapter(new MatchAdapter(TeamDetail.this, team, ScoutingDBHelper.
+                    getInstance().getMatches(team)));
+
+            return v;
         }
     }
 

@@ -1,6 +1,7 @@
 package com.allsaintsrobotics.scouting.models;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -12,9 +13,13 @@ public class Match {
         RED
     }
 
+    int number;
+
     private Map<Team, TeamScore> blue;
 
     private Map<Team, TeamScore> red;
+
+    Team[] redO, blueO;
 
     private class TeamScore {
         public TeamScore(Alliance alliance, int auto, int teleop, int special) {
@@ -30,7 +35,7 @@ public class Match {
         int auto, teleop, special;
     }
 
-    public Match(Team[] blue, Team[] red, int[] blueAuto, int[] redAuto, int[] blueTeleop,
+    public Match(int number, Team[] blue, Team[] red, int[] blueAuto, int[] redAuto, int[] blueTeleop,
                  int[] redTeleop, int[] blueSpecial, int[] redSpecial) {
         if (blue == null || red == null || blueAuto == null || redAuto == null ||
                 blueTeleop == null || redTeleop == null || blueSpecial == null || redSpecial == null) {
@@ -42,8 +47,13 @@ public class Match {
             throw new IllegalStateException("All arrays must be length 3.");
         }
 
+        this.number = number;
+
         this.red = new HashMap<Team, TeamScore>();
         this.blue = new HashMap<Team, TeamScore>();
+
+        this.redO = red;
+        this.blueO = blue;
 
         for (int i = 0; i < 3; i++) {
             int auto = blueAuto[i];
@@ -73,6 +83,17 @@ public class Match {
         return null;
     }
 
+    public Team getTeam(Alliance a, int i) {
+        if (a == Alliance.RED) {
+            return redO[i];
+        }
+        else if (a == Alliance.BLUE) {
+            return blueO[i];
+        }
+
+        return null;
+    }
+
     public boolean isPlaying(Team t) {
         if (getAlliance(t) == null) {
             return false;
@@ -90,6 +111,10 @@ public class Match {
         }
 
         return null;
+    }
+
+    public int getNumber() {
+        return number;
     }
 
     public int getAuto(Team t) {
@@ -168,5 +193,15 @@ public class Match {
         }
 
         ts.special = value;
+    }
+
+    public boolean hasTeam(Team t) {
+        for (int i = 0; i < 3; i ++) {
+            if (redO[i].equals(t) || blueO[i].equals(t)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }

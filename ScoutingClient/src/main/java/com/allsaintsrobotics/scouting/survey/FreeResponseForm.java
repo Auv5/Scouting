@@ -10,6 +10,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.allsaintsrobotics.scouting.R;
+import com.allsaintsrobotics.scouting.ScoutEdit;
 import com.allsaintsrobotics.scouting.models.Team;
 
 /**
@@ -26,7 +27,7 @@ public class FreeResponseForm extends Form {
     }
 
     @Override
-    public View getAnswerView(Context c, ViewGroup parent) {
+    public View getAnswerView(ScoutEdit c, ViewGroup parent) {
         if (view == null)
         {
             LayoutInflater li = (LayoutInflater) c.getSystemService(Context.LAYOUT_INFLATER_SERVICE);

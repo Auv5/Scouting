@@ -31,6 +31,7 @@ public class QuestionAdapter extends ArrayAdapter<Question> {
         this.team = team;
     }
 
+    //TODO: Investigate scrolling bugs
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         View row = convertView;
@@ -54,6 +55,7 @@ public class QuestionAdapter extends ArrayAdapter<Question> {
         Question q = questions.get(position);
 
         qfh.label.setText(q.getLabel());
+        qfh.value.removeAllViews();
         qfh.value.addView(q.getValueView(team, context));
 
         return row;
