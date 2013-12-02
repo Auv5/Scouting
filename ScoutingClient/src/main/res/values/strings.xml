@@ -10,4 +10,7 @@
     <string name="blue_team2_default">610</string>
     <string name="blue_team3_default">2013</string>
     <string name="red_score_default">200</string>
+    <string name="auto_average_format">Auto: %s</string>
+    <string name="teleop_average_format">Teleop: %s</string>
+    <string name="special_average_format">Special: %s</string>
 </resources>

@@ -256,7 +256,7 @@ public class ScoutingDBHelper extends SQLiteOpenHelper {
         List<Match> allMatches = getMatches();
 
         for (Match m : allMatches) {
-            if (m.hasTeam(team)) {
+            if (m.hasTeam(team.getNumber())) {
                 matches.add(m);
             }
         }
@@ -288,14 +288,14 @@ public class ScoutingDBHelper extends SQLiteOpenHelper {
                 throw new IllegalStateException("Must have three teams in an alliance.");
             }
 
-            Team[] red = new Team[3];
-            Team[] blue = new Team[3];
+            int[] red = new int[3];
+            int[] blue = new int[3];
 
             int i = 0;
 
             while (redAllianceCursor.moveToNext() && blueAllianceCursor.moveToNext()) {
-                red[i] = getTeam(redAllianceCursor.getInt(redAllianceCursor.getColumnIndex(ALLIANCE_TEAM)));
-                blue[i] = getTeam(blueAllianceCursor.getInt(blueAllianceCursor.getColumnIndex(ALLIANCE_TEAM)));
+                red[i] = redAllianceCursor.getInt(redAllianceCursor.getColumnIndex(ALLIANCE_TEAM));
+                blue[i] = blueAllianceCursor.getInt(blueAllianceCursor.getColumnIndex(ALLIANCE_TEAM));
 
                 i++;
             }
@@ -322,10 +322,10 @@ public class ScoutingDBHelper extends SQLiteOpenHelper {
 
             while (i < red.length && i < blue.length) {
                 Cursor redPointsCursor = db.query(TABLE_POINTS, null, POINTS_TEAM + " = ? AND "
-                        + POINTS_MATCH + " = ?", new String[] {Integer.toString(red[i].getNumber()),
+                        + POINTS_MATCH + " = ?", new String[] {Integer.toString(red[i]),
                         Integer.toString(id)}, null, null, null);
                 Cursor bluePointsCursor = db.query(TABLE_POINTS, null, POINTS_TEAM + " = ? AND "
-                        + POINTS_MATCH + " = ?", new String[] {Integer.toString(red[i].getNumber()),
+                        + POINTS_MATCH + " = ?", new String[] {Integer.toString(red[i]),
                         Integer.toString(id)}, null, null, null);
 
                 while (redPointsCursor.moveToNext()) {

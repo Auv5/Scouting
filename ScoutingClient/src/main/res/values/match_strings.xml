@@ -8,4 +8,5 @@
     <string name="blue_team1_default">1241</string>
     <string name="blue_score">150</string>
     <string name="match_id_format">Qualification Match %d</string>
+    <string name="averages">Averages</string>
 </resources>

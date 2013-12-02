@@ -15,11 +15,11 @@ public class Match {
 
     int number;
 
-    private Map<Team, TeamScore> blue;
+    private Map<Integer, TeamScore> blue;
 
-    private Map<Team, TeamScore> red;
+    private Map<Integer, TeamScore> red;
 
-    Team[] redO, blueO;
+    int[] redO, blueO;
 
     private class TeamScore {
         public TeamScore(Alliance alliance, int auto, int teleop, int special) {
@@ -35,7 +35,7 @@ public class Match {
         int auto, teleop, special;
     }
 
-    public Match(int number, Team[] blue, Team[] red, int[] blueAuto, int[] redAuto, int[] blueTeleop,
+    public Match(int number, int[] blue, int[] red, int[] blueAuto, int[] redAuto, int[] blueTeleop,
                  int[] redTeleop, int[] blueSpecial, int[] redSpecial) {
         if (blue == null || red == null || blueAuto == null || redAuto == null ||
                 blueTeleop == null || redTeleop == null || blueSpecial == null || redSpecial == null) {
@@ -49,8 +49,8 @@ public class Match {
 
         this.number = number;
 
-        this.red = new HashMap<Team, TeamScore>();
-        this.blue = new HashMap<Team, TeamScore>();
+        this.red = new HashMap<Integer, TeamScore>();
+        this.blue = new HashMap<Integer, TeamScore>();
 
         this.redO = red;
         this.blueO = blue;
@@ -72,7 +72,7 @@ public class Match {
         }
     }
 
-    public Alliance getAlliance(Team t) {
+    public Alliance getAlliance(int t) {
         if (red.containsKey(t)) {
             return Alliance.RED;
         }
@@ -83,18 +83,7 @@ public class Match {
         return null;
     }
 
-    public Team getTeam(Alliance a, int i) {
-        if (a == Alliance.RED) {
-            return redO[i];
-        }
-        else if (a == Alliance.BLUE) {
-            return blueO[i];
-        }
-
-        return null;
-    }
-
-    public boolean isPlaying(Team t) {
+    public boolean isPlaying(int t) {
         if (getAlliance(t) == null) {
             return false;
         }
@@ -102,7 +91,19 @@ public class Match {
         return true;
     }
 
-    private Map<Team, TeamScore> getMap(Team t) {
+    public int getTeam(Alliance alliance, int i) {
+        if (alliance == Alliance.RED) {
+            return redO[i];
+        }
+
+        if (alliance == Alliance.BLUE) {
+            return blueO[i];
+        }
+
+        return -1;
+    }
+
+    private Map<Integer, TeamScore> getMap(int t) {
         if (blue.containsKey(t)) {
             return blue;
         }
@@ -117,8 +118,8 @@ public class Match {
         return number;
     }
 
-    public int getAuto(Team t) {
-        Map<Team, TeamScore> m = getMap(t);
+    public int getAuto(int t) {
+        Map<Integer, TeamScore> m = getMap(t);
 
         if (m == null) {
             return -1;
@@ -127,8 +128,8 @@ public class Match {
         return m.get(t).auto;
     }
 
-    public int getTeleop(Team t) {
-        Map<Team, TeamScore> m = getMap(t);
+    public int getTeleop(int t) {
+        Map<Integer, TeamScore> m = getMap(t);
 
         if (m == null) {
             return -1;
@@ -137,8 +138,8 @@ public class Match {
         return m.get(t).teleop;
     }
 
-    public int getSpecial(Team t) {
-        Map<Team, TeamScore> m = getMap(t);
+    public int getSpecial(int t) {
+        Map<Integer, TeamScore> m = getMap(t);
 
         if (m == null) {
             return -1;
@@ -147,8 +148,8 @@ public class Match {
         return m.get(t).special;
     }
 
-    public void setAuto(Team t, int value) {
-        Map<Team, TeamScore> m = getMap(t);
+    public void setAuto(int t, int value) {
+        Map<Integer, TeamScore> m = getMap(t);
 
         if (m == null) {
             throw new IllegalStateException("That team isn't playing!");
@@ -163,8 +164,8 @@ public class Match {
         ts.auto = value;
     }
 
-    public void setTeleop(Team t, int value) {
-        Map<Team, TeamScore> m = getMap(t);
+    public void setTeleop(int t, int value) {
+        Map<Integer, TeamScore> m = getMap(t);
 
         if (m == null) {
             throw new IllegalStateException("That team isn't playing!");
@@ -179,8 +180,8 @@ public class Match {
         ts.teleop = value;
     }
 
-    public void setSpecial(Team t, int value) {
-        Map<Team, TeamScore> m = getMap(t);
+    public void setSpecial(int t, int value) {
+        Map<Integer, TeamScore> m = getMap(t);
 
         if (m == null) {
             throw new IllegalStateException("That team isn't playing!");
@@ -195,9 +196,9 @@ public class Match {
         ts.special = value;
     }
 
-    public boolean hasTeam(Team t) {
+    public boolean hasTeam(int t) {
         for (int i = 0; i < 3; i ++) {
-            if (redO[i].equals(t) || blueO[i].equals(t)) {
+            if (redO[i] == t || blueO[i] == t) {
                 return true;
             }
         }

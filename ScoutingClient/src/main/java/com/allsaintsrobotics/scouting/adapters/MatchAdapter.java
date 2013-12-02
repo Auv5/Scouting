@@ -60,13 +60,13 @@ public class MatchAdapter extends ArrayAdapter<Match> {
 
         mfh.matchId.setText(String.format(context.getString(R.string.match_id_format),
                 m.getNumber()));
-        mfh.blue1.setText(Integer.toString(m.getTeam(Match.Alliance.BLUE, 0).getNumber()));
-        mfh.blue2.setText(Integer.toString(m.getTeam(Match.Alliance.BLUE, 1).getNumber()));
-        mfh.blue3.setText(Integer.toString(m.getTeam(Match.Alliance.BLUE, 2).getNumber()));
+        mfh.blue1.setText(Integer.toString(m.getTeam(Match.Alliance.BLUE, 0)));
+        mfh.blue2.setText(Integer.toString(m.getTeam(Match.Alliance.BLUE, 1)));
+        mfh.blue3.setText(Integer.toString(m.getTeam(Match.Alliance.BLUE, 2)));
 
-        mfh.red1.setText(Integer.toString(m.getTeam(Match.Alliance.RED, 0).getNumber()));
-        mfh.red2.setText(Integer.toString(m.getTeam(Match.Alliance.RED, 1).getNumber()));
-        mfh.red3.setText(Integer.toString(m.getTeam(Match.Alliance.RED, 2).getNumber()));
+        mfh.red1.setText(Integer.toString(m.getTeam(Match.Alliance.RED, 0)));
+        mfh.red2.setText(Integer.toString(m.getTeam(Match.Alliance.RED, 1)));
+        mfh.red3.setText(Integer.toString(m.getTeam(Match.Alliance.RED, 2)));
 
         return row;
     }

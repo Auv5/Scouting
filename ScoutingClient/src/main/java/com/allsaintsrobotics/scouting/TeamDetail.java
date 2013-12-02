@@ -15,9 +15,11 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import com.allsaintsrobotics.scouting.adapters.MatchAdapter;
 import com.allsaintsrobotics.scouting.adapters.QuestionAdapter;
+import com.allsaintsrobotics.scouting.models.Match;
 import com.allsaintsrobotics.scouting.models.Team;
 import com.allsaintsrobotics.scouting.survey.Question;
 
@@ -145,17 +147,74 @@ public class TeamDetail extends Activity {
     }
 
     public class MatchFragment extends Fragment {
+        private static final int MATCH_DETAIL = 8001;
         private ListView lv;
+        private TextView autoAverage;
+        private TextView teleopAverage;
+        private TextView specialAverage;
+        private List<Match> matches;
+
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
             View v = inflater.inflate(R.layout.fragment_matchdata, container, false);
 
             this.lv = (ListView)v.findViewById(R.id.match_datalist);
 
-            this.lv.setAdapter(new MatchAdapter(TeamDetail.this, team, ScoutingDBHelper.
-                    getInstance().getMatches(team)));
+            this.matches = ScoutingDBHelper.getInstance().getMatches(team);
+
+            this.lv.setAdapter(new MatchAdapter(TeamDetail.this, team, matches));
+
+            this.autoAverage = (TextView) v.findViewById(R.id.auto_average);
+            this.teleopAverage = (TextView) v.findViewById(R.id.teleop_average);
+            this.specialAverage = (TextView) v.findViewById(R.id.special_average);
+
+            populateAverages();
 
             return v;
+        }
+
+        private void populateAverages() {
+            int autoTotal = 0;
+            int autoCount = 0;
+            int teleopTotal = 0;
+            int teleopCount = 0;
+            int specialTotal = 0;
+            int specialCount = 0;
+
+            for (Match m : matches) {
+                int auto = m.getAuto(team.getNumber());
+                int teleop = m.getTeleop(team.getNumber());
+                int special = m.getSpecial(team.getNumber());
+
+                if (auto != -1) {
+                    autoTotal += auto;
+                    autoCount += 1;
+                }
+
+                if (teleop != -1) {
+                    teleopTotal += teleop;
+                    teleopCount += 1;
+                }
+
+                if (special != -1) {
+                    specialTotal += special;
+                    specialCount += 1;
+                }
+            }
+
+            this.autoAverage.setText(String.format(getString(R.string.auto_average_format,
+                    autoCount == 0 ? "None" : Integer.toString(autoTotal / autoCount))));
+            this.teleopAverage.setText(String.format(getString(R.string.teleop_average_format),
+                    teleopCount == 0 ? "None" : Integer.toString(teleopTotal / teleopCount)));
+            this.specialAverage.setText(String.format(getString(R.string.special_average_format),
+                    specialCount == 0 ? "None" : Integer.toString(specialTotal / specialCount)));
+        }
+
+        @Override
+        public void onActivityResult(int requestCode, int resultCode, Intent data) {
+            if (requestCode == MATCH_DETAIL && resultCode == Activity.RESULT_OK) {
+                populateAverages();
+            }
         }
     }
 
