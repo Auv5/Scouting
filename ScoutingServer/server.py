@@ -2,11 +2,10 @@ from wsgiref.simple_server import make_server
 from pyramid.config import Configurator
 from pyramid.response import Response
 
-from models.match import Match
-from models.user import User, divide_users
-from models.team import Team, get_team
+from models.user import divide_users
 
 import json
+import scrape
 
 
 id_counter = 0
@@ -18,7 +17,7 @@ def register(request):
     if id_counter < len(users):
         user = users[id_counter]
         to_send = {'id': user.id, 'teams': [t.to_json() for t in user.teams],
-                   'matches': [m.to_json() for m in user.matches]}
+                   'matches': [m.to_json(t) for t, m in user.matches]}
         id_counter += 1
     else:
         return Response(json.dumps({}))
@@ -29,10 +28,12 @@ def register(request):
 def main():
     global users
 
-    users = divide_users([Team(2994, "The ASTECHZ"), Team(2056, "OP Robotics"), Team(1114, "Simbotics"),
-                          Team(610, "The Coyotes"), Team(2013, "The Cybergnomes"), Team(1241, "THEORY6")],
-                         [Match(1, 0, [get_team(2994), get_team(2056), get_team(1114)],
-                                [get_team(610), get_team(2013), get_team(1241)])], 6)
+    reg_id = '2013onto2'
+
+    matches = scrape.usfirst_scrape_matches(reg_id)
+    teams = scrape.download_teams(scrape.download_regional(reg_id))
+
+    users = divide_users(teams, matches, 6)
 
     config = Configurator()
     config.add_route('register', '/api/register')

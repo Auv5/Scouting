@@ -5,5 +5,5 @@ class Match:
         self.id = id
         self.start_at = start_at
 
-    def to_json(self):
-        return {'id': self.id, 'red': [t.number for t in self.red], 'blue': [t.number for t in self.blue]}
+    def to_json(self, t):
+        return {'id': self.id, 'red': self.red, 'blue': self.blue, 'scout': t}

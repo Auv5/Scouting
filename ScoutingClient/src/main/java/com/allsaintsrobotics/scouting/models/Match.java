@@ -19,7 +19,9 @@ public class Match {
 
     private Map<Integer, TeamScore> red;
 
-    int[] redO, blueO;
+    private int[] redO, blueO;
+
+    private int scout;
 
     private class TeamScore {
         public TeamScore(Alliance alliance, int auto, int teleop, int special) {
@@ -35,7 +37,7 @@ public class Match {
         int auto, teleop, special;
     }
 
-    public Match(int number, int[] blue, int[] red, int[] blueAuto, int[] redAuto, int[] blueTeleop,
+    public Match(int number, int[] blue, int[] red, int scout, int[] blueAuto, int[] redAuto, int[] blueTeleop,
                  int[] redTeleop, int[] blueSpecial, int[] redSpecial) {
         if (blue == null || red == null || blueAuto == null || redAuto == null ||
                 blueTeleop == null || redTeleop == null || blueSpecial == null || redSpecial == null) {
@@ -70,6 +72,14 @@ public class Match {
 
             this.red.put(red[i], new TeamScore(Alliance.RED, auto, teleop, special));
         }
+
+        this.scout = scout;
+    }
+
+    public Match(int id, int[] blue, int[] red, int scout) {
+        this(id, blue, red, scout, new int[] {-1,-1,-1},
+                new int[] {-1,-1,-1}, new int[] {-1,-1,-1}, new int[] {-1,-1,-1},
+                new int[] {-1,-1,-1}, new int[] {-1,-1,-1});
     }
 
     public Alliance getAlliance(int t) {
@@ -204,5 +214,9 @@ public class Match {
         }
 
         return false;
+    }
+
+    public int getScout() {
+        return scout;
     }
 }

@@ -13,6 +13,7 @@ import com.allsaintsrobotics.scouting.survey.Question;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -56,9 +57,10 @@ public class ScoutingDBHelper extends SQLiteOpenHelper {
     public static final String MATCH_NUMBER = "_id";
     public static final String MATCH_RED = "red";
     public static final String MATCH_BLUE = "blue";
+    public static final String MATCH_SCOUT = "scout";
     private static final String MATCH_CREATE = "CREATE TABLE " + TABLE_MATCHES + "(" + MATCH_NUMBER +
             " INTEGER PRIMARY KEY NOT NULL, " + MATCH_RED + " INTEGER NOT NULL, " + MATCH_BLUE +
-            " INTEGER NOT NULL" + ");";
+            " INTEGER NOT NULL, " + MATCH_SCOUT + " INTEGER NOT NULL" + ");";
 
     public static final String TABLE_ALLIANCE = "alliances";
     public static final String ALLIANCE_ID = "id";
@@ -75,9 +77,16 @@ public class ScoutingDBHelper extends SQLiteOpenHelper {
             " INTEGER NOT NULL, " + POINTS_TEAM + " INTEGER NOT NULL, " + POINTS_TYPE +
             " TEXT, " + POINTS_AMOUNT + " INTEGER NOT NULL" + ");";
 
+    public static final String TABLE_SCOUTMETA = "scout_meta";
+    public static final String SCOUTMETA_OPTION = "option";
+    public static final String SCOUTMETA_VALUE = "value";
+
     private SQLiteDatabase db;
 
     private static ScoutingDBHelper instance;
+
+    private int maxId = 0;
+    private int id;
 
     public static ScoutingDBHelper makeInstance(Context context) {
         if (instance != null)
@@ -141,6 +150,18 @@ public class ScoutingDBHelper extends SQLiteOpenHelper {
 
     private List<Team> teamCache;
 
+    Comparator<Team> teamComparator = new Comparator<Team>() {
+        @Override
+        public int compare(Team lhs, Team rhs) {
+            return lhs.getNumber() - rhs.getNumber();
+        }
+    };
+
+    private void addToTeamCache(Team t) {
+        teamCache.add(t);
+        Collections.sort(teamCache, teamComparator);
+    }
+
     public List<Team> getTeams() {
         if (teamCache == null) {
             teamCache = new ArrayList<Team>();
@@ -150,6 +171,8 @@ public class ScoutingDBHelper extends SQLiteOpenHelper {
             while (cursor.moveToNext()) {
                 teamCache.add(Team.fromCursor(cursor));
             }
+
+            Collections.sort(teamCache, teamComparator);
 
             return teamCache;
         }
@@ -249,6 +272,10 @@ public class ScoutingDBHelper extends SQLiteOpenHelper {
         return offers.toArray(new String[offers.size()]);
     }
 
+    public void addQuestion(int qid, String label, String type, String[] offers) {
+        //TODO: Add question!
+    }
+
     List<Match> matchCache;
 
     public List<Match> getMatches(Team team) {
@@ -256,13 +283,20 @@ public class ScoutingDBHelper extends SQLiteOpenHelper {
         List<Match> allMatches = getMatches();
 
         for (Match m : allMatches) {
-            if (m.hasTeam(team.getNumber())) {
+            if (m.getScout() == team.getNumber()) {
                 matches.add(m);
             }
         }
 
         return matches;
     }
+
+    Comparator<Match> matchComparator = new Comparator<Match>() {
+        @Override
+        public int compare(Match lhs, Match rhs) {
+            return lhs.getNumber() - rhs.getNumber();
+        }
+    };
 
     public List<Match> getMatches() {
         if (matchCache != null) {
@@ -275,9 +309,12 @@ public class ScoutingDBHelper extends SQLiteOpenHelper {
 
         while (matchCursor.moveToNext()) {
             int id = matchCursor.getInt(matchCursor.getColumnIndex(MATCH_NUMBER));
+            int scout = matchCursor.getInt(matchCursor.getColumnIndex(MATCH_SCOUT));
 
             int redid = matchCursor.getInt(matchCursor.getColumnIndex(MATCH_RED));
             int blueid = matchCursor.getInt(matchCursor.getColumnIndex(MATCH_BLUE));
+
+            maxId = Math.max(redid, blueid);
 
             Cursor redAllianceCursor = db.query(TABLE_ALLIANCE, null, ALLIANCE_ID + " = ?",
                     new String[] {Integer.toString(redid)}, null, null, null);
@@ -361,11 +398,13 @@ public class ScoutingDBHelper extends SQLiteOpenHelper {
                 i ++;
             }
 
-            Match m = new Match(id, blue, red, blueAuto, redAuto, blueTeleop, redTeleop,
+            Match m = new Match(id, blue, red, scout, blueAuto, redAuto, blueTeleop, redTeleop,
                     blueSpecial, redSpecial);
 
             matchCache.add(m);
         }
+
+        Collections.sort(matchCache, matchComparator);
 
         return matchCache;
     }
@@ -377,6 +416,63 @@ public class ScoutingDBHelper extends SQLiteOpenHelper {
             }
         }
         return null;
+    }
+
+    public void addMatch(int matchId, int scout, int[] red, int[] blue) {
+        // Ensure match read has occurred for alliance ID optimization hack to work...
+        getMatches();
+
+        int redId = ++maxId;
+        int blueId = ++maxId;
+
+        ContentValues matchCv = new ContentValues();
+
+        matchCv.put(MATCH_RED, redId);
+        matchCv.put(MATCH_BLUE, blueId);
+
+        matchCv.put(MATCH_NUMBER, matchId);
+
+        matchCv.put(MATCH_SCOUT, scout);
+
+        db.insert(TABLE_MATCHES, null, matchCv);
+
+        for (int i = 0; i < 3; i ++) {
+            ContentValues redCv = new ContentValues();
+            ContentValues blueCv = new ContentValues();
+
+            redCv.put(ALLIANCE_ID, redId);
+            redCv.put(ALLIANCE_TEAM, red[i]);
+
+            db.insert(TABLE_ALLIANCE, null, redCv);
+
+            blueCv.put(ALLIANCE_ID, blueId);
+            blueCv.put(ALLIANCE_TEAM, blue[i]);
+
+            db.insert(TABLE_ALLIANCE, null, blueCv);
+        }
+
+        matchCache.add(new Match(matchId, red, blue, scout));
+
+        Collections.sort(matchCache, matchComparator);
+    }
+
+    public void addTeam(int teamNum, String teamNickname) {
+        ContentValues cv = new ContentValues();
+
+        cv.put(TEAM_NUM, teamNum);
+        cv.put(TEAM_NAME, teamNickname);
+
+        db.insert(TABLE_TEAMS, null, cv);
+
+        addToTeamCache(new Team(teamNum, teamNickname));
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public int getId() {
+        return id;
     }
 
     // END CONVENIENCE METHODS

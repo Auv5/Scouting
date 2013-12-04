@@ -1,3 +1,5 @@
+from models.team import get_team
+
 class User:
     def __init__(self, userid):
         self.id = userid
@@ -21,10 +23,11 @@ def divide_users(teams, matches, num_users):
         m.free_users = users[:]
         for t in m.blue + m.red:
             for u in users:
-                if t in u.teams:
+                teamsforuser = [tt.number for tt in u.teams]
+                if t in teamsforuser:
                     if u in m.free_users:
                         m.free_users.remove(u)
-                        u.matches.append(m)
+                        u.matches.append((t, m))
                     else:
                         # This match must be resolved...
                         conflict_matches.append((m, t))
@@ -34,7 +37,11 @@ def divide_users(teams, matches, num_users):
             print('Not enough users. Impossible case.')
             return []
         else:
-            m.free_users[0].matches.append(m)
-            m.free_users[0].teams.append(t)
+            user_to_assign = min(m.free_users, key=lambda self: len(self.matches))
+            user_to_assign.matches.append((t, m))
+
+            team_obj = get_team(t)
+            if team_obj not in user_to_assign.teams:
+                user_to_assign.teams.append(team_obj)
 
     return users
