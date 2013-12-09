@@ -45,11 +45,6 @@ public class TeamList extends Fragment {
     private ListView teamList;
     private List<Team> teams;
     private TeamAdapter adapter;
-    private Context context;
-
-    public TeamList(Context c) {
-        this.context = c;
-    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -68,7 +63,7 @@ public class TeamList extends Fragment {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Intent i = new Intent();
-                i.setClass(context, TeamDetail.class);
+                i.setClass(getActivity(), TeamDetail.class);
 
                 i.putExtra("team", teams.get(position));
 
@@ -82,7 +77,7 @@ public class TeamList extends Fragment {
     private void populateTeamList() {
         this.teams = ScoutingDBHelper.getInstance().getTeams();
 
-        this.adapter = new TeamAdapter(context, teams);
+        this.adapter = new TeamAdapter(getActivity(), teams);
 
         teamList.setAdapter(adapter);
     }
@@ -94,7 +89,7 @@ public class TeamList extends Fragment {
     private class DatabaseSetupTask extends AsyncTask<Void, Void, ScoutingDBHelper> {
         @Override
         protected ScoutingDBHelper doInBackground(Void... params) {
-            return ScoutingDBHelper.makeInstance(context);
+            return ScoutingDBHelper.makeInstance(getActivity());
         }
 
         protected void onPostExecute(ScoutingDBHelper result) {

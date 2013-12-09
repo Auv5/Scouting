@@ -52,14 +52,24 @@ public class MainActivity extends Activity {
         ActionBar.Tab teamListTab = actionBar.newTab().setText("Teams");
         ActionBar.Tab matchTab = actionBar.newTab().setText("Matches");
 
-        teamList = new TeamList(this);
-        matchList = new MatchList(this);
+        teamList = new TeamList();
+        matchList = new MatchList();
 
         teamListTab.setTabListener(new MainActivity.TabListener(teamList));
         matchTab.setTabListener(new MainActivity.TabListener(matchList));
 
         actionBar.addTab(teamListTab);
         actionBar.addTab(matchTab);
+
+        if (savedInstanceState != null && savedInstanceState.containsKey("tabstate")) {
+            actionBar.setSelectedNavigationItem(
+                    savedInstanceState.getInt("tabstate"));
+        }
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        outState.putInt("tabstate", getActionBar().getSelectedNavigationIndex());
     }
 
     @Override

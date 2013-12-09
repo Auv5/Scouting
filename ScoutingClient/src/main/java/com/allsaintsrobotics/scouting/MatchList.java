@@ -14,12 +14,10 @@ import com.allsaintsrobotics.scouting.adapters.MatchAdapter;
  * Created by jack on 12/3/13.
  */
 public class MatchList extends Fragment {
-    private Context context;
     private ListView lv;
     private MatchAdapter adapter;
 
-    public MatchList(Context context) {
-        this.context = context;
+    public MatchList() {
     }
 
     @Override
@@ -28,7 +26,7 @@ public class MatchList extends Fragment {
 
         this.lv = (ListView) v.findViewById(R.id.match_genericlist);
 
-        this.adapter = new MatchAdapter(context, null,
+        this.adapter = new MatchAdapter(getActivity(), null,
                 ScoutingDBHelper.getInstance().getMatches());
 
         this.lv.setAdapter(adapter);
@@ -37,6 +35,8 @@ public class MatchList extends Fragment {
     }
 
     public void invalidate() {
-        adapter.notifyDataSetChanged();
+        if (adapter != null) {
+            adapter.notifyDataSetChanged();
+        }
     }
 }

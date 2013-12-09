@@ -54,8 +54,8 @@ public class TeamDetail extends Activity {
         ActionBar.Tab pitTab = actionBar.newTab().setText("Pit");
         ActionBar.Tab matchTab = actionBar.newTab().setText("Matches");
 
-        pf = new PitFragment();
-        mf = new MatchFragment();
+        pf = PitFragment.getInstance(team);
+        mf = MatchFragment.getInstance(team);
 
         pitTab.setTabListener(new TeamDetail.DetailTabListener(pf));
         matchTab.setTabListener(new TeamDetail.DetailTabListener(mf));
@@ -89,10 +89,14 @@ public class TeamDetail extends Activity {
         return false;
     }
 
-    public class PitFragment extends Fragment {
+    public static class PitFragment extends Fragment {
         private ListView lv;
 
         private QuestionAdapter qa;
+
+        private Team team;
+
+        private Activity activity;
 
         public static final int REQUEST_EDIT_TEAM = 1;
 
@@ -102,20 +106,55 @@ public class TeamDetail extends Activity {
 
             lv = (ListView) v.findViewById(R.id.pit_datalist);
 
-            new QuestionPopulateTask().execute();
+            if (savedInstanceState == null) {
+                team = getArguments().getParcelable("team");
+            }
+            else {
+                team = savedInstanceState.getParcelable("team");
+            }
 
             return v;
         }
 
+        @Override
+        public void onSaveInstanceState(Bundle outState) {
+            outState.putParcelable("team", team);
+
+            super.onSaveInstanceState(outState);
+        }
+
+        public static PitFragment getInstance(Team team) {
+            PitFragment pf = new PitFragment();
+
+            Bundle b = new Bundle();
+
+            b.putParcelable("team", team);
+
+            pf.setArguments(b);
+
+            return pf;
+        }
+
+        @Override
+        public void onAttach(Activity activity) {
+            this.activity = activity;
+
+            new QuestionPopulateTask().execute();
+
+            super.onAttach(activity);
+        }
+
         public void populateQuestionList(List<Question> questions) {
-            qa = new QuestionAdapter(TeamDetail.this, team, questions);
+            qa = new QuestionAdapter(this.activity, team, questions);
             lv.setAdapter(qa);
         }
 
         private class QuestionPopulateTask extends AsyncTask<Void, Void, List<Question>> {
             @Override
             protected List<Question> doInBackground(Void... params) {
-                return ScoutingDBHelper.getInstance().getQuestions();
+                List<Question> questions = ScoutingDBHelper.getInstance().getQuestions();
+
+                return questions;
             }
 
             @Override
@@ -126,7 +165,7 @@ public class TeamDetail extends Activity {
 
         public void openEditActivity() {
             Intent intent = new Intent();
-            intent.setClass(TeamDetail.this, ScoutEdit.class);
+            intent.setClass(getActivity(), ScoutEdit.class);
 
             intent.putExtra("team", team);
 
@@ -146,13 +185,43 @@ public class TeamDetail extends Activity {
         }
     }
 
-    public class MatchFragment extends Fragment {
+    public static class MatchFragment extends Fragment {
         private static final int MATCH_DETAIL = 8001;
         private ListView lv;
         private TextView autoAverage;
         private TextView teleopAverage;
         private TextView specialAverage;
         private List<Match> matches;
+        private Team team;
+        private Activity activity;
+
+        public static MatchFragment getInstance(Team t) {
+            MatchFragment mf = new MatchFragment();
+
+            Bundle b = new Bundle();
+            b.putParcelable("team", t);
+
+            mf.setArguments(b);
+
+            return mf;
+        }
+
+        @Override
+        public void onSaveInstanceState(Bundle outState) {
+            outState.putParcelable("team", team);
+            super.onSaveInstanceState(outState);
+        }
+
+        @Override
+        public void onAttach(Activity activity) {
+//            this.activity = activity;
+//
+//            //TODO: Put in an ASyncTask
+
+//            this.lv.setAdapter(new MatchAdapter(activity, team, matches));
+//
+            super.onAttach(activity);
+        }
 
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -160,13 +229,18 @@ public class TeamDetail extends Activity {
 
             this.lv = (ListView)v.findViewById(R.id.match_datalist);
 
-            this.matches = ScoutingDBHelper.getInstance().getMatches(team);
-
-            this.lv.setAdapter(new MatchAdapter(TeamDetail.this, team, matches));
+            if (savedInstanceState == null) {
+                team = getArguments().getParcelable("team");
+            }
+            else {
+                team = savedInstanceState.getParcelable("team");
+            }
 
             this.autoAverage = (TextView) v.findViewById(R.id.auto_average);
             this.teleopAverage = (TextView) v.findViewById(R.id.teleop_average);
             this.specialAverage = (TextView) v.findViewById(R.id.special_average);
+
+            this.matches = ScoutingDBHelper.getInstance().getMatches(team);
 
             populateAverages();
 
