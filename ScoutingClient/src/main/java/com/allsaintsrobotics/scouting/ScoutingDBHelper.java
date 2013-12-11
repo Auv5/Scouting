@@ -5,6 +5,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 
 import com.allsaintsrobotics.scouting.models.Match;
 import com.allsaintsrobotics.scouting.models.Team;
@@ -80,6 +81,8 @@ public class ScoutingDBHelper extends SQLiteOpenHelper {
     public static final String TABLE_SCOUTMETA = "scout_meta";
     public static final String SCOUTMETA_OPTION = "option";
     public static final String SCOUTMETA_VALUE = "value";
+    private static final String SCOUTMETA_CREATE = "CREATE TABLE " + TABLE_SCOUTMETA + "(" +
+            SCOUTMETA_OPTION + " TEXT, " + SCOUTMETA_VALUE + " TEXT" + ");";
 
     private SQLiteDatabase db;
 
@@ -112,7 +115,7 @@ public class ScoutingDBHelper extends SQLiteOpenHelper {
 
     private ScoutingDBHelper(Context context) {
         super(context, DBNAME, null, VERSION);
-
+        this.id = -2;
         this.db = this.getWritableDatabase();
     }
 
@@ -124,6 +127,7 @@ public class ScoutingDBHelper extends SQLiteOpenHelper {
         db.execSQL(MATCH_CREATE);
         db.execSQL(ALLIANCE_CREATE);
         db.execSQL(POINTS_CREATE);
+        db.execSQL(SCOUTMETA_CREATE);
     }
 
     @Override
@@ -137,6 +141,16 @@ public class ScoutingDBHelper extends SQLiteOpenHelper {
     }
 
     // BEGIN CONVENIENCE METHODS
+
+    public void clearSyncData() {
+        db.execSQL("DELETE FROM " + TABLE_TEAMS);
+        db.execSQL("DELETE FROM " + TABLE_MATCHES);
+        db.execSQL("DELETE FROM " + TABLE_POINTS);
+        db.execSQL("DELETE FROM " + TABLE_ALLIANCE);
+        db.execSQL("DELETE FROM " + TABLE_ANSWERS);
+        db.execSQL("DELETE FROM " + TABLE_QUESTIONS);
+        db.execSQL("DELETE FROM " + TABLE_SCOUTMETA);
+    }
 
     public Cursor getAllTeams() {
         return db.rawQuery("SELECT " + TEAM_NUM + " as _id, " + TEAM_NUM + ", " + TEAM_NAME +
@@ -469,9 +483,36 @@ public class ScoutingDBHelper extends SQLiteOpenHelper {
 
     public void setId(int id) {
         this.id = id;
+
+        ContentValues cv = new ContentValues();
+        cv.put(SCOUTMETA_OPTION, "id");
+        cv.put(SCOUTMETA_VALUE, Integer.toString(id));
+
+        db.insert(TABLE_SCOUTMETA, null, cv);
     }
 
     public int getId() {
+        // -2 is the magic for haven't checked DB yet.
+        if (id == -2) {
+            // Get from DB or return -1 if no DB value.
+            Cursor c = db.query(TABLE_SCOUTMETA, null, SCOUTMETA_OPTION + "='id'",
+                    null, null, null, null);
+
+            if (c.getCount() == 1) {
+                c.moveToNext();
+                id = Integer.valueOf(c.getString(c.getColumnIndex(SCOUTMETA_VALUE)));
+                return id;
+            }
+            else if (c.getCount() == 0) {
+                id = -1;
+                return id;
+            }
+            else {
+                Log.e(getClass().getName(), "Cannot have more than one meta-ID.");
+                throw new IllegalStateException("Cannot have more than one meta-ID.");
+            }
+        }
+
         return id;
     }
 

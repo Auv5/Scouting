@@ -5,7 +5,7 @@ from bs4 import BeautifulSoup
 from http.client import HTTPConnection
 
 from models.match import Match
-from models.team import Team
+from models.team import Team, get_team
 
 
 def usfirst_scrape_matches(reg_id):
@@ -45,7 +45,8 @@ def usfirst_scrape_matches(reg_id):
             work_info = [''.join(t.split())]
             capture_index += 1
 
-    return [Match(int(id), time, [int(red1), int(red2), int(red3)], [int(blue1), int(blue2), int(blue3)])
+    return [Match(int(id), time, [get_team(int(red1)), get_team(int(red2)), get_team(int(red3))],
+                  [get_team(int(blue1)), get_team(int(blue2)), get_team(int(blue3))])
             for time, id, red1, red2, red3, blue1, blue2, blue3 in matchinfo]
 
 

@@ -10,4 +10,8 @@
         android:id="@+id/action_opensettings"
         android:title="@string/settings_menu_title"
         android:showAsAction="never"/>
+    <item
+        android:id="@+id/action_clearscoutdata"
+        android:title="Clear Scouting Data"
+        android:showAsAction="never"/>
 </menu>

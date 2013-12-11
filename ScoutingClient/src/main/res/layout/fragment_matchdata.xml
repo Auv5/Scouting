@@ -23,21 +23,21 @@
                 android:layout_width="0dip"
                 android:layout_weight="1"
                 android:gravity="center"
-                android:text="@string/auto_average_format"/>
+                android:text="@string/auto_average_default"/>
             <TextView
                 android:id="@+id/teleop_average"
                 android:layout_height="wrap_content"
                 android:layout_width="0dip"
                 android:layout_weight="1"
                 android:gravity="center"
-                android:text="@string/teleop_average_format"/>
+                android:text="@string/teleop_average_default"/>
             <TextView
                 android:id="@+id/special_average"
                 android:layout_height="wrap_content"
                 android:layout_width="0dip"
                 android:layout_weight="1"
                 android:gravity="center"
-                android:text="@string/special_average_format"/>
+                android:text="@string/special_average_default"/>
         </LinearLayout>
     </LinearLayout>
     <ListView

@@ -62,6 +62,16 @@ public class TeamDetail extends Activity {
 
         actionBar.addTab(pitTab);
         actionBar.addTab(matchTab);
+
+        if (savedInstanceState != null && savedInstanceState.containsKey("tabstate")) {
+            actionBar.setSelectedNavigationItem(
+                    savedInstanceState.getInt("tabstate"));
+        }
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        outState.putInt("tabstate", getActionBar().getSelectedNavigationIndex());
     }
 
     @Override
@@ -147,6 +157,7 @@ public class TeamDetail extends Activity {
         public void populateQuestionList(List<Question> questions) {
             qa = new QuestionAdapter(this.activity, team, questions);
             lv.setAdapter(qa);
+            qa.notifyDataSetChanged();
         }
 
         private class QuestionPopulateTask extends AsyncTask<Void, Void, List<Question>> {
@@ -173,8 +184,7 @@ public class TeamDetail extends Activity {
         }
 
         public void gotResult(Intent data) {
-            // No actual results for now. Just tell the adapter to check for changes.
-            qa.notifyDataSetChanged();
+            // Done
         }
 
         @Override
@@ -198,6 +208,7 @@ public class TeamDetail extends Activity {
         public static MatchFragment getInstance(Team t) {
             MatchFragment mf = new MatchFragment();
 
+//
             Bundle b = new Bundle();
             b.putParcelable("team", t);
 
@@ -214,13 +225,13 @@ public class TeamDetail extends Activity {
 
         @Override
         public void onAttach(Activity activity) {
-//            this.activity = activity;
-//
-//            //TODO: Put in an ASyncTask
+            this.activity = activity;
 
-//            this.lv.setAdapter(new MatchAdapter(activity, team, matches));
-//
             super.onAttach(activity);
+
+            if (matches != null) {
+                populateAverages();
+            }
         }
 
         @Override
@@ -240,9 +251,7 @@ public class TeamDetail extends Activity {
             this.teleopAverage = (TextView) v.findViewById(R.id.teleop_average);
             this.specialAverage = (TextView) v.findViewById(R.id.special_average);
 
-            this.matches = ScoutingDBHelper.getInstance().getMatches(team);
-
-            populateAverages();
+            new MatchPopulateTask().execute();
 
             return v;
         }
@@ -284,10 +293,29 @@ public class TeamDetail extends Activity {
                     specialCount == 0 ? "None" : Integer.toString(specialTotal / specialCount)));
         }
 
+        public void populateMatchList(List<Match> matches) {
+            this.matches = matches;
+
+            this.lv.setAdapter(new MatchAdapter(activity, team, matches));
+        }
+
         @Override
         public void onActivityResult(int requestCode, int resultCode, Intent data) {
             if (requestCode == MATCH_DETAIL && resultCode == Activity.RESULT_OK) {
                 populateAverages();
+            }
+        }
+
+        private class MatchPopulateTask extends AsyncTask<Void, Void, List<Match>> {
+            @Override
+            protected List<Match> doInBackground(Void... params) {
+                List<Match> matches = ScoutingDBHelper.getInstance().getMatches(team);
+                return matches;
+            }
+
+            @Override
+            protected void onPostExecute(List<Match> matches) {
+                populateMatchList(matches);
             }
         }
     }

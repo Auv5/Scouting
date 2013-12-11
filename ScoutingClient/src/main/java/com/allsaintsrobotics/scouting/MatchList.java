@@ -2,6 +2,7 @@ package com.allsaintsrobotics.scouting;
 
 import android.app.Fragment;
 import android.content.Context;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,6 +10,9 @@ import android.view.ViewGroup;
 import android.widget.ListView;
 
 import com.allsaintsrobotics.scouting.adapters.MatchAdapter;
+import com.allsaintsrobotics.scouting.models.Match;
+
+import java.util.List;
 
 /**
  * Created by jack on 12/3/13.
@@ -26,10 +30,7 @@ public class MatchList extends Fragment {
 
         this.lv = (ListView) v.findViewById(R.id.match_genericlist);
 
-        this.adapter = new MatchAdapter(getActivity(), null,
-                ScoutingDBHelper.getInstance().getMatches());
-
-        this.lv.setAdapter(adapter);
+        new MatchPopulateTask().execute();
 
         return v;
     }
@@ -37,6 +38,25 @@ public class MatchList extends Fragment {
     public void invalidate() {
         if (adapter != null) {
             adapter.notifyDataSetChanged();
+        }
+    }
+
+    private void populateMatchList(List<Match> matches) {
+        this.adapter = new MatchAdapter(getActivity(), null,
+                matches);
+        this.lv.setAdapter(adapter);
+    }
+
+    private class MatchPopulateTask extends AsyncTask<Void, Void, List<Match>> {
+        @Override
+        protected List<Match> doInBackground(Void... params) {
+            List<Match> matches = ScoutingDBHelper.getInstance().getMatches();
+            return matches;
+        }
+
+        @Override
+        protected void onPostExecute(List<Match> matches) {
+            populateMatchList(matches);
         }
     }
 }

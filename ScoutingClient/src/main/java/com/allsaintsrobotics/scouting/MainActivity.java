@@ -81,6 +81,11 @@ public class MainActivity extends Activity {
         return true;
     }
 
+    private void invalidateData() {
+        teamList.invalidate();
+        matchList.invalidate();
+    }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
@@ -91,7 +96,18 @@ public class MainActivity extends Activity {
                 startActivityForResult(i, 0);
                 break;
             case R.id.action_syncdata:
-                new SyncDataTask().execute();
+                if (ScoutingDBHelper.getInstance().getId() == -1) {
+                    new SyncDataTask().execute();
+                }
+                else {
+                    Toast.makeText(this, "Data already synced. Clear scouting data first.", Toast.LENGTH_LONG).
+                            show();
+                }
+                break;
+            case R.id.action_clearscoutdata:
+                ScoutingDBHelper.getInstance().clearSyncData();
+                invalidateData();
+                break;
         }
 
         return super.onOptionsItemSelected(item);
@@ -183,8 +199,7 @@ public class MainActivity extends Activity {
         @Override
         protected void onPostExecute(Boolean result) {
             if (result) {
-                teamList.invalidate();
-                matchList.invalidate();
+                invalidateData();
             }
             else {
                 Toast.makeText(MainActivity.this, "Could not connect to scouting server. Check settings.", Toast.LENGTH_LONG).show();

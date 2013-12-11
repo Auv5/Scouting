@@ -6,46 +6,55 @@ from models.user import divide_users
 
 import json
 import scrape
+import config
 
 
-id_counter = 0
-users = []
+class Server:
+    def __init__(self, questions):
+        self.id_counter = 0
+        self.users = []
+        self.questions = questions
+
+    def register(self, request):
+        if self.id_counter < len(self.users):
+            user = self.users[self.id_counter]
+            to_send = {'id': user.id, 'teams': [t.to_json() for t in user.teams],
+                       'matches': [m.to_json(t) for t, m in user.matches], 'questions': [q.to_json() for q in
+                                                                                         self.questions]}
+            self.id_counter += 1
+            return Response(json.dumps(to_send))
+        else:
+            return Response(json.dumps({}))
 
 
 def register(request):
-    global users, id_counter
-    if id_counter < len(users):
-        user = users[id_counter]
-        to_send = {'id': user.id, 'teams': [t.to_json() for t in user.teams],
-                   'matches': [m.to_json(t) for t, m in user.matches]}
-        id_counter += 1
-    else:
-        return Response(json.dumps({}))
-
-    return Response(json.dumps(to_send))
+    global server
+    return server.register(request)
 
 
 def main():
-    global users
+    global server
+    server = Server(config.get_questions())
 
     reg_id = '2013onto2'
 
-    matches = scrape.usfirst_scrape_matches(reg_id)
     teams = scrape.download_teams(scrape.download_regional(reg_id))
 
-    users = divide_users(teams, matches, 6)
+    matches = scrape.usfirst_scrape_matches(reg_id)
 
-    config = Configurator()
-    config.add_route('register', '/api/register')
-    config.add_view(register, route_name='register')
+    server.users = divide_users(teams, matches, 6)
 
-    app = config.make_wsgi_app()
+    configuration = Configurator()
+    configuration.add_route('register', '/api/register')
+    configuration.add_view(register, route_name='register')
 
-    server = make_server('0.0.0.0', 8000, app)
+    app = configuration.make_wsgi_app()
+
+    server_app = make_server('0.0.0.0', 8000, app)
 
     print('Serving!')
 
-    server.serve_forever()
+    server_app.serve_forever()
 
 if __name__ == '__main__':
     main()

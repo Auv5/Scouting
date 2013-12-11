@@ -13,4 +13,7 @@
     <string name="auto_average_format">Auto: %s</string>
     <string name="teleop_average_format">Teleop: %s</string>
     <string name="special_average_format">Special: %s</string>
+    <string name="special_average_default">Special: None</string>
+    <string name="teleop_average_default">Teleop: None</string>
+    <string name="auto_average_default">Auto: None</string>
 </resources>
