@@ -56,12 +56,18 @@ public class ScoutingDBHelper extends SQLiteOpenHelper {
 
     public static final String TABLE_MATCHES = "matches";
     public static final String MATCH_NUMBER = "_id";
-    public static final String MATCH_RED = "red";
-    public static final String MATCH_BLUE = "blue";
+    public static final String MATCH_RED1 = "red1";
+    public static final String MATCH_RED2 = "red2";
+    public static final String MATCH_RED3 = "red3";
+    public static final String MATCH_BLUE1 = "blue1";
+    public static final String MATCH_BLUE2 = "blue2";
+    public static final String MATCH_BLUE3 = "blue3";
     public static final String MATCH_SCOUT = "scout";
     private static final String MATCH_CREATE = "CREATE TABLE " + TABLE_MATCHES + "(" + MATCH_NUMBER +
-            " INTEGER PRIMARY KEY NOT NULL, " + MATCH_RED + " INTEGER NOT NULL, " + MATCH_BLUE +
-            " INTEGER NOT NULL, " + MATCH_SCOUT + " INTEGER NOT NULL" + ");";
+            " INTEGER PRIMARY KEY NOT NULL, " + MATCH_RED1 + " INTEGER NOT NULL, " + MATCH_RED2 +
+            " INTEGER NOT NULL, " + MATCH_RED3 + " INTEGER NOT NULL, " + MATCH_BLUE1 + " INTEGER NOT NULL, "
+            + MATCH_BLUE2 + " INTEGER NOT NULL, " + MATCH_BLUE3 + " INTEGER NOT NULL, " + MATCH_SCOUT +
+            " INTEGER NOT NULL" + ");";
 
     public static final String TABLE_ALLIANCE = "alliances";
     public static final String ALLIANCE_ID = "id";
@@ -236,17 +242,13 @@ public class ScoutingDBHelper extends SQLiteOpenHelper {
 
     List<Question> questionsCached = null;
 
-    public void invalidateQuestionCache() {
-        questionsCached = null;
-    }
-
     public List<Question> getQuestions() {
         if (questionsCached != null)
         {
             return questionsCached;
         }
 
-        List<Question> questions = new ArrayList<Question>();
+        questionsCached = new ArrayList<Question>();
 
         Cursor questionCursor = db.query(TABLE_QUESTIONS, null, null, null, null, null, null);
 
@@ -263,13 +265,58 @@ public class ScoutingDBHelper extends SQLiteOpenHelper {
 
             factory.setOffers(offers);
 
-            questions.add(new Question(
+            questionsCached.add(new Question(
                     label,
                     factory,
                     qid));
         }
 
-        return this.questionsCached = questions;
+        return questionsCached;
+    }
+
+    public void addQuestion(int qid, String label, String type, String[] offers) {
+        if (questionsCached == null) {
+            questionsCached = new ArrayList<Question>();
+        }
+
+        FormFactory factory = FormFactory.forId(type, offers);
+
+        ContentValues cv = new ContentValues();
+
+        cv.put(QUESTION_TEXT, label);
+        cv.put(QUESTION_ID, qid);
+        cv.put(QUESTION_TYPE, type);
+
+        db.insert(TABLE_QUESTIONS, null, cv);
+
+        for (int i = 0; i < offers.length; i ++) {
+            ContentValues offerCv = new ContentValues();
+
+            offerCv.put(OFFER_NUMBER, i+1);
+            offerCv.put(OFFER_QUESTION, qid);
+            offerCv.put(OFFER_TEXT, offers[i]);
+
+            db.insert(TABLE_OFFERS, null, offerCv);
+        }
+
+        Question q = new Question(label, factory, qid);
+
+        addToQuestionCache(q);
+    }
+
+    private void addToQuestionCache(Question q) {
+        questionsCached.add(q);
+    }
+
+    private Comparator<Question> questionComparator = new Comparator<Question>() {
+        @Override
+        public int compare(Question lhs, Question rhs) {
+            return lhs.getId() - rhs.getId();
+        }
+    };
+
+    public void sortQuestions() {
+        Collections.sort(questionsCached, questionComparator);
     }
 
     private String[] getOffersForQid(int qid) {
@@ -284,10 +331,6 @@ public class ScoutingDBHelper extends SQLiteOpenHelper {
         }
 
         return offers.toArray(new String[offers.size()]);
-    }
-
-    public void addQuestion(int qid, String label, String type, String[] offers) {
-        //TODO: Add question!
     }
 
     List<Match> matchCache;
@@ -325,30 +368,12 @@ public class ScoutingDBHelper extends SQLiteOpenHelper {
             int id = matchCursor.getInt(matchCursor.getColumnIndex(MATCH_NUMBER));
             int scout = matchCursor.getInt(matchCursor.getColumnIndex(MATCH_SCOUT));
 
-            int redid = matchCursor.getInt(matchCursor.getColumnIndex(MATCH_RED));
-            int blueid = matchCursor.getInt(matchCursor.getColumnIndex(MATCH_BLUE));
-
-            maxId = Math.max(redid, blueid);
-
-            Cursor redAllianceCursor = db.query(TABLE_ALLIANCE, null, ALLIANCE_ID + " = ?",
-                    new String[] {Integer.toString(redid)}, null, null, null);
-            Cursor blueAllianceCursor = db.query(TABLE_ALLIANCE, null, ALLIANCE_ID + " = ?",
-                    new String[] {Integer.toString(blueid)}, null, null, null);
-
-            if (redAllianceCursor.getCount() != 3 || blueAllianceCursor.getCount() != 3) {
-                throw new IllegalStateException("Must have three teams in an alliance.");
-            }
-
             int[] red = new int[3];
             int[] blue = new int[3];
 
-            int i = 0;
-
-            while (redAllianceCursor.moveToNext() && blueAllianceCursor.moveToNext()) {
-                red[i] = redAllianceCursor.getInt(redAllianceCursor.getColumnIndex(ALLIANCE_TEAM));
-                blue[i] = blueAllianceCursor.getInt(blueAllianceCursor.getColumnIndex(ALLIANCE_TEAM));
-
-                i++;
+            for (int i = 0; i < 3; i ++) {
+                red[i] = matchCursor.getInt(matchCursor.getColumnIndex("red" + (i+1)));
+                blue[i] = matchCursor.getInt(matchCursor.getColumnIndex("blue" + (i+1)));
             }
 
             int[] redAuto = new int[3];
@@ -359,7 +384,7 @@ public class ScoutingDBHelper extends SQLiteOpenHelper {
             int[] blueTeleop = new int[3];
             int[] blueSpecial = new int[3];
 
-            for (i = 0; i < 3; i ++) {
+            for (int i = 0; i < 3; i ++) {
                 redAuto[i] = -1;
                 redTeleop[i] = -1;
                 redSpecial[i] = -1;
@@ -369,7 +394,7 @@ public class ScoutingDBHelper extends SQLiteOpenHelper {
                 blueSpecial[i] = -1;
             }
 
-            i = 0;
+            int i = 0;
 
             while (i < red.length && i < blue.length) {
                 Cursor redPointsCursor = db.query(TABLE_POINTS, null, POINTS_TEAM + " = ? AND "
@@ -433,40 +458,30 @@ public class ScoutingDBHelper extends SQLiteOpenHelper {
     }
 
     public void addMatch(int matchId, int scout, int[] red, int[] blue) {
-        // Ensure match read has occurred for alliance ID optimization hack to work...
-        getMatches();
-
-        int redId = ++maxId;
-        int blueId = ++maxId;
+        if (matchCache == null) {
+            getMatches();
+        }
 
         ContentValues matchCv = new ContentValues();
-
-        matchCv.put(MATCH_RED, redId);
-        matchCv.put(MATCH_BLUE, blueId);
 
         matchCv.put(MATCH_NUMBER, matchId);
 
         matchCv.put(MATCH_SCOUT, scout);
 
+        matchCv.put(MATCH_BLUE1, blue[0]);
+        matchCv.put(MATCH_BLUE2, blue[1]);
+        matchCv.put(MATCH_BLUE3, blue[2]);
+
+        matchCv.put(MATCH_RED1, red[0]);
+        matchCv.put(MATCH_RED2, red[1]);
+        matchCv.put(MATCH_RED3, red[2]);
+
         db.insert(TABLE_MATCHES, null, matchCv);
 
-        for (int i = 0; i < 3; i ++) {
-            ContentValues redCv = new ContentValues();
-            ContentValues blueCv = new ContentValues();
-
-            redCv.put(ALLIANCE_ID, redId);
-            redCv.put(ALLIANCE_TEAM, red[i]);
-
-            db.insert(TABLE_ALLIANCE, null, redCv);
-
-            blueCv.put(ALLIANCE_ID, blueId);
-            blueCv.put(ALLIANCE_TEAM, blue[i]);
-
-            db.insert(TABLE_ALLIANCE, null, blueCv);
-        }
-
         matchCache.add(new Match(matchId, red, blue, scout));
+    }
 
+    public void sortMatches() {
         Collections.sort(matchCache, matchComparator);
     }
 

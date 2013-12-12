@@ -1,6 +1,7 @@
 package com.allsaintsrobotics.scouting.adapters;
 
 import android.content.Context;
+import android.graphics.Typeface;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -68,7 +69,58 @@ public class MatchAdapter extends ArrayAdapter<Match> {
         mfh.red2.setText(Integer.toString(m.getTeam(Match.Alliance.RED, 1)));
         mfh.red3.setText(Integer.toString(m.getTeam(Match.Alliance.RED, 2)));
 
+        if (mfh.blue1.getText().toString().equals(Integer.toString(m.getScout()))) {
+            mfh.blue1.setTypeface(null, Typeface.BOLD);
+        }
+        else {
+            mfh.blue1.setTypeface(null, Typeface.NORMAL);
+        }
+
+        if (mfh.blue2.getText().toString().equals(Integer.toString(m.getScout()))) {
+            mfh.blue2.setTypeface(null, Typeface.BOLD);
+        }
+        else {
+            mfh.blue2.setTypeface(null, Typeface.NORMAL);
+        }
+
+        if (mfh.blue3.getText().toString().equals(Integer.toString(m.getScout()))) {
+            mfh.blue3.setTypeface(null, Typeface.BOLD);
+        }
+        else {
+            mfh.blue3.setTypeface(null, Typeface.NORMAL);
+        }
+
+        if (mfh.red1.getText().toString().equals(Integer.toString(m.getScout()))) {
+            mfh.red1.setTypeface(null, Typeface.BOLD);
+        }
+        else {
+            mfh.red1.setTypeface(null, Typeface.NORMAL);
+        }
+
+        if (mfh.red2.getText().toString().equals(Integer.toString(m.getScout()))) {
+            mfh.red2.setTypeface(null, Typeface.BOLD);
+        }
+        else {
+            mfh.red2.setTypeface(null, Typeface.NORMAL);
+        }
+
+        if (mfh.red3.getText().toString().equals(Integer.toString(m.getScout()))) {
+            mfh.red3.setTypeface(null, Typeface.BOLD);
+        }
+        else {
+            mfh.red3.setTypeface(null, Typeface.NORMAL);
+        }
+
         return row;
+    }
+
+    @Override
+    public boolean isEnabled(int position) {
+        // If this isn't the team we're scouting for this match, disable it.
+        if (team != null && matches.get(position).getScout() != team.getNumber()) {
+            return false;
+        }
+        return super.isEnabled(position);
     }
 
     private class MatchFieldHelper {

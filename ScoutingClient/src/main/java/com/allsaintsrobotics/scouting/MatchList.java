@@ -50,8 +50,7 @@ public class MatchList extends Fragment {
     private class MatchPopulateTask extends AsyncTask<Void, Void, List<Match>> {
         @Override
         protected List<Match> doInBackground(Void... params) {
-            List<Match> matches = ScoutingDBHelper.getInstance().getMatches();
-            return matches;
+            return ScoutingDBHelper.getInstance().getMatches();
         }
 
         @Override

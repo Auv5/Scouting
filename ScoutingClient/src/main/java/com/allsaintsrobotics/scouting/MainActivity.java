@@ -125,9 +125,8 @@ public class MainActivity extends Activity {
 
             HttpClient client = new DefaultHttpClient();
 
-            HttpGet request = new HttpGet(baseaddr +
-                    (baseaddr.endsWith("/") ? "" : "/") +
-                    "api/register");
+            HttpGet request = new HttpGet("http://" + baseaddr +
+                    ":8000/api/register");
 
             try {
                 HttpResponse response = client.execute(request);
@@ -181,6 +180,8 @@ public class MainActivity extends Activity {
                     SyncHelper.addMatchFromJson(matches.getJSONObject(i));
                 }
 
+                ScoutingDBHelper.getInstance().sortMatches();
+
                 long dt = System.currentTimeMillis() - t1;
 
                 Log.d(getClass().getName(), "Time to load matches from JSON: " + dt);
@@ -190,6 +191,15 @@ public class MainActivity extends Activity {
                 for (int i = 0; i < teams.length(); i ++) {
                     SyncHelper.addTeamFromJson(teams.getJSONArray(i));
                 }
+
+                JSONArray questions = jsObj.getJSONArray("questions");
+
+                for (int i = 0; i < questions.length(); i ++) {
+                    SyncHelper.addQuestionFromJson(questions.getJSONObject(i));
+                }
+
+                ScoutingDBHelper.getInstance().sortQuestions();
+
                 return true;
             } catch (JSONException e) {
                 Log.e(SyncDataTask.class.getName(), "Malformed registration.");

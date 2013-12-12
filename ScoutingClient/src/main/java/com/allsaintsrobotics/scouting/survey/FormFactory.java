@@ -30,25 +30,18 @@ public abstract class FormFactory {
     public abstract Form getForm(Question q, Team t);
 
     public static FormFactory forId(String id) {
+        return forId(id, new String[] {});
+    }
+
+    public static FormFactory forId(String id, String[] offers) {
         // No runtime checks - Dangerous!
         try {
-            Class<? extends FormFactory> factoryClazz = factories.get(id);
+            FormFactory factory =
+                    (FormFactory)factories.get(id).getConstructors()[0]
+                            .newInstance();
 
-            Log.e(TAG, "Class: " + factoryClazz.getName());
-
-            int i = 0;
-
-            for (Constructor<?> c : factoryClazz.getConstructors()) {
-                StringBuilder sb = new StringBuilder("Constructor " + i + ": ");
-
-                for (Class<?> type : c.getParameterTypes()) {
-                    sb.append(type.getName() + ", ");
-                }
-
-                Log.e(TAG, sb.toString());
-            }
-            //TODO: Graceful null check
-            return (FormFactory)factories.get(id).getConstructors()[0].newInstance();
+            factory.setOffers(offers);
+            return factory;
         } catch (InstantiationException e) {
             //TODO: Handle with loggers
             e.printStackTrace();

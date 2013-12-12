@@ -184,7 +184,7 @@ public class TeamDetail extends Activity {
         }
 
         public void gotResult(Intent data) {
-            // Done
+            new QuestionPopulateTask().execute();
         }
 
         @Override

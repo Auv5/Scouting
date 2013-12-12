@@ -1,5 +1,8 @@
 package com.allsaintsrobotics.scouting;
 
+import com.allsaintsrobotics.scouting.survey.FormFactory;
+import com.allsaintsrobotics.scouting.survey.Question;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -36,6 +39,22 @@ public class SyncHelper {
         String teamNickname = teamJson.getString(1);
 
         ScoutingDBHelper.getInstance().addTeam(teamNum, teamNickname);
+    }
+
+    public static void addQuestionFromJson(JSONObject jsonObject) throws JSONException {
+        int id = jsonObject.getInt("id");
+
+        String label = jsonObject.getString("label");
+        String type = jsonObject.getString("type");
+        JSONArray offersJson = jsonObject.getJSONArray("offers");
+        String[] offers = new String[offersJson.length()];
+
+        for (int i = 0; i < offers.length; i ++) {
+            offers[i] = offersJson.getString(i);
+        }
+
+        ScoutingDBHelper.getInstance().
+                addQuestion(id, label, type, offers);
     }
 }
 

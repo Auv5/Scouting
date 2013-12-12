@@ -19,21 +19,18 @@
                     android:id="@+id/red_1"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textStyle="bold"
                     android:paddingLeft="2dip"
                     android:text="@string/red_team1_default"/>
                 <TextView
                     android:id="@+id/red_2"
                     android:layout_height="wrap_content"
                     android:layout_width="wrap_content"
-                    android:textStyle="bold"
                     android:paddingLeft="2dip"
                     android:text="@string/red_team2_default"/>
                 <TextView
                     android:id="@+id/red_3"
                     android:layout_height="wrap_content"
                     android:layout_width="wrap_content"
-                    android:textStyle="bold"
                     android:paddingLeft="2dip"
                     android:text="@string/red_team3_default"/>
         </LinearLayout>
@@ -70,21 +67,18 @@
                 android:id="@+id/blue_1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textStyle="bold"
                 android:paddingRight="2dip"
                 android:text="@string/blue_team1_default"/>
             <TextView
                 android:id="@+id/blue_2"
                 android:layout_height="wrap_content"
                 android:layout_width="wrap_content"
-                android:textStyle="bold"
                 android:paddingRight="2dip"
                 android:text="@string/blue_team2_default"/>
             <TextView
                 android:id="@+id/blue_3"
                 android:layout_height="wrap_content"
                 android:layout_width="wrap_content"
-                android:textStyle="bold"
                 android:paddingRight="2dip"
                 android:text="@string/blue_team3_default"/>
         </LinearLayout>
