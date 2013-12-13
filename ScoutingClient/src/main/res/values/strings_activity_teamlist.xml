@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <string name="new_team">New Team</string>
-    <string name="edit_team">Edit Team</string>
-    <string name="default_teamnum">Team 2994</string>
-    <string name="default_teamname">The ASTECHZ</string>
-    <string name="howto">Note: Press on one of the names below to view or edit statistics</string>
-    <string name="error_team_exists">That team already exists!</string>
-</resources>

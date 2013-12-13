@@ -1,121 +1,158 @@
 package com.allsaintsrobotics.scouting;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
-import android.view.Menu;
 import android.view.View;
+import android.widget.Button;
 import android.widget.LinearLayout;
-import android.widget.TextView;
+import android.widget.ScrollView;
 
+import com.allsaintsrobotics.scouting.models.Team;
+import com.allsaintsrobotics.scouting.survey.Form;
+import com.allsaintsrobotics.scouting.survey.Question;
+
+import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Created by jack on 11/25/13.
+ */
 public class ScoutEdit extends Activity {
-    Team t;
+    private Team team;
 
-    List<Statistic> stats;
+    private List<Form> forms;
 
-    /**
-     * Padding on all sides of the
-     */
-    public static final int QUESTION_PADDING = 20;
-    private LinearLayout questions;
+    private ScrollView sv;
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    private static final int FORM_TOP_BOTTOM_PADDING_DP = 10;
+
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_scout);
+        setContentView(R.layout.scout_edit);
 
-        t = getIntent().getParcelableExtra("team");
+        Intent i = getIntent();
 
-        TextView scoutingTeam = (TextView) findViewById(R.id.scouting_team);
+        this.team = i.getParcelableExtra("team");
 
-        scoutingTeam.setText(String.format(getString(R.string.scouting_team), t.getNumber(), t.getName()));
+        getActionBar().setTitle(String.format(getString(R.string.se_actionbar_title), team.getNumber()));
 
-        questions = (LinearLayout) findViewById(R.id.questions);
+        Button saveButton = (Button) findViewById(R.id.save_stats);
 
-        stats = DatabaseManager.get().getStats();
-    }
+        saveButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                new SaveFormsExitTask().execute();
+            }
+        });
 
-    @Override
-    public void onWindowFocusChanged(boolean hasFocus) {
-        if (hasFocus)
-        {
-            float scale = getResources().getDisplayMetrics().density;
-            int paddingPx = Math.round(QUESTION_PADDING * scale);
-            boolean regening = questions.getChildCount() == 0;
-                for (Statistic s : stats)
-                {
-                    if (s instanceof Question)
-                    {
-                        Question q = (Question)s;
+        Button cancelButton = (Button) findViewById(R.id.cancel_stats);
 
-                        if (regening)
-                        {
-                            View v = q.makeEditor(this, t);
-                            v.setPadding(0, paddingPx, 0, paddingPx);
-                            questions.addView(v);
-                        }
-                        else
-                        {
-                            q.restoreData(t);
-                        }
+        cancelButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                makeConfirmDialog(new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        setResult(Activity.RESULT_CANCELED);
+
+                        ScoutEdit.this.finish();
                     }
-                }
+                });
+            }
+        });
+
+        LinearLayout formsView = (LinearLayout) findViewById(R.id.questions_cont);
+
+        sv = (ScrollView) findViewById(R.id.questions_scroll);
+
+        this.forms = new ArrayList<Form>();
+
+        for (Question q : ScoutingDBHelper.getInstance().getQuestions())
+        {
+            Form f = q.getForm(team);
+            forms.add(f);
+
+            View answerView = f.getAnswerView(this, formsView);
+
+            int pixelsConv = (int)(FORM_TOP_BOTTOM_PADDING_DP * getResources().getDisplayMetrics().density);
+
+            answerView.setPadding(0, pixelsConv, 0, pixelsConv);
+
+            formsView.addView(answerView);
         }
-        super.onWindowFocusChanged(hasFocus);
+    }
+    private void makeConfirmDialog(DialogInterface.OnClickListener listener) {
+        // TODO: Find a better way to specify the icon.
+        new AlertDialog.Builder(ScoutEdit.this).setIcon(android.R.drawable.ic_dialog_alert).
+        setTitle(getString(R.string.confirm_title)).
+        setMessage("Are you sure you want to cancel? You will lose any changes you have made.").
+        setPositiveButton(R.string.yes, listener)
+        .setNegativeButton(R.string.no, null)
+        .show();
     }
 
     @Override
     public void onBackPressed() {
-        boolean goBack = true;
-
-        for (Statistic s : stats)
-        {
-            if (!s.isDerived())
-            {
-                Question q = (Question)s;
-
-                if (!q.validate(t))
-                {
-                    goBack = false;
-                }
-                // Write the answers to database.
+        makeConfirmDialog(new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                setResult(Activity.RESULT_CANCELED);
+                ScoutEdit.super.onBackPressed();
             }
-        }
-
-        if (goBack)
-        {
-            super.onBackPressed();
-        }
+        });
     }
 
-    @Override
-    protected void onPause() {
-        saveChanges();
-        super.onPause();
+    public int getScrollPos() {
+        return sv.getScrollY();
     }
 
-    public void saveChanges()
+    public void setScrollPos(final int value) {
+        sv.post(new Runnable() {
+            @Override
+            public void run() {
+                sv.scrollTo(0, value);
+            }
+        });
+    }
+
+    private class SaveFormsExitTask extends AsyncTask<Void, Void, Boolean>
     {
-        for (Statistic s : stats)
-        {
-            if (!s.isDerived())
-            {
-                ((Question)s).saveChanges(t);
-                ((Question)s).writeTo(t, DatabaseManager.get());
+        @Override
+        protected Boolean doInBackground(Void... params) {
+            for (Form f : forms) {
+                if (!f.validate())
+                {
+                    return false;
+                }
+            }
+
+            for (Form f : forms) {
+                f.write();
+            }
+
+            return true;
+        }
+
+        @Override
+        protected void onPostExecute(Boolean worked) {
+            if (worked) {
+                setResult(RESULT_OK);
+
+                finish();
             }
         }
     }
 
     @Override
-    protected void onDestroy() {
-        super.onDestroy();
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.scout_edit, menu);
-        return true;
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        for (Form f : forms) {
+            if (f.result(this, requestCode, resultCode, data)) {
+                break;
+            }
+        }
     }
 }

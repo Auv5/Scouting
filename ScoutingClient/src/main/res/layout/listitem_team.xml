@@ -1,30 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:orientation="horizontal"
-              android:layout_width="match_parent"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+    <TextView android:layout_width="wrap_content"
               android:layout_height="wrap_content"
-              android:background="@drawable/team_button">
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:layout_centerVertical="true">
-        <TextView android:id="@+id/team_name"
-            android:text="@string/default_teamname"
-            android:textSize="25sp"
-            android:paddingBottom="1dp"
-            android:paddingTop="4dp"
-            android:paddingLeft="10dp"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
-
-        <TextView android:id="@+id/team"
-                  android:text="@string/default_teamnum"
-                  android:textSize="14sp"
-                  android:layout_width="match_parent"
-                  android:layout_height="wrap_content"
-                  android:paddingLeft="10dp"
-                  android:layout_below="@id/team_name"/>
-    </LinearLayout>
-</RelativeLayout>
+              android:id="@+id/tv_teamname"
+              android:text="@string/team_name_default"
+              style="@android:style/TextAppearance.Large"/>
+    <TextView android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:id="@+id/tv_teamnumber"
+              style="@android:style/TextAppearance.Medium"
+              android:text="@string/team_number_default"/>
+</LinearLayout>

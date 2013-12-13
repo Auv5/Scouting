@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <string name="newteam_message">Creating record for new team</string>
-    <string name="team_num_hint">Team Number</string>
-    <string name="team_name_hint">Team Name</string>
-    <string name="save_team_text">Save Team</string>
-    <string name="error_invalid_teamname">Invalid Team Number</string>
-</resources>

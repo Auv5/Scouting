@@ -1,95 +1,99 @@
 package com.allsaintsrobotics.scouting;
 
-import android.annotation.TargetApi;
-import android.app.ActionBar;
 import android.app.Activity;
+import android.app.Fragment;
+import android.content.Context;
 import android.content.Intent;
-import android.os.Build;
+import android.content.SharedPreferences;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
+import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.Toast;
 
-import java.util.Iterator;
+import com.allsaintsrobotics.scouting.adapters.TeamAdapter;
+import com.allsaintsrobotics.scouting.models.Team;
 
-public class TeamList extends Activity implements Iterable<Team> {
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.StatusLine;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.util.List;
+
+/**
+ * Created by jack on 11/24/13.
+ */
+public class TeamList extends Fragment {
     private ListView teamList;
-
-    private ActionBar actionBar;
+    private List<Team> teams;
+    private TeamAdapter adapter;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_teamlist);
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        View v = inflater.inflate(R.layout.team_list, container, false);
 
-        teamList = (ListView) findViewById(R.id.teams);
+        this.teamList = (ListView) v.findViewById(R.id.lv_teams);
 
-        teamList.setAdapter(new TeamAdapter(this, R.layout.listitem_team, DatabaseManager.get().getTeams()));
+        if (!ScoutingDBHelper.isInitialized()) {
+            new DatabaseSetupTask().execute();
+        }
+        else {
+            populateTeamList();
+        }
 
-        teamList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        this.teamList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                //TODO: Go to the activities for viewing and editing
-                Intent i = new Intent(TeamList.this, TeamDetail.class);
+                Intent i = new Intent();
+                i.setClass(getActivity(), TeamDetail.class);
 
-                Team t = (Team)teamList.getItemAtPosition(position);
-
-                i.putExtra("team", t);
+                i.putExtra("team", teams.get(position));
 
                 startActivity(i);
             }
         });
 
-        Toast.makeText(this, "Key: " + getIntent().getStringExtra("key"), Toast.LENGTH_SHORT).show();
+        return v;
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.activity_teamlist, menu);
-        return true;
+    private void populateTeamList() {
+        this.teams = ScoutingDBHelper.getInstance().getTeams();
+
+        this.adapter = new TeamAdapter(getActivity(), teams);
+
+        teamList.setAdapter(adapter);
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.action_addteam:
-                Intent i = new Intent(this, NewTeam.class);
-
-                startActivityForResult(i, 0);
-
-                break;
-        }
-        return super.onOptionsItemSelected(item);
+    public void invalidate() {
+        this.adapter.notifyDataSetChanged();
     }
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (resultCode == RESULT_OK)
-        {
-            Team t = data.getParcelableExtra("team");
-
-            for (int i = 0; i < teamList.getAdapter().getCount(); i ++)
-            {
-                if (t.equals(teamList.getAdapter().getItem(i)))
-                {
-                    Toast.makeText(this, R.string.error_team_exists, Toast.LENGTH_LONG).show();
-                    return;
-                }
-            }
-
-            // Will notify adapter of change.
-            DatabaseManager.get().addTeam(t);
+    private class DatabaseSetupTask extends AsyncTask<Void, Void, ScoutingDBHelper> {
+        @Override
+        protected ScoutingDBHelper doInBackground(Void... params) {
+            return ScoutingDBHelper.makeInstance(getActivity());
         }
 
-        super.onActivityResult(requestCode, resultCode, data);
-    }
-
-    @Override
-    public Iterator<Team> iterator() {
-        return new ListViewIterator<Team>(teamList);
+        protected void onPostExecute(ScoutingDBHelper result) {
+            populateTeamList();
+        }
     }
 }
