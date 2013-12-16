@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <string name="take_picture">Take Picture: </string>
-    <string name="camera_default">Take a picture, it\'ll last longer.</string>
-    <string name="alt_take_pic">Take Picture</string>
-</resources>

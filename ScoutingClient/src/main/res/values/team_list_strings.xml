@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <string name="team_name_default">The ASTECHZ</string>
-    <string name="team_number_default">Team 2994</string>
-    <string name="team_number">Team %d</string>
-    <string name="team_name">%s</string>
-    <string name="sync_with_server">Sync With Server</string>
-</resources>
