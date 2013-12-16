@@ -1,0 +1,12 @@
+# view AndroidManifest.xml #generated:37
+-keep class com.allsaintsrobotics.scouting.MainActivity { <init>(...); }
+
+# view AndroidManifest.xml #generated:33
+-keep class com.allsaintsrobotics.scouting.Preferences { <init>(...); }
+
+# view AndroidManifest.xml #generated:29
+-keep class com.allsaintsrobotics.scouting.ScoutEdit { <init>(...); }
+
+# view AndroidManifest.xml #generated:24
+-keep class com.allsaintsrobotics.scouting.TeamDetail { <init>(...); }
+

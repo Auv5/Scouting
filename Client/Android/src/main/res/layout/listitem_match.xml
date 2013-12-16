@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+    <LinearLayout
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:orientation="horizontal">
+        <LinearLayout
+            android:layout_height="wrap_content"
+            android:layout_width="0dip"
+            android:layout_gravity="left"
+            android:gravity="center_horizontal"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:background="#ed1c24">
+                <TextView
+                    android:id="@+id/red_1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingLeft="2dip"
+                    android:text="@string/red_team1_default"/>
+                <TextView
+                    android:id="@+id/red_2"
+                    android:layout_height="wrap_content"
+                    android:layout_width="wrap_content"
+                    android:paddingLeft="2dip"
+                    android:text="@string/red_team2_default"/>
+                <TextView
+                    android:id="@+id/red_3"
+                    android:layout_height="wrap_content"
+                    android:layout_width="wrap_content"
+                    android:paddingLeft="2dip"
+                    android:text="@string/red_team3_default"/>
+        </LinearLayout>
+
+        <View
+            android:layout_height="match_parent"
+            android:layout_width="2dp"
+            android:background="@android:color/darker_gray"/>
+
+        <TextView
+            android:id="@+id/match_id_lv"
+            android:layout_height="wrap_content"
+            android:layout_width="0dp"
+            android:layout_gravity="center"
+            android:layout_weight="4"
+            android:gravity="center"
+            style="@android:style/TextAppearance.Small"
+            android:text="@string/match_id_default"/>
+
+        <View
+            android:layout_height="match_parent"
+            android:layout_width="2dp"
+            android:background="@android:color/darker_gray"/>
+
+        <LinearLayout
+            android:layout_height="wrap_content"
+            android:layout_width="0dip"
+            android:layout_gravity="left"
+            android:gravity="center_horizontal"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:background="#0066b3">
+            <TextView
+                android:id="@+id/blue_1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingRight="2dip"
+                android:text="@string/blue_team1_default"/>
+            <TextView
+                android:id="@+id/blue_2"
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:paddingRight="2dip"
+                android:text="@string/blue_team2_default"/>
+            <TextView
+                android:id="@+id/blue_3"
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:paddingRight="2dip"
+                android:text="@string/blue_team3_default"/>
+        </LinearLayout>
+    </LinearLayout>
+    <View
+        android:layout_height="1dip"
+        android:layout_width="match_parent"
+        android:background="@android:color/darker_gray"/>
+</LinearLayout>
