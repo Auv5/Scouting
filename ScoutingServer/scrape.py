@@ -7,12 +7,13 @@ from http.client import HTTPConnection
 from models.match import Match
 from models.team import Team, get_team
 
+DEF_HEADERS = {'User-Agent': 'TrueBlue bluealliance Scraper'}
 
 def usfirst_scrape_matches(reg_id):
     conn = HTTPConnection('www2.usfirst.org')
     # First four letters = year, rest = ID
     url = '/' + reg_id[:4] + 'comp/Events/' + reg_id[4:].upper() + '/ScheduleQual.html'
-    conn.request('GET', url)
+    conn.request('GET', url, headers=DEF_HEADERS)
     r = conn.getresponse()
 
     answer = r.read().decode('utf8')
@@ -79,7 +80,7 @@ def download_regional_impl(key, quiet=False):
 
     conn = HTTPConnection('www.thebluealliance.com')
 
-    conn.request('GET', '/api/v1/event/details?event=' + key)
+    conn.request('GET', '/api/v1/event/details?event=' + key, headers=DEF_HEADERS)
 
     r = conn.getresponse()
 
@@ -95,7 +96,7 @@ def download_teams_impl(r, quiet=False):
         print('Downloading team details...')
 
     conn = HTTPConnection('www.thebluealliance.com')
-    conn.request('GET', '/api/v1/teams/show?teams=' + to_api)
+    conn.request('GET', '/api/v1/teams/show?teams=' + to_api, headers=DEF_HEADERS)
     r = conn.getresponse()
 
     answer = r.read().decode('utf-8')

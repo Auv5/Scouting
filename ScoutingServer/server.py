@@ -1,6 +1,7 @@
 from wsgiref.simple_server import make_server
 from pyramid.config import Configurator
 from pyramid.response import Response
+from pyramid.renderers import render_to_response
 
 from models.user import divide_users
 
@@ -32,6 +33,13 @@ def register(request):
     return server.register(request)
 
 
+def _render(request, template, params={}):
+    return render_to_response('server:templates/' + template + '.template.pt', params, request=request)
+
+def configure(request):
+    return _render(request, 'configure')
+
+
 def main():
     global server
     server = Server(config.get_questions())
@@ -45,8 +53,16 @@ def main():
     server.users = divide_users(teams, matches, 6)
 
     configuration = Configurator()
+
+    configuration.include('pyramid_chameleon')
+
+    configuration.add_static_view(name='assets', path='server:static/')
+
     configuration.add_route('register', '/api/register')
     configuration.add_view(register, route_name='register')
+
+    configuration.add_route('configure', '/configure')
+    configuration.add_view(configure, route_name='configure')
 
     app = configuration.make_wsgi_app()
 
