@@ -10,6 +10,11 @@ from models.team import Team, get_team
 DEF_HEADERS = {'User-Agent': 'TrueBlue bluealliance Scraper'}
 
 def usfirst_scrape_matches(reg_id):
+    return [Match(int(id), time, [get_team(int(red1)), get_team(int(red2)), get_team(int(red3))],
+                  [get_team(int(blue1)), get_team(int(blue2)), get_team(int(blue3))])
+            for time, id, red1, red2, red3, blue1, blue2, blue3 in cache_or_get_json('matches' + reg_id, usfirst_scrape_matches_impl, reg_id)]
+
+def usfirst_scrape_matches_impl(reg_id):
     conn = HTTPConnection('www2.usfirst.org')
     # First four letters = year, rest = ID
     url = '/' + reg_id[:4] + 'comp/Events/' + reg_id[4:].upper() + '/ScheduleQual.html'
@@ -46,9 +51,7 @@ def usfirst_scrape_matches(reg_id):
             work_info = [''.join(t.split())]
             capture_index += 1
 
-    return [Match(int(id), time, [get_team(int(red1)), get_team(int(red2)), get_team(int(red3))],
-                  [get_team(int(blue1)), get_team(int(blue2)), get_team(int(blue3))])
-            for time, id, red1, red2, red3, blue1, blue2, blue3 in matchinfo]
+    return json.dumps(matchinfo)
 
 
 def cache_or_get_json(name, func, *args, **kwargs):

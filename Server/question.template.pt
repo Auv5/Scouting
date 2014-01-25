@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+
+<html>
+    <head>
+        <script src="/assets/js/jquery.js"></script>
+        <script src="/assets/js/configure.js"></script>
+    </head>
+
+    <body id="body">
+        <form id="form" method="GET">
+            <p>
+                <select id="qselect" name="qtype">
+                    <option value="mc">Multiple Choice</option>
+                    <option value="fr">Free Response</option>
+                </select>
+            </p>
+            <p>
+                <label>Question:</label>
+                <input type="text" name="label"/>
+            </p>
+
+            <div id="extraopts"> </div>
+
+            <p>
+                <input type="submit" value="Done"/>
+            </p>
+        </form>
+
+        <div id="mcdiv" style="display: none;">
+                <label>Options: </label>
+                <br>
+                <div id="mcOptions">
+                    <input type="text" name="mcOpt0"/><BR>
+                    <input type="text" name="mcOpt1"/><BR>
+                    <input type="text" name="mcOpt2"/><BR>
+                </div>
+                <button id="addMcOpt" type="button" value="Add Option"/>
+            </div>
+
+        <div id="frdiv" style="display: none;">
+        </div>
+    </body>
+</html>
