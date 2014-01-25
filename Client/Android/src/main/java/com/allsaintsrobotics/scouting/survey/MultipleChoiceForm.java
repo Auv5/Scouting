@@ -8,16 +8,15 @@ import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
+import android.app.Activity;
 
 import com.allsaintsrobotics.scouting.R;
 import com.allsaintsrobotics.scouting.ScoutEdit;
-import com.allsaintsrobotics.scouting.models.Team;
 
 /**
  * Created by jack on 11/25/13.
  */
-public class MultipleChoiceForm extends Form {
-    String[] offers;
+public class MultipleChoiceForm<T> extends Form<T> {
     View view;
 
     private RadioGroup group;
@@ -25,14 +24,13 @@ public class MultipleChoiceForm extends Form {
 
     private RadioButton selected;
 
-    public MultipleChoiceForm(Question question, Team team, String[] offers) {
+    public MultipleChoiceForm(Question question, T team) {
         super(question, team);
-
-        this.offers = offers;
     }
 
     @Override
-    public View getAnswerView(ScoutEdit c, ViewGroup parent) {
+    public View getAnswerView(Activity c, ViewGroup parent) {
+        String[] offers = question.getOffers();
         if (view == null) {
             // Basic layout inflate pattern.
             LayoutInflater li = (LayoutInflater) c.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -71,7 +69,7 @@ public class MultipleChoiceForm extends Form {
             }
         });
 
-        String answer = question.getAnswer(team);
+        String answer = question.getAnswer(t);
 
         if (answer != null) {
             for (int i = 0; i < group.getChildCount(); i ++) {
@@ -102,12 +100,12 @@ public class MultipleChoiceForm extends Form {
         label.setError(error);
     }
 
-    public static class MultipleChoiceFormFactory extends FormFactory {
+    public static class MultipleChoiceFormFactory<M> extends FormFactory<M> {
         public MultipleChoiceFormFactory() {}
 
         @Override
-        public Form getForm(Question q, Team t) {
-            return new MultipleChoiceForm(q, t, offers);
+        public Form getForm(Question<M> q, M t) {
+            return new MultipleChoiceForm<M>(q, t);
         }
     }
 }

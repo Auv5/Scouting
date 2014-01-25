@@ -4,46 +4,65 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 /**
  * Created by jack on 11/26/13.
  */
-public class Match {
-    // Three types of standard scores.
-    private int auto, teleop, special;
-
-    private String comments;
-    private Map<String, String> fields;
-
-    public enum Alliance {
-        BLUE,
-        RED
-    }
-
+public class Match implements Parcelable {
     int number;
 
     private int[] red, blue;
 
     private int scout;
 
-    public Match(int number, int[] blue, int[] red, int scout, int auto, int teleop, int special,
-                 String comments) {
+    public enum Alliance {
+        BLUE,
+        RED
+    }
+
+    public Match(int number, int[] blue, int[] red, int scout) {
         this.number = number;
 
         this.red = red;
         this.blue = blue;
 
-        this.auto = auto;
-        this.teleop = teleop;
-        this.special = special;
-
-        this.comments = comments;
-        this.fields = new HashMap<String, String>();
-
         this.scout = scout;
     }
 
-    public Match(int id, int[] blue, int[] red, int scout) {
-        this(id, blue, red, scout, -1, -1, -1, null);
+    public Match(Parcel in) {
+        this(in.readInt(), in.createIntArray(), in.createIntArray(), in.readInt());
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(number);
+        dest.writeIntArray(red);
+        dest.writeIntArray(blue);
+        dest.writeInt(scout);
+    }
+
+    public static final Creator<Match> CREATOR = new Creator<Match>() {
+        @Override
+        public Match createFromParcel(Parcel source) {
+            return new Match(source);
+        }
+
+        @Override
+        public Match[] newArray(int size) {
+            return new Match[size];
+        }
+    };
+
+    @Override
+    public int hashCode() {
+        return 142 * number;
     }
 
     public Alliance getAlliance(int t) {
@@ -81,39 +100,7 @@ public class Match {
         return number;
     }
 
-    public int getAuto() {
-        return auto;
-    }
-
-    public void setAuto(int auto) {
-        this.auto = auto;
-    }
-
-    public int getTeleop() {
-        return teleop;
-    }
-
-    public void setTeleop(int teleop) {
-        this.teleop = teleop;
-    }
-
-    public int getSpecial() {
-        return special;
-    }
-
-    public void setSpecial(int special) {
-        this.special = special;
-    }
-
     public int getScout() {
         return scout;
-    }
-
-    public String getComments() {
-        return comments;
-    }
-
-    public void setComments(String comments) {
-        this.comments = comments;
     }
 }

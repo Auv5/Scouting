@@ -21,7 +21,7 @@ import com.allsaintsrobotics.scouting.adapters.MatchAdapter;
 import com.allsaintsrobotics.scouting.adapters.QuestionAdapter;
 import com.allsaintsrobotics.scouting.models.Match;
 import com.allsaintsrobotics.scouting.models.Team;
-import com.allsaintsrobotics.scouting.survey.Question;
+import com.allsaintsrobotics.scouting.survey.TeamQuestion;
 
 import java.util.List;
 
@@ -43,9 +43,7 @@ public class TeamDetail extends Activity {
         setContentView(R.layout.team_detail);
 
         Intent i = getIntent();
-
         team = i.getParcelableExtra("team");
-
 
         ActionBar actionBar = getActionBar();
         actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
@@ -64,8 +62,7 @@ public class TeamDetail extends Activity {
         actionBar.addTab(matchTab);
 
         if (savedInstanceState != null && savedInstanceState.containsKey("tabstate")) {
-            actionBar.setSelectedNavigationItem(
-                    savedInstanceState.getInt("tabstate"));
+            actionBar.setSelectedNavigationItem(savedInstanceState.getInt("tabstate"));
         }
     }
 
@@ -154,22 +151,22 @@ public class TeamDetail extends Activity {
             super.onAttach(activity);
         }
 
-        public void populateQuestionList(List<Question> questions) {
+        public void populateQuestionList(List<TeamQuestion> questions) {
             qa = new QuestionAdapter(this.activity, team, questions);
             lv.setAdapter(qa);
             qa.notifyDataSetChanged();
         }
 
-        private class QuestionPopulateTask extends AsyncTask<Void, Void, List<Question>> {
+        private class QuestionPopulateTask extends AsyncTask<Void, Void, List<TeamQuestion>> {
             @Override
-            protected List<Question> doInBackground(Void... params) {
-                List<Question> questions = ScoutingDBHelper.getInstance().getQuestions();
+            protected List<TeamQuestion> doInBackground(Void... params) {
+                List<TeamQuestion> questions = ScoutingDBHelper.getInstance().getTeamQuestions();
 
                 return questions;
             }
 
             @Override
-            protected void onPostExecute(List<Question> questions) {
+            protected void onPostExecute(List<TeamQuestion> questions) {
                 populateQuestionList(questions);
             }
         }
@@ -198,9 +195,6 @@ public class TeamDetail extends Activity {
     public static class MatchFragment extends Fragment {
         private static final int MATCH_DETAIL = 8001;
         private ListView lv;
-        private TextView autoAverage;
-        private TextView teleopAverage;
-        private TextView specialAverage;
         private List<Match> matches;
         private Team team;
         private Activity activity;
@@ -208,7 +202,6 @@ public class TeamDetail extends Activity {
         public static MatchFragment getInstance(Team t) {
             MatchFragment mf = new MatchFragment();
 
-//
             Bundle b = new Bundle();
             b.putParcelable("team", t);
 
@@ -228,10 +221,6 @@ public class TeamDetail extends Activity {
             this.activity = activity;
 
             super.onAttach(activity);
-
-            if (matches != null) {
-                populateAverages();
-            }
         }
 
         @Override
@@ -247,63 +236,15 @@ public class TeamDetail extends Activity {
                 team = savedInstanceState.getParcelable("team");
             }
 
-            this.autoAverage = (TextView) v.findViewById(R.id.auto_average);
-            this.teleopAverage = (TextView) v.findViewById(R.id.teleop_average);
-            this.specialAverage = (TextView) v.findViewById(R.id.special_average);
-
             new MatchPopulateTask().execute();
 
             return v;
-        }
-
-        private void populateAverages() {
-            int autoTotal = 0;
-            int autoCount = 0;
-            int teleopTotal = 0;
-            int teleopCount = 0;
-            int specialTotal = 0;
-            int specialCount = 0;
-
-            for (Match m : matches) {
-                int auto = m.getAuto();
-                int teleop = m.getTeleop();
-                int special = m.getSpecial();
-
-                if (auto != -1) {
-                    autoTotal += auto;
-                    autoCount += 1;
-                }
-
-                if (teleop != -1) {
-                    teleopTotal += teleop;
-                    teleopCount += 1;
-                }
-
-                if (special != -1) {
-                    specialTotal += special;
-                    specialCount += 1;
-                }
-            }
-
-            this.autoAverage.setText(String.format(getString(R.string.auto_average_format,
-                    autoCount == 0 ? "None" : Integer.toString(autoTotal / autoCount))));
-            this.teleopAverage.setText(String.format(getString(R.string.teleop_average_format),
-                    teleopCount == 0 ? "None" : Integer.toString(teleopTotal / teleopCount)));
-            this.specialAverage.setText(String.format(getString(R.string.special_average_format),
-                    specialCount == 0 ? "None" : Integer.toString(specialTotal / specialCount)));
         }
 
         public void populateMatchList(List<Match> matches) {
             this.matches = matches;
 
             this.lv.setAdapter(new MatchAdapter(activity, team, matches));
-        }
-
-        @Override
-        public void onActivityResult(int requestCode, int resultCode, Intent data) {
-            if (requestCode == MATCH_DETAIL && resultCode == Activity.RESULT_OK) {
-                populateAverages();
-            }
         }
 
         private class MatchPopulateTask extends AsyncTask<Void, Void, List<Match>> {

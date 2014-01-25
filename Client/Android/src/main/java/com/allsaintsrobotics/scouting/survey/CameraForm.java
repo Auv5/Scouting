@@ -18,7 +18,6 @@ import android.widget.TextView;
 
 import com.allsaintsrobotics.scouting.R;
 import com.allsaintsrobotics.scouting.ScoutEdit;
-import com.allsaintsrobotics.scouting.models.Team;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -30,7 +29,7 @@ import java.io.OutputStream;
 /**
  * Created by jack on 11/27/13.
  */
-public class CameraForm extends Form {
+public class CameraForm<T> extends Form<T> {
     private static final int TAKE_PHOTO_CODE = 15;
 
     private View view = null;
@@ -41,17 +40,14 @@ public class CameraForm extends Form {
     private File selectedImage = null;
     private File firstCacheLoc = null;
 
-    private int savedScroll = 0;
-
-    public CameraForm(Question q, Team t, File location) {
+    public CameraForm(Question q, T t, File location) {
         super(q, t);
         this.finalImage = location;
     }
 
     @Override
-    public View getAnswerView(final ScoutEdit c, ViewGroup parent) {
-        if (view == null)
-        {
+    public View getAnswerView(final Activity c, ViewGroup parent) {
+        if (view == null) {
             LayoutInflater li = (LayoutInflater) c.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
             this.view = li.inflate(R.layout.question_camera, null);
@@ -74,9 +70,7 @@ public class CameraForm extends Form {
 
                 cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(cacheTo));
 
-                savedScroll = c.getScrollPos();
-
-                (c).startActivityForResult(cameraIntent, TAKE_PHOTO_CODE);
+                c.startActivityForResult(cameraIntent, TAKE_PHOTO_CODE);
 
 
                 CameraForm.this.firstCacheLoc = cacheTo;
@@ -92,11 +86,8 @@ public class CameraForm extends Form {
     }
 
     @Override
-    public boolean result(ScoutEdit c, int request, int response, Intent data) {
+    public boolean result(Activity c, int request, int response, Intent data) {
         if (request == TAKE_PHOTO_CODE && response == Activity.RESULT_OK) {
-            // Set the currently selected image.
-//            CameraForm.this.selectedImage = new File(data.getData().getPath());
-
             this.selectedImage = new File(c.getCacheDir(), firstCacheLoc.getName());
 
             try {
@@ -109,8 +100,6 @@ public class CameraForm extends Form {
 
             imgView.setImageBitmap(decodeSampledBitmapFromFile(selectedImage.getAbsolutePath(),
                     imgView.getWidth()));
-
-            c.setScrollPos(savedScroll);
 
             // Handled
             return true;
@@ -151,7 +140,6 @@ public class CameraForm extends Form {
 
     private static Bitmap decodeSampledBitmapFromFile(String path, int reqWidth)
     { // BEST QUALITY MATCH
-
         //First decode with inJustDecodeBounds=true to check dimensions
         final BitmapFactory.Options options = new BitmapFactory.Options();
         options.inJustDecodeBounds = true;
@@ -174,7 +162,6 @@ public class CameraForm extends Form {
 
         if (expectedWidth > reqWidth)
         {
-            //if(Math.round((float)width / (float)reqWidth) > inSampleSize) // If bigger SampSize..
             inSampleSize = Math.round((float)width / (float)reqWidth);
         }
 
@@ -201,13 +188,13 @@ public class CameraForm extends Form {
         super.write();
     }
 
-    public static class CameraFormFactory extends FormFactory {
+    public static class CameraFormFactory<M> extends FormFactory<M> {
         private static final String TAG = "CameraFormFactory";
 
         public CameraFormFactory() {}
 
         @Override
-        public Form getForm(Question q, Team t) {
+        public Form getForm(Question<M> q, M t) {
             String dir = "scouting_pics";
 
             File sdcard = Environment.getExternalStorageDirectory();
@@ -216,21 +203,16 @@ public class CameraForm extends Form {
 
             File dirFile = new File(sdcard, dir);
 
-            // Returns false if dir already was there.
-            // Note: We don't care. We just want to make sure it exists.
+            // Ensure directory exists. 
             dirFile.mkdir();
 
-            String label = q.getLabel();
-
-            //TODO: Add any more invalid characters here.
-            String filename = label.replace(" ", "_").replace("/", "").replace(".", "").
-                    replace(",", "").replace("'", "") + ".jpg";
+            String filename = String.valueOf(q.getId()) + "_" + t.hashCode() + ".jpg";
             
             Log.d(TAG, "Camera filename: " + filename);
 
             File newFile = new File(dirFile, filename);
 
-            return new CameraForm(q, t, newFile);
+            return new CameraForm<M>(q, t, newFile);
         }
     }
 }

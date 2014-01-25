@@ -165,16 +165,17 @@ public class MainActivity extends Activity {
 
         @Override
         protected Boolean doInBackground(Void... params) {
+            long t0 = System.currentTimeMillis();
             JSONObject jsObj = getRegisterJson();
 
             try {
                 if (jsObj == null) {
                     return false;
                 }
+
                 ScoutingDBHelper.getInstance().setId(jsObj.getInt("id"));
 
                 JSONArray matches = jsObj.getJSONArray("matches");
-                long t1 = System.currentTimeMillis();
 
                 for (int i = 0; i < matches.length(); i ++) {
                     SyncHelper.addMatchFromJson(matches.getJSONObject(i));
@@ -182,15 +183,13 @@ public class MainActivity extends Activity {
 
                 ScoutingDBHelper.getInstance().sortMatches();
 
-                long dt = System.currentTimeMillis() - t1;
-
-                Log.d(getClass().getName(), "Time to load matches from JSON: " + dt);
-
                 JSONArray teams = jsObj.getJSONArray("teams");
 
                 for (int i = 0; i < teams.length(); i ++) {
                     SyncHelper.addTeamFromJson(teams.getJSONArray(i));
                 }
+
+                ScoutingDBHelper.getInstance().sortTeams();
 
                 JSONArray questions = jsObj.getJSONArray("questions");
 
@@ -199,6 +198,10 @@ public class MainActivity extends Activity {
                 }
 
                 ScoutingDBHelper.getInstance().sortQuestions();
+
+                long dt = System.currentTimeMillis() - t0;
+
+                Log.d("SYNC", "Time to sync: " + dt);
 
                 return true;
             } catch (JSONException e) {

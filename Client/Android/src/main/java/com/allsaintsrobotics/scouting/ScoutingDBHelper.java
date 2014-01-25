@@ -11,7 +11,8 @@ import android.util.Log;
 import com.allsaintsrobotics.scouting.models.Match;
 import com.allsaintsrobotics.scouting.models.Team;
 import com.allsaintsrobotics.scouting.survey.FormFactory;
-import com.allsaintsrobotics.scouting.survey.Question;
+import com.allsaintsrobotics.scouting.survey.TeamQuestion;
+import com.allsaintsrobotics.scouting.survey.MatchQuestion;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -33,20 +34,22 @@ public class ScoutingDBHelper extends SQLiteOpenHelper {
 
     public static final String TABLE_QUESTIONS = "questions";
     public static final String QUESTION_ID = "_id";
+    public static final String QUESTION_STRID = "strid";
     public static final String QUESTION_TEXT = "text";
     public static final String QUESTION_TYPE = "type";
     private static final String QUESTION_CREATE = "CREATE TABLE " + TABLE_QUESTIONS + "(" + QUESTION_ID +
-            " INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, " + QUESTION_TEXT + " TEXT, " + QUESTION_TYPE +
+            " INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, " + QUESTION_STRID + " TEXT, " + QUESTION_TEXT + " TEXT, " + QUESTION_TYPE +
             " TEXT" + ");";
 
     public static final String TABLE_ANSWERS = "answers";
     public static final String ANSWER_ID = "_id";
     public static final String ANSWER_QUESTION = "qid";
     public static final String ANSWER_TEAM = "tid";
+    public static final String ANSWER_MATCH = "mid";
     public static final String ANSWER_TEXT = "text";
     private static final String ANSWER_CREATE = "CREATE TABLE " + TABLE_ANSWERS + "(" + ANSWER_ID +
             " INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, " + ANSWER_QUESTION + " INTEGER NOT NULL, " +
-            ANSWER_TEAM + " INTEGER NOT NULL, " + ANSWER_TEXT + " TEXT" + ");";
+            ANSWER_TEAM + " INTEGER NOT NULL, " + ANSWER_MATCH + " INTEGER, " + ANSWER_TEXT + " TEXT" + ");";
 
     public static final String TABLE_OFFERS = "offered_answers";
     public static final String OFFER_QUESTION = "qid";
@@ -64,16 +67,12 @@ public class ScoutingDBHelper extends SQLiteOpenHelper {
     public static final String MATCH_BLUE2 = "blue2";
     public static final String MATCH_BLUE3 = "blue3";
     public static final String MATCH_SCOUT = "scout";
-    public static final String MATCH_AUTO = "auto";
-    public static final String MATCH_TELEOP = "teleop";
-    public static final String MATCH_SPECIAL = "special";
-    public static final String MATCH_COMMENTS = "comments";
+    
     private static final String MATCH_CREATE = "CREATE TABLE " + TABLE_MATCHES + "(" + MATCH_NUMBER +
             " INTEGER PRIMARY KEY NOT NULL, " + MATCH_RED1 + " INTEGER NOT NULL, " + MATCH_RED2 +
             " INTEGER NOT NULL, " + MATCH_RED3 + " INTEGER NOT NULL, " + MATCH_BLUE1 + " INTEGER NOT NULL, "
             + MATCH_BLUE2 + " INTEGER NOT NULL, " + MATCH_BLUE3 + " INTEGER NOT NULL, " + MATCH_SCOUT +
-            " INTEGER NOT NULL, " + MATCH_AUTO + " INTEGER, " + MATCH_TELEOP + " INTEGER, " +
-            MATCH_SPECIAL + " INTEGER, " + MATCH_COMMENTS + " TEXT" + ");";
+            " INTEGER NOT NULL" + ");";
 
     public static final String TABLE_SCOUTMETA = "scout_meta";
     public static final String SCOUTMETA_OPTION = "option";
@@ -142,6 +141,7 @@ public class ScoutingDBHelper extends SQLiteOpenHelper {
         db.execSQL("DELETE FROM " + TABLE_ANSWERS);
         db.execSQL("DELETE FROM " + TABLE_QUESTIONS);
         db.execSQL("DELETE FROM " + TABLE_SCOUTMETA);
+        db.execSQL("DELETE FROM " + TABLE_OFFERS);
         this.id = -1;
     }
 
@@ -166,6 +166,9 @@ public class ScoutingDBHelper extends SQLiteOpenHelper {
 
     private void addToTeamCache(Team t) {
         teamCache.add(t);
+    }
+
+    public void sortTeams() {
         Collections.sort(teamCache, teamComparator);
     }
 
@@ -188,7 +191,7 @@ public class ScoutingDBHelper extends SQLiteOpenHelper {
         }
     }
 
-    public void setAnswer(Question question, Team team, String answer) {
+    public void setAnswer(TeamQuestion question, Team team, String answer) {
         ContentValues cv = new ContentValues();
 
         cv.put(ANSWER_QUESTION, question.getId());
@@ -204,7 +207,24 @@ public class ScoutingDBHelper extends SQLiteOpenHelper {
         }
     }
 
-    public String getAnswer(Question question, Team team) {
+    public void setAnswer(MatchQuestion question, Match match, String answer) {
+        ContentValues cv = new ContentValues();
+
+        cv.put(ANSWER_QUESTION, question.getId());
+        cv.put(ANSWER_TEAM, match.getScout());
+        cv.put(ANSWER_MATCH, match.getNumber());
+        cv.put(ANSWER_TEXT, answer);
+
+        if (this.getAnswer(question, match) == null) {
+            db.insert(TABLE_ANSWERS, ANSWER_TEXT, cv);
+        }
+        else {
+            db.update(TABLE_ANSWERS, cv, ANSWER_QUESTION + " = ? AND " + ANSWER_TEAM + " = ? AND " + ANSWER_MATCH + " = ?",
+                    new String[] {Integer.toString(question.getId()), Integer.toString(match.getScout()), Integer.toString(match.getNumber())});
+        }
+    }
+
+    public String getAnswer(TeamQuestion question, Team team) {
         Cursor c = db.query(TABLE_ANSWERS, new String[] {ANSWER_TEXT}, ANSWER_QUESTION + " = ? AND "
                 + ANSWER_TEAM + " = ?", new String[] {Integer.toString(question.getId()),
                 Integer.toString(team.getNumber())}, null, null, null);
@@ -223,21 +243,51 @@ public class ScoutingDBHelper extends SQLiteOpenHelper {
         }
         else
         {
-            throw new IllegalStateException("Cannot have more than one answer for a question...");
+            throw new IllegalStateException("Cannot have more than one answer for a question (perhaps this is a match question? You called the team question method)...");
+        }
+    }
+    
+    public String getAnswer(MatchQuestion question, Match match) {
+        Cursor c = db.query(TABLE_ANSWERS, new String[] {ANSWER_TEXT}, ANSWER_QUESTION + " = ? AND " + ANSWER_TEAM + " = ? AND " + ANSWER_MATCH + " = ?",
+                new String[] {Integer.toString(question.getId()), Integer.toString(match.getScout()), Integer.toString(match.getNumber())}, null, null, null);
+
+        int count = c.getCount();
+
+        if (count == 0) {
+            return null;
+        }
+        else if (count == 1) {
+            c.moveToNext();
+            return c.getString(0);
+        }
+        else {
+            throw new IllegalStateException("Cannot have more than one answer for a match question.");
         }
     }
 
-    List<Question> questionCache = null;
+    List<TeamQuestion> teamQuestionCache = null;
 
-    public List<Question> getQuestions() {
-        if (questionCache != null)
-        {
-            return questionCache;
+    public TeamQuestion getTeamQuestion(int id) {
+        for (TeamQuestion tq : teamQuestionCache) {
+            if (tq.getId() == id) {
+                return tq;
+            }
         }
 
-        questionCache = new ArrayList<Question>();
+        return null;
+    }
 
-        Cursor questionCursor = db.query(TABLE_QUESTIONS, null, null, null, null, null, null);
+    public List<TeamQuestion> getTeamQuestions() {
+        if (teamQuestionCache != null)
+        {
+            return teamQuestionCache;
+        }
+
+        teamQuestionCache = new ArrayList<TeamQuestion>();
+
+        Cursor questionCursor = db.query(TABLE_QUESTIONS, null, QUESTION_TYPE + " NOT LIKE 'm\\_%' ESCAPE '\\'", null, null, null, null);
+        
+        Log.d("ScoutingClient", "Count: " + questionCursor.getCount());
 
         while (questionCursor.moveToNext()) {
             String label = questionCursor.getString(questionCursor.getColumnIndex(QUESTION_TEXT));
@@ -248,26 +298,62 @@ public class ScoutingDBHelper extends SQLiteOpenHelper {
 
             String type = questionCursor.getString(questionCursor.getColumnIndex(QUESTION_TYPE));
 
-            FormFactory factory = FormFactory.forId(type);
+            FormFactory<Team> factory = (FormFactory<Team>)FormFactory.forId(type);
 
-            factory.setOffers(offers);
-
-            questionCache.add(new Question(
+            teamQuestionCache.add(new TeamQuestion(
                     label,
                     factory,
-                    qid));
+                    qid,
+                    offers));
         }
 
-        return questionCache;
+        return teamQuestionCache;
+    }
+
+    List<MatchQuestion> matchQuestionCache = null;
+    
+    public MatchQuestion getMatchQuestion(int id) {
+        for (MatchQuestion mq : matchQuestionCache) {
+            if (mq.getId() == id) {
+                return  mq;
+            }
+        }
+        return null;
+    }
+
+    public List<MatchQuestion> getMatchQuestions() {
+        if (matchQuestionCache != null) {
+            return matchQuestionCache;
+        }
+
+        matchQuestionCache = new ArrayList<MatchQuestion>();
+
+        Cursor questionCursor = db.query(TABLE_QUESTIONS, null, QUESTION_TYPE + " LIKE 'm\\_%' ESCAPE '\\'", null, null, null, null);
+
+        Log.d("MatchQuestionRead", "Count: " + questionCursor.getCount());
+
+        while (questionCursor.moveToNext()) {
+            String label = questionCursor.getString(questionCursor.getColumnIndex(QUESTION_TEXT));
+
+            int qid = questionCursor.getInt(questionCursor.getColumnIndex(QUESTION_ID));
+
+            String[] offers = getOffersForQid(qid);
+
+            String type = questionCursor.getString(questionCursor.getColumnIndex(QUESTION_TYPE));
+
+            FormFactory<Match> factory = (FormFactory<Match>)FormFactory.forId(type);
+
+            matchQuestionCache.add(new MatchQuestion(
+                    label,
+                    factory,
+                    qid,
+                    offers));
+        }
+        
+        return matchQuestionCache;
     }
 
     public void addQuestion(int qid, String label, String type, String[] offers) {
-        if (questionCache == null) {
-            questionCache = new ArrayList<Question>();
-        }
-
-        FormFactory factory = FormFactory.forId(type, offers);
-
         ContentValues cv = new ContentValues();
 
         cv.put(QUESTION_TEXT, label);
@@ -285,25 +371,20 @@ public class ScoutingDBHelper extends SQLiteOpenHelper {
 
             db.insert(TABLE_OFFERS, null, offerCv);
         }
-
-        Question q = new Question(label, factory, qid);
-
-        addToQuestionCache(q);
     }
 
-    private void addToQuestionCache(Question q) {
-        questionCache.add(q);
-    }
-
-    private Comparator<Question> questionComparator = new Comparator<Question>() {
+    private Comparator<TeamQuestion> questionComparator = new Comparator<TeamQuestion>() {
         @Override
-        public int compare(Question lhs, Question rhs) {
+        public int compare(TeamQuestion lhs, TeamQuestion rhs) {
             return lhs.getId() - rhs.getId();
         }
     };
 
     public void sortQuestions() {
-        Collections.sort(questionCache, questionComparator);
+        if (teamQuestionCache == null) {
+            getTeamQuestions();
+        }
+        Collections.sort(teamQuestionCache, questionComparator);
     }
 
     private String[] getOffersForQid(int qid) {
@@ -363,37 +444,7 @@ public class ScoutingDBHelper extends SQLiteOpenHelper {
                 blue[i] = matchCursor.getInt(matchCursor.getColumnIndex("blue" + (i+1)));
             }
 
-            int auto, teleop, special;
-
-            // We are guaranteed to get an exception if an INTEGER field is NULL...
-
-            try {
-                auto = matchCursor.getInt(matchCursor.getColumnIndex(MATCH_AUTO));
-            } catch (SQLiteException e) {
-                auto = -1;
-            }
-
-            try {
-                teleop = matchCursor.getInt(matchCursor.getColumnIndex(MATCH_TELEOP));
-            } catch (SQLiteException e) {
-                teleop = -1;
-            }
-
-            try {
-                special = matchCursor.getInt(matchCursor.getColumnIndex(MATCH_SPECIAL));
-            } catch (SQLiteException e) {
-                special = -1;
-            }
-
-            int commentsIndex = matchCursor.getColumnIndex(MATCH_COMMENTS);
-            String comments = null;
-
-            // With Strings, it is implementation-defined if we get an exception, so use isNull().
-            if (!matchCursor.isNull(commentsIndex)) {
-                comments = matchCursor.getString(commentsIndex);
-            }
-
-            Match m = new Match(id, blue, red, scout, auto, teleop, special, comments);
+            Match m = new Match(id, blue, red, scout);
 
             matchCache.add(m);
         }

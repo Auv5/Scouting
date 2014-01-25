@@ -4,9 +4,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".TeamDetail">
+    tools:context=".MatchDetail">
     <ListView
-        android:id="@+id/pit_datalist"
+        android:id="@+id/match_questionlist"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         tools:listitem="@layout/listitem_pitstats" />

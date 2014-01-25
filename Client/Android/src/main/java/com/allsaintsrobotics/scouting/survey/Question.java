@@ -6,7 +6,6 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.allsaintsrobotics.scouting.ScoutingDBHelper;
-import com.allsaintsrobotics.scouting.models.Team;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -14,68 +13,88 @@ import java.util.Map;
 /**
  * Created by jack on 11/24/13.
  */
-public class Question implements Statistic {
-    private FormFactory factory;
+public abstract class Question<T> {
+    private FormFactory<T> factory;
     private TextView tv;
 
     private int id;
     private String label;
+    private String[] offers;
 
     private static final String TAG = "Question";
 
-    private Map<Team, String> cache;
+    private Map<T, String> cache;
 
-    public Question(String label, FormFactory factory, int id) {
+    public Question(String label, FormFactory<T> factory, int id, String[] offers) {
         this.factory = factory;
         this.id = id;
         this.label = label;
+        this.offers = offers;
 
-        cache = new HashMap<Team, String>();
+        cache = new HashMap<T, String>();
     }
 
-    public Form getForm(Team t) {
+    public Form<T> getForm(T t) {
         return factory.getForm(this, t);
     }
 
-    void cacheUpdate(Team t, String answer) {
+    public String[] getOffers() {
+        return offers;
+    }
+
+    void cacheUpdate(T t, String answer) {
         cache.put(t, answer);
     }
 
-    public String getAnswer(Team t) {
-        if (cache.containsKey(t))
-        {
+    public String getAnswer(T t) {
+        // Call internal method.
+        return read(t);
+    }
+    
+    // Marked final so that people don't accidentally override this method instead of dbRead().
+    private final String read(T t) {
+        if (cache.containsKey(t)) {
             return cache.get(t);
         }
-        else
-        {
-            String value = ScoutingDBHelper.getInstance().getAnswer(this, t);
-            if (value != null) {
-                this.cacheUpdate(t, value);
-            }
+        else {
+            String value = this.dbRead(t);
+            
+            // TODO: This will put null values into the cache. Is this okay?
+            this.cacheUpdate(t, value);
 
             return value;
         }
     }
 
-    @Override
-    public View getValueView(Team t, Context c) {
+    // Wrapper around internal dbWrite() which updates the cache.
+    public final void write(T t, String value) {
+        this.dbWrite(t, value);
+
+        this.cacheUpdate(t, value);
+    }
+
+    protected abstract String dbRead(T t);
+
+    protected abstract void dbWrite(T t, String value);
+
+    protected abstract String getDefaultPrompt();
+    
+    public View getValueView(T t, Context c) {
         String val = this.getAnswer(t);
 
         if (tv == null) {
             tv = new TextView(c);
         }
 
-        tv.setText(val == null ? "" : val);
+        tv.setText(val == null ? getDefaultPrompt() : val);
 
-        if (tv.getParent() != null)
-        {
+        if (tv.getParent() != null) {
             ((ViewGroup)tv.getParent()).removeView(tv);
         }
 
         return tv;
     }
-
-    @Override
+    
     public String getLabel() {
         return label;
     }

@@ -13,7 +13,7 @@ import android.widget.ScrollView;
 
 import com.allsaintsrobotics.scouting.models.Team;
 import com.allsaintsrobotics.scouting.survey.Form;
-import com.allsaintsrobotics.scouting.survey.Question;
+import com.allsaintsrobotics.scouting.survey.TeamQuestion;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -71,7 +71,7 @@ public class ScoutEdit extends Activity {
 
         this.forms = new ArrayList<Form>();
 
-        for (Question q : ScoutingDBHelper.getInstance().getQuestions())
+        for (TeamQuestion q : ScoutingDBHelper.getInstance().getTeamQuestions())
         {
             Form f = q.getForm(team);
             forms.add(f);
@@ -85,6 +85,7 @@ public class ScoutEdit extends Activity {
             formsView.addView(answerView);
         }
     }
+
     private void makeConfirmDialog(DialogInterface.OnClickListener listener) {
         // TODO: Find a better way to specify the icon.
         new AlertDialog.Builder(ScoutEdit.this).setIcon(android.R.drawable.ic_dialog_alert).

@@ -1,6 +1,8 @@
 package com.allsaintsrobotics.scouting.adapters;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Typeface;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,6 +11,7 @@ import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
 import com.allsaintsrobotics.scouting.R;
+import com.allsaintsrobotics.scouting.MatchDetail;
 import com.allsaintsrobotics.scouting.models.Match;
 import com.allsaintsrobotics.scouting.models.Team;
 
@@ -57,7 +60,7 @@ public class MatchAdapter extends ArrayAdapter<Match> {
             mfh = (MatchFieldHelper) row.getTag();
         }
 
-        Match m = matches.get(position);
+        final Match m = matches.get(position);
 
         mfh.matchId.setText(String.format(context.getString(R.string.match_id_format),
                 m.getNumber()));
@@ -109,6 +112,24 @@ public class MatchAdapter extends ArrayAdapter<Match> {
         }
         else {
             mfh.red3.setTypeface(null, Typeface.NORMAL);
+        }
+        
+        if (isEnabled(position)) {
+            row.setClickable(true);
+            row.setOnClickListener(new View.OnClickListener() {
+                public void onClick(View v) {
+                    Intent i = new Intent();
+                    
+                    i.setClass((Activity)context, MatchDetail.class);
+                    
+                    i.putExtra("match", m);
+
+                    ((Activity)context).startActivity(i);
+                }
+            });
+        }
+        else {
+            row.setClickable(false);
         }
 
         return row;

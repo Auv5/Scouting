@@ -17,21 +17,22 @@ import java.util.List;
 /**
  * Created by jack on 11/25/13.
  */
-public class QuestionAdapter extends ArrayAdapter<Question> {
+public class QuestionAdapter<T> extends ArrayAdapter {
     Context context;
-    List<Question> questions;
+    List<? extends Question<T>> questions;
 
-    Team team;
+    T team;
 
-    public QuestionAdapter(Context context, Team team, List<Question> questions) {
-        super(context, R.layout.listitem_pitstats, questions);
+    public QuestionAdapter(Context context, T team, List<? extends Question<T>> questions) {
+        super(context, R.layout.listitem_pitstats, (List)questions);
 
         this.context = context;
         this.questions = questions;
         this.team = team;
     }
 
-    //TODO: Investigate scrolling bugs
+    
+
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         View row = convertView;
@@ -52,7 +53,7 @@ public class QuestionAdapter extends ArrayAdapter<Question> {
             qfh = (QuestionFieldHelper)row.getTag();
         }
 
-        Question q = questions.get(position);
+        Question q = (Question<T>)questions.get(position);
 
         qfh.label.setText(q.getLabel());
         qfh.value.removeAllViews();

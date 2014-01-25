@@ -41,8 +41,6 @@ public class Team implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        Log.v(TAG, "writeToParcel..." + flags);
-
         dest.writeInt(this.number);
         dest.writeString(this.nickname);
     }

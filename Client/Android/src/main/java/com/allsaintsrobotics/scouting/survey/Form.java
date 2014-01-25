@@ -4,25 +4,24 @@ import android.content.Context;
 import android.content.Intent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.app.Activity;
 
-import com.allsaintsrobotics.scouting.ScoutEdit;
 import com.allsaintsrobotics.scouting.ScoutingDBHelper;
-import com.allsaintsrobotics.scouting.models.Team;
 
 /**
  * Created by jack on 11/24/13.
  */
-public abstract class Form {
-    protected Question question;
-    protected Team team;
+public abstract class Form<T> {
+    protected Question<T> question;
+    protected T t;
     private Validator validator;
 
-    public Form(Question q, Team t) {
+    public Form(Question<T> q, T t) {
         this.question = q;
-        this.team = t;
+        this.t = t;
     }
 
-    public abstract View getAnswerView(ScoutEdit c, ViewGroup parent);
+    public abstract View getAnswerView(Activity c, ViewGroup parent);
 
     public abstract String getAnswer();
 
@@ -31,9 +30,7 @@ public abstract class Form {
     public void write() {
         String answer = this.getAnswer();
         if (answer != null && !answer.isEmpty()) {
-            ScoutingDBHelper.getInstance().setAnswer(question, team, answer);
-            // Update the question cache (also will allow for the list to work)
-            question.cacheUpdate(team, answer);
+           question.write(t, answer);
         }
     }
 
@@ -54,7 +51,7 @@ public abstract class Form {
         }
     }
 
-    public boolean result(ScoutEdit c, int request, int response, Intent data) {
+    public boolean result(Activity c, int request, int response, Intent data) {
         return false;
     }
 

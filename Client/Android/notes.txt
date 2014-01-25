@@ -1,0 +1,6 @@
+TODO:
+- Change all existing code dealing with Question objects to deal with TeamQuestion objects (also, setAnswer(TeamQuestion) needs to return a TeamQuestion object)
+- Modify database structure for match IDs in answers table.
+- Grep for "TODO: IMPLEMENT." Do what it says on the tin.
+- Implement functionality for Match questions.
+

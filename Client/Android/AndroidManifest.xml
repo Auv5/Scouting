@@ -24,7 +24,7 @@
         <activity
                 android:name=".TeamDetail"
                 android:label="Team Detail"
-                android:parentActivityName=".MainActivity"/>
+                />
 
         <activity
             android:name=".ScoutEdit"
@@ -33,7 +33,7 @@
         <activity
             android:name=".Preferences"
             android:label="Settings"
-            android:parentActivityName=".MainActivity"/>
+            />
         <activity
             android:name=".MainActivity"
             android:label="Scouting Client">
@@ -42,6 +42,16 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <activity 
+            android:name=".MatchDetail"
+            android:label="Match Detail"
+            />
+
+        <activity
+            android:name=".MatchEdit"
+            android:label="Match Edit"
+	    android:screenOrientation="landscape"/>
     </application>
 
 </manifest>

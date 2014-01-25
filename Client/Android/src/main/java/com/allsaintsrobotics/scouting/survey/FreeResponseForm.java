@@ -1,6 +1,7 @@
 package com.allsaintsrobotics.scouting.survey;
 
 import android.content.Context;
+import android.app.Activity;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
@@ -11,23 +12,22 @@ import android.widget.TextView;
 
 import com.allsaintsrobotics.scouting.R;
 import com.allsaintsrobotics.scouting.ScoutEdit;
-import com.allsaintsrobotics.scouting.models.Team;
 
 /**
  * Created by jack on 11/24/13.
  */
-public class FreeResponseForm extends Form {
+public class FreeResponseForm<T> extends Form<T> {
     private View view;
 
     private TextView label;
     private EditText response;
 
-    public FreeResponseForm(Question q, Team t) {
+    public FreeResponseForm(Question q, T t) {
         super(q, t);
     }
 
     @Override
-    public View getAnswerView(ScoutEdit c, ViewGroup parent) {
+    public View getAnswerView(Activity c, ViewGroup parent) {
         if (view == null)
         {
             LayoutInflater li = (LayoutInflater) c.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -58,7 +58,7 @@ public class FreeResponseForm extends Form {
             }
         });
 
-        String answer = question.getAnswer(team);
+        String answer = question.getAnswer(t);
 
         if (answer != null)
         {
@@ -78,13 +78,13 @@ public class FreeResponseForm extends Form {
         response.setError(error);
     }
 
-    public static class FreeResponseFormFactory extends FormFactory {
+    public static class FreeResponseFormFactory<M> extends FormFactory<M> {
         // Ensure this is the only constructor so FormFactory doesn't mess up.
         public FreeResponseFormFactory() {}
 
         @Override
-        public Form getForm(Question q, Team t) {
-            return new FreeResponseForm(q, t);
+        public Form getForm(Question<M> q, M t) {
+            return new FreeResponseForm<M>(q, t);
         }
     }
 }
