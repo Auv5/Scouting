@@ -1,11 +1,11 @@
 package com.allsaintsrobotics.scouting;
 
-import com.allsaintsrobotics.scouting.ScoutingDBHelper;
 import com.allsaintsrobotics.scouting.models.Match;
 import com.allsaintsrobotics.scouting.adapters.QuestionAdapter;
 import com.allsaintsrobotics.scouting.survey.MatchQuestion;
-import com.allsaintsrobotics.scouting.R;
 
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.app.Activity;
@@ -22,8 +22,26 @@ public class MatchDetail extends Activity {
 
     ListView mainLv;
     QuestionAdapter<Match> adapter;
+
     Match match;
     List<MatchQuestion> questions;
+
+    private void openMatchQuestion(int index) {
+        Intent i = new Intent();
+        i.setClass(MatchDetail.this, MatchEdit.class);
+
+        int[] questionIdArr = new int[questions.size()];
+
+        for (int j = 0; j < questions.size(); j ++) {
+            questionIdArr[j] = questions.get(j).getId();
+        }
+
+        i.putExtra("questions", questionIdArr);
+        i.putExtra("current", index);
+        i.putExtra("match", match);
+
+        startActivityForResult(i, REQUEST_EDIT_MATCH);
+    }
 
     public void onCreate(Bundle state) {
         super.onCreate(state);
@@ -35,32 +53,44 @@ public class MatchDetail extends Activity {
         mainLv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Intent i = new Intent();
-                i.setClass(MatchDetail.this, MatchEdit.class);
-                
-                int[] questionIdArr = new int[questions.size()];
-                
-                for (int j = 0; j < questions.size(); j ++) {
-                    questionIdArr[j] = questions.get(j).getId();
-                }
-
-                i.putExtra("questions", questionIdArr);
-                i.putExtra("current", position);
-                i.putExtra("match", match);
-
-                startActivityForResult(i, REQUEST_EDIT_MATCH);
+                openMatchQuestion(position);
             }
         });
 
 
         this.match = getIntent().getParcelableExtra("match");
 
-        getActionBar().setTitle(String.format(getString(R.string.md_actionbar_title), this.match.getNumber()));
+        getActionBar().setTitle(String.format(getString(R.string.md_actionbar_title),
+                this.match.getNumber()));
 
         new LoadMatchQuestionsTask().execute();
     }
 
-    
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater mi = this.getMenuInflater();
+        mi.inflate(R.menu.match_detail, menu);
+
+        return true;
+    }
+
+    @Override
+    public boolean onMenuItemSelected(int featureId, MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_editmatch:
+                openMatchQuestion(0);
+                return true;
+            default:
+                return super.onMenuItemSelected(featureId, item);
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == REQUEST_EDIT_MATCH && resultCode == RESULT_OK) {
+            adapter.notifyDataSetChanged();
+        }
+    }
 
     private void populateQuestionList(List<MatchQuestion> result) {
         this.questions = result;

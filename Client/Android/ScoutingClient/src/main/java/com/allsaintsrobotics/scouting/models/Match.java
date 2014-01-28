@@ -1,8 +1,6 @@
 package com.allsaintsrobotics.scouting.models;
 
 import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
 
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -62,7 +60,17 @@ public class Match implements Parcelable {
 
     @Override
     public int hashCode() {
-        return 142 * number;
+        return 142 * number * scout;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o instanceof Match) {
+            return o.hashCode() == this.hashCode();
+        }
+        else {
+            return super.equals(o);
+        }
     }
 
     public Alliance getAlliance(int t) {
@@ -77,11 +85,7 @@ public class Match implements Parcelable {
     }
 
     public boolean isPlaying(int t) {
-        if (getAlliance(t) == null) {
-            return false;
-        }
-
-        return true;
+        return getAlliance(t) != null;
     }
 
     public int getTeam(Alliance alliance, int i) {

@@ -3,7 +3,6 @@ package com.allsaintsrobotics.scouting;
 import android.app.Activity;
 import android.os.Bundle;
 import android.widget.LinearLayout;
-import android.content.Intent;
 import android.view.View;
 import android.widget.Button;
 
@@ -24,6 +23,7 @@ public class MatchEdit extends Activity {
         if (form != null) {
             form.write();
         }
+
         form = ScoutingDBHelper.getInstance().getMatchQuestion(questions[index]).getForm(match);
         root.removeAllViews();
         root.addView(form.getAnswerView(this, root));
@@ -70,8 +70,11 @@ public class MatchEdit extends Activity {
 
     @Override
     public void onBackPressed() {
-        form.write();
+        if (form != null) {
+            form.write();
+        }
 
-        super.onBackPressed();
+        this.setResult(RESULT_OK);
+        finish();
     }
 }
