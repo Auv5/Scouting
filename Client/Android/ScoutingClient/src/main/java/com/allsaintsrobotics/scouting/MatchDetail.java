@@ -50,14 +50,6 @@ public class MatchDetail extends Activity {
 
         this.mainLv = (ListView)findViewById(R.id.match_questionlist);
 
-        mainLv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                openMatchQuestion(position);
-            }
-        });
-
-
         this.match = getIntent().getParcelableExtra("match");
 
         getActionBar().setTitle(String.format(getString(R.string.md_actionbar_title),

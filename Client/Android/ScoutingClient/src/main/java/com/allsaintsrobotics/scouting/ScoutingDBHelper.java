@@ -4,13 +4,12 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteException;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
 import com.allsaintsrobotics.scouting.models.Match;
 import com.allsaintsrobotics.scouting.models.Team;
-import com.allsaintsrobotics.scouting.survey.FormFactory;
+import com.allsaintsrobotics.scouting.survey.QCustomFactory;
 import com.allsaintsrobotics.scouting.survey.TeamQuestion;
 import com.allsaintsrobotics.scouting.survey.MatchQuestion;
 
@@ -298,7 +297,7 @@ public class ScoutingDBHelper extends SQLiteOpenHelper {
 
             String type = questionCursor.getString(questionCursor.getColumnIndex(QUESTION_TYPE));
 
-            FormFactory<Team> factory = (FormFactory<Team>)FormFactory.forId(type);
+            QCustomFactory<Team> factory = (QCustomFactory<Team>) QCustomFactory.forId(type);
 
             teamQuestionCache.add(new TeamQuestion(
                     label,
@@ -341,7 +340,7 @@ public class ScoutingDBHelper extends SQLiteOpenHelper {
 
             String type = questionCursor.getString(questionCursor.getColumnIndex(QUESTION_TYPE));
 
-            FormFactory<Match> factory = (FormFactory<Match>)FormFactory.forId(type);
+            QCustomFactory<Match> factory = (QCustomFactory<Match>) QCustomFactory.forId(type);
 
             matchQuestionCache.add(new MatchQuestion(
                     label,

@@ -1,4 +1,4 @@
-package com.allsaintsrobotics.scouting.survey;
+package com.allsaintsrobotics.scouting.survey.customs;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -11,7 +11,9 @@ import android.widget.TextView;
 import android.app.Activity;
 
 import com.allsaintsrobotics.scouting.R;
-import com.allsaintsrobotics.scouting.ScoutEdit;
+import com.allsaintsrobotics.scouting.survey.Form;
+import com.allsaintsrobotics.scouting.survey.QCustomFactory;
+import com.allsaintsrobotics.scouting.survey.Question;
 
 /**
  * Created by jack on 11/25/13.
@@ -100,12 +102,4 @@ public class MultipleChoiceForm<T> extends Form<T> {
         label.setError(error);
     }
 
-    public static class MultipleChoiceFormFactory<M> extends FormFactory<M> {
-        public MultipleChoiceFormFactory() {}
-
-        @Override
-        public Form getForm(Question<M> q, M t) {
-            return new MultipleChoiceForm<M>(q, t);
-        }
-    }
 }

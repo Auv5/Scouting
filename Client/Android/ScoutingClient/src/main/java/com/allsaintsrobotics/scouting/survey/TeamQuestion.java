@@ -4,7 +4,7 @@ import com.allsaintsrobotics.scouting.models.Team;
 import com.allsaintsrobotics.scouting.ScoutingDBHelper;
 
 public class TeamQuestion extends Question<Team> {
-    public TeamQuestion(String label, FormFactory<Team> factory, int id, String[] offers) {
+    public TeamQuestion(String label, QCustomFactory<Team> factory, int id, String[] offers) {
         super(label, factory, id, offers);
     }
 

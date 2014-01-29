@@ -5,8 +5,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.allsaintsrobotics.scouting.ScoutingDBHelper;
-
 import java.util.HashMap;
 import java.util.Map;
 
@@ -14,7 +12,7 @@ import java.util.Map;
  * Created by jack on 11/24/13.
  */
 public abstract class Question<T> {
-    private FormFactory<T> factory;
+    private QCustomFactory<T> factory;
     private TextView tv;
 
     private int id;
@@ -25,7 +23,7 @@ public abstract class Question<T> {
 
     private Map<T, String> cache;
 
-    public Question(String label, FormFactory<T> factory, int id, String[] offers) {
+    public Question(String label, QCustomFactory<T> factory, int id, String[] offers) {
         this.factory = factory;
         this.id = id;
         this.label = label;
@@ -80,19 +78,7 @@ public abstract class Question<T> {
     protected abstract String getDefaultPrompt();
     
     public View getValueView(T t, Context c) {
-        String val = this.getAnswer(t);
-
-        if (tv == null) {
-            tv = new TextView(c);
-        }
-
-        tv.setText(val == null ? getDefaultPrompt() : val);
-
-        if (tv.getParent() != null) {
-            ((ViewGroup)tv.getParent()).removeView(tv);
-        }
-
-        return tv;
+        return factory.getValueView(this, t, c);
     }
     
     public String getLabel() {

@@ -1,4 +1,4 @@
-package com.allsaintsrobotics.scouting.survey;
+package com.allsaintsrobotics.scouting.survey.customs;
 
 import android.app.Activity;
 import android.content.Context;
@@ -17,7 +17,9 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.allsaintsrobotics.scouting.R;
-import com.allsaintsrobotics.scouting.ScoutEdit;
+import com.allsaintsrobotics.scouting.survey.Form;
+import com.allsaintsrobotics.scouting.survey.QCustomFactory;
+import com.allsaintsrobotics.scouting.survey.Question;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -188,31 +190,4 @@ public class CameraForm<T> extends Form<T> {
         super.write();
     }
 
-    public static class CameraFormFactory<M> extends FormFactory<M> {
-        private static final String TAG = "CameraFormFactory";
-
-        public CameraFormFactory() {}
-
-        @Override
-        public Form getForm(Question<M> q, M t) {
-            String dir = "scouting_pics";
-
-            File sdcard = Environment.getExternalStorageDirectory();
-
-            //TODO: Handle no SD card case
-
-            File dirFile = new File(sdcard, dir);
-
-            // Ensure directory exists. 
-            dirFile.mkdir();
-
-            String filename = String.valueOf(q.getId()) + "_" + t.hashCode() + ".jpg";
-            
-            Log.d(TAG, "Camera filename: " + filename);
-
-            File newFile = new File(dirFile, filename);
-
-            return new CameraForm<M>(q, t, newFile);
-        }
-    }
 }

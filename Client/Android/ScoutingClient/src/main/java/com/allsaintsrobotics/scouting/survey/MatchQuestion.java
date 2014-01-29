@@ -4,7 +4,7 @@ import com.allsaintsrobotics.scouting.models.Match;
 import com.allsaintsrobotics.scouting.ScoutingDBHelper;
 
 public class MatchQuestion extends Question<Match> {
-    public MatchQuestion(String label, FormFactory<Match> factory, int id, String[] offers) {
+    public MatchQuestion(String label, QCustomFactory<Match> factory, int id, String[] offers) {
         super(label, factory, id, offers);
     }
 
@@ -20,6 +20,6 @@ public class MatchQuestion extends Question<Match> {
 
     @Override
     protected String getDefaultPrompt() {
-        return "Press to answer";
+        return "";
     }
 }

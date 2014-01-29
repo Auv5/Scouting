@@ -1,4 +1,4 @@
-package com.allsaintsrobotics.scouting.survey;
+package com.allsaintsrobotics.scouting.survey.customs;
 
 import android.content.Context;
 import android.app.Activity;
@@ -11,7 +11,9 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.allsaintsrobotics.scouting.R;
-import com.allsaintsrobotics.scouting.ScoutEdit;
+import com.allsaintsrobotics.scouting.survey.Form;
+import com.allsaintsrobotics.scouting.survey.QCustomFactory;
+import com.allsaintsrobotics.scouting.survey.Question;
 
 /**
  * Created by jack on 11/24/13.
@@ -76,15 +78,5 @@ public class FreeResponseForm<T> extends Form<T> {
     @Override
     public void setError(String error) {
         response.setError(error);
-    }
-
-    public static class FreeResponseFormFactory<M> extends FormFactory<M> {
-        // Ensure this is the only constructor so FormFactory doesn't mess up.
-        public FreeResponseFormFactory() {}
-
-        @Override
-        public Form getForm(Question<M> q, M t) {
-            return new FreeResponseForm<M>(q, t);
-        }
     }
 }
