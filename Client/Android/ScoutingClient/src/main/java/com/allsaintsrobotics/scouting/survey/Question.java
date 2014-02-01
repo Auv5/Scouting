@@ -75,7 +75,7 @@ public abstract class Question<T> {
 
     protected abstract void dbWrite(T t, String value);
 
-    protected abstract String getDefaultPrompt();
+    public abstract String getDefaultPrompt();
     
     public View getValueView(T t, Context c) {
         return factory.getValueView(this, t, c);

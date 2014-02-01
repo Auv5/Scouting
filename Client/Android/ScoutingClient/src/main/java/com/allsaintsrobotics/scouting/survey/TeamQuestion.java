@@ -19,7 +19,7 @@ public class TeamQuestion extends Question<Team> {
     }
     
     @Override
-    protected String getDefaultPrompt() {
+    public String getDefaultPrompt() {
         return "";
     }
 }

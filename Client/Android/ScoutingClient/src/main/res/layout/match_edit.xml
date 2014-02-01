@@ -15,6 +15,7 @@
 	    />
     <LinearLayout
 	    android:id="@+id/matchedit_root"
+        android:orientation="horizontal"
 	    android:layout_width="0dip"
 	    android:layout_height="match_parent"
 	    android:layout_weight="9"

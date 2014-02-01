@@ -19,7 +19,7 @@ public class MatchQuestion extends Question<Match> {
     }
 
     @Override
-    protected String getDefaultPrompt() {
+    public String getDefaultPrompt() {
         return "";
     }
 }

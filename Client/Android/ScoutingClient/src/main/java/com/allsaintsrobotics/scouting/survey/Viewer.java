@@ -10,7 +10,7 @@ import android.widget.TextView;
  */
 public class Viewer<T> {
     private T t;
-    private Question<T> question;
+    protected Question<T> question;
 
     private TextView tv;
 
@@ -19,14 +19,18 @@ public class Viewer<T> {
         this.question = q;
     }
 
+    protected String textFilter(String text) {
+        return text == null ? question.getDefaultPrompt() : text;
+    }
+
     public View getView(Context c) {
-        String val = question.getAnswer(t);
+        String val = textFilter(question.getAnswer(t));
 
         if (tv == null) {
             tv = new TextView(c);
         }
 
-        tv.setText(val == null ? question.getDefaultPrompt() : val);
+        tv.setText(val);
 
         if (tv.getParent() != null) {
             ((ViewGroup)tv.getParent()).removeView(tv);
