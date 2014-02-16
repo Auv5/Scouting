@@ -217,6 +217,7 @@ public class TeleopAAForm<T> extends Form<T> {
             json.put("truss", truss);
             json.put("catches", catches);
             json.put("score", score);
+            json.put("value", score);
 
             return json.toString();
         } catch (JSONException e) {

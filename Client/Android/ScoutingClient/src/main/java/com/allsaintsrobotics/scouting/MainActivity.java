@@ -10,18 +10,28 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.widget.Toast;
 
+import com.allsaintsrobotics.scouting.models.Match;
+import com.allsaintsrobotics.scouting.models.Team;
+import com.allsaintsrobotics.scouting.survey.MatchQuestion;
+import com.allsaintsrobotics.scouting.survey.Question;
+import com.allsaintsrobotics.scouting.survey.TeamQuestion;
+
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
+import org.apache.http.NameValuePair;
 import org.apache.http.StatusLine;
+import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -30,6 +40,9 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by jack on 12/2/13.
@@ -97,11 +110,10 @@ public class MainActivity extends Activity {
                 break;
             case R.id.action_syncdata:
                 if (ScoutingDBHelper.getInstance().getId() == -1) {
-                    new SyncDataTask().execute();
+                    new DownloadDataTask().execute();
                 }
                 else {
-                    Toast.makeText(this, "Data already synced. Clear scouting data first.", Toast.LENGTH_LONG).
-                            show();
+                    new UploadDataTask().execute();
                 }
                 break;
             case R.id.action_clearscoutdata:
@@ -113,7 +125,7 @@ public class MainActivity extends Activity {
         return super.onOptionsItemSelected(item);
     }
 
-    private class SyncDataTask extends AsyncTask<Void, Void, Boolean> {
+    private class DownloadDataTask extends AsyncTask<Void, Void, Boolean> {
         @Override
         protected void onPreExecute() {
         }
@@ -149,15 +161,15 @@ public class MainActivity extends Activity {
                     return new JSONObject(jsonText.toString());
                 }
                 else {
-                    Log.e(SyncDataTask.class.getName(), "HTTP " + statusCode +
+                    Log.e(DownloadDataTask.class.getName(), "HTTP " + statusCode +
                             " when registering.");
                     return null;
                 }
             } catch (IOException e) {
-                Log.e(SyncDataTask.class.getName(), "Failed to download file: " + e.getMessage());
+                Log.e(DownloadDataTask.class.getName(), "Failed to download file: " + e.getMessage());
                 return null;
             } catch (JSONException e) {
-                Log.e(SyncDataTask.class.getName(), "JSON error: " + e.getMessage());
+                Log.e(DownloadDataTask.class.getName(), "JSON error: " + e.getMessage());
             }
 
             return null;
@@ -205,7 +217,7 @@ public class MainActivity extends Activity {
 
                 return true;
             } catch (JSONException e) {
-                Log.e(SyncDataTask.class.getName(), "Malformed registration.");
+                Log.e(DownloadDataTask.class.getName(), "Malformed registration.");
                 return false;
             }
         }
@@ -216,6 +228,134 @@ public class MainActivity extends Activity {
             }
             else {
                 Toast.makeText(MainActivity.this, "Could not connect to scouting server. Check settings.", Toast.LENGTH_LONG).show();
+            }
+        }
+    }
+
+    private class UploadDataTask extends AsyncTask<Void, Void, Boolean> {
+        @Override
+        protected Boolean doInBackground(Void... voids) {
+            long start = System.currentTimeMillis();
+
+            JSONObject toSend = new JSONObject();
+
+            JSONObject matchQuestionAnswers = new JSONObject();
+
+            List<Question<Match>> matchQuestions = new ArrayList<Question<Match>>();
+
+            for (MatchQuestion mq : ScoutingDBHelper.getInstance().getMatchQuestions()) {
+                matchQuestions.add(mq);
+            }
+
+            for (Match m : ScoutingDBHelper.getInstance().getMatches()) {
+                try {
+                    matchQuestionAnswers.put(Integer.toString(m.getNumber()),
+                            SyncHelper.getAnswersAsJSON(matchQuestions, m));
+                } catch (JSONException e) {
+                    continue;
+                }
+            }
+
+            try {
+                toSend.put("match_ans", matchQuestionAnswers);
+            } catch (JSONException e) {
+                e.printStackTrace();
+                return false;
+            }
+
+            List<Question<Team>> teamQuestions = new ArrayList<Question<Team>>();
+
+            JSONObject teamQuestionAnswers = new JSONObject();
+
+            for (TeamQuestion t : ScoutingDBHelper.getInstance().getTeamQuestions()) {
+                teamQuestions.add(t);
+            }
+
+            for (Team t : ScoutingDBHelper.getInstance().getTeams()) {
+                try {
+                    teamQuestionAnswers.put(Integer.toString(t.getNumber()),
+                            SyncHelper.getAnswersAsJSON(teamQuestions, t));
+                } catch (JSONException e) {
+                    continue;
+                }
+            }
+
+            try {
+                toSend.put("team_ans", teamQuestionAnswers);
+            } catch (JSONException e) {
+                e.printStackTrace();
+                return false;
+            }
+
+            SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(MainActivity.this);
+
+            String baseaddr = prefs.getString("server_addr", "failure");
+
+            HttpClient client = new DefaultHttpClient();
+
+            HttpPost post = new HttpPost("http://" + baseaddr + "/api/upload");
+
+            List<NameValuePair> params = new ArrayList<NameValuePair>();
+
+            params.add(new BasicNameValuePair("data", toSend.toString()));
+
+            try {
+                post.setEntity(new UrlEncodedFormEntity(params));
+                HttpResponse response = client.execute(post);
+
+                StatusLine sl = response.getStatusLine();
+                int statusCode = sl.getStatusCode();
+
+                if (statusCode == 200) {
+                    HttpEntity entity = response.getEntity();
+                    InputStream content = entity.getContent();
+                    BufferedReader br = new BufferedReader(new InputStreamReader(content));
+
+                    StringBuilder textSb = new StringBuilder();
+                    String line;
+                    while ((line = br.readLine()) != null) {
+                        textSb.append(line);
+                    }
+
+                    String text = textSb.toString();
+
+                    if (text.toLowerCase().contains("error")) {
+                        Log.e("SYNCBACK", "Error from server: '" + text + "'");
+                        return false;
+                    }
+                }
+                else {
+                    Log.e("SYNCBACK", "Failed response code: " + statusCode);
+                    return false;
+                }
+            } catch (UnsupportedEncodingException e) {
+                e.printStackTrace();
+                Log.e("SYNCBACK", "Unsupported URL encoding.");
+                return false;
+            } catch (ClientProtocolException e) {
+                e.printStackTrace();
+                Log.e("SYNCBACK", "Client protocol failure.");
+                return false;
+            } catch (IOException e) {
+                e.printStackTrace();
+                Log.e("SYNCBACK", "Generic IO exception.");
+                return false;
+            }
+
+            Log.d("Sync", "Send result: " + toSend.toString());
+            Log.d("Sync", "Time to process: " + (System.currentTimeMillis() - start));
+
+            return true;
+        }
+
+        @Override
+        protected void onPostExecute(Boolean result) {
+            if (result) {
+                Toast.makeText(MainActivity.this, "Data sync successful!", Toast.LENGTH_LONG).show();
+            }
+            else {
+                Toast.makeText(MainActivity.this, "An error occurred while syncing to the scouting " +
+                        "server. Please check your settings.", Toast.LENGTH_LONG).show();
             }
         }
     }

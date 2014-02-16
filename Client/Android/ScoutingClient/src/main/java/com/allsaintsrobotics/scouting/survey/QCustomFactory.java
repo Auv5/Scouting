@@ -36,7 +36,7 @@ public abstract class QCustomFactory<T> {
         factories.put("m_aateleop", new TeleopAAFactory<Match>());
     }
 
-    public abstract Form getForm(Question<T> q, T t);
+    public abstract Form<T> getForm(Question<T> q, T t);
 
     public JSONObject getJSON(Question<T> q, T t) {
         JSONObject json = new JSONObject();

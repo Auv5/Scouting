@@ -1,8 +1,13 @@
 package com.allsaintsrobotics.scouting;
 
+import com.allsaintsrobotics.scouting.models.Match;
+import com.allsaintsrobotics.scouting.survey.Question;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.util.List;
 
 /**
  * Created by jack on 12/2/13.
@@ -52,6 +57,24 @@ public class SyncHelper {
 
         ScoutingDBHelper.getInstance().
                 addQuestion(id, label, type, offers);
+    }
+
+    public static <T> JSONArray getAnswersAsJSON(List<Question<T>> questions, T t) {
+        JSONArray arr = new JSONArray();
+
+        for (Question<T> q : questions) {
+            JSONObject json = q.getJSON(t);
+            if (t instanceof Match) {
+                try {
+                    json.put("scout", ((Match) t).getScout());
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+            arr.put(json);
+        }
+
+        return arr;
     }
 }
 

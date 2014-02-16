@@ -134,6 +134,7 @@ public class AutoAAForm<T> extends Form<T> {
             JSONObject json = new JSONObject();
 
             json.put("score", score);
+            json.put("value", score);
             json.put("top", top);
             json.put("bottom", bottom);
             json.put("hot", hot);

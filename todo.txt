@@ -1,0 +1,17 @@
+Scouting app suggestions
+- "Check" when all "required" questions are done.
+--> Triple-state indicator (nothing, open circle, closed circle)
+- Individual question answering by tap in pit scout
+- Notes field for camera form
+- "Home" button in the action bar
+- Speed "dropdown" boxes for ranges (ex. 15-20 m/s)
+- Team to be scouted at top of matchscout
+- Send a name along with the register and the upload.
+- Make "P" and "N" button an icon of some kind.
+- Poll next form for a letter to represent it.
+---> Checkmark for the last one
+- Remove previous button when at the start of questions list
+- Save after "plus" or "minus" in matchscout
+- Make box bigger for autonomous
+- Return to matchscout button
+- Replace scoutids with names

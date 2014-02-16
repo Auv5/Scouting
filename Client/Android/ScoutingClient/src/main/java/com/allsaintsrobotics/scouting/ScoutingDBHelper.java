@@ -144,16 +144,6 @@ public class ScoutingDBHelper extends SQLiteOpenHelper {
         this.id = -1;
     }
 
-    public Cursor getAllTeams() {
-        return db.rawQuery("SELECT " + TEAM_NUM + " as _id, " + TEAM_NUM + ", " + TEAM_NAME +
-                " FROM " + TABLE_TEAMS, new String[] {});
-    }
-
-    public Cursor getAllTeams(String orderBy) {
-        return db.rawQuery("SELECT " + TEAM_NUM + " as _id, " + TEAM_NUM + ", " + TEAM_NAME +
-                " FROM " + TABLE_TEAMS + " ORDER BY " + orderBy, new String[] {});
-    }
-
     private List<Team> teamCache;
 
     Comparator<Team> teamComparator = new Comparator<Team>() {

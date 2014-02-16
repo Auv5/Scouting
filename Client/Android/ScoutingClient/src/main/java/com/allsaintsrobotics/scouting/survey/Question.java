@@ -5,6 +5,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -42,6 +45,18 @@ public abstract class Question<T> {
 
     void cacheUpdate(T t, String answer) {
         cache.put(t, answer);
+    }
+
+    public JSONObject getJSON(T t) {
+        JSONObject json = factory.getJSON(this, t);
+
+        try {
+            json.put("id", id);
+        } catch (JSONException e) {
+            return null;
+        }
+
+        return json;
     }
 
     public String getAnswer(T t) {

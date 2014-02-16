@@ -7,6 +7,7 @@ class Team:
 
     def __init__(self, number, nickname):
         self.number = number
+        self.id = number
         self.nickname = nickname
         Team._teams[number] = self
 

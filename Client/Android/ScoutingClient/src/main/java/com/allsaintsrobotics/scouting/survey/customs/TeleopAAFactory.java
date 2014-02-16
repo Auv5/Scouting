@@ -27,9 +27,9 @@ public class TeleopAAFactory<T> extends QCustomFactory<T> {
     @Override
     public JSONObject getJSON(Question<T> q, T t) {
         try {
-            JSONObject json = new JSONObject(q.getAnswer(t));
-
-            return json;
+            String answer = q.getAnswer(t);
+            if (answer == null) return new JSONObject();
+            else return new JSONObject(answer);
         } catch (JSONException ignored) { }
 
         return null;

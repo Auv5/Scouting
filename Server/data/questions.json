@@ -1,0 +1,157 @@
+[
+    {
+        "offers": [],
+        "answers": {},
+        "type": "fr",
+        "label": "Who did you talk to? What is their role on the team?",
+        "id": 0
+    },
+    {
+        "offers": [],
+        "answers": {},
+        "type": "fr",
+        "label": "What is the approximate speed of your drive train?",
+        "id": 1
+    },
+    {
+        "offers": [
+            "Yes",
+            "No"
+        ],
+        "answers": {
+            "772": {
+                "func": "team",
+                "value": "Yes"
+            }
+        },
+        "type": "mc",
+        "label": "Can your robot actively control the ball?",
+        "id": 2
+    },
+    {
+        "offers": [
+            "Yes",
+            "No"
+        ],
+        "answers": {},
+        "type": "mc",
+        "label": "Can your robot shoot into the high goal reliably?",
+        "id": 3
+    },
+    {
+        "offers": [
+            "Yes",
+            "No"
+        ],
+        "answers": {},
+        "type": "mc",
+        "label": "Can you shoot reliably over the truss?",
+        "id": 4
+    },
+    {
+        "offers": [
+            "Defensive",
+            "Offensive"
+        ],
+        "answers": {},
+        "type": "mc",
+        "label": "What is the primary function of your robot?",
+        "id": 5
+    },
+    {
+        "offers": [
+            "Yes",
+            "No"
+        ],
+        "answers": {},
+        "type": "mc",
+        "label": "Can your robot pass the actively ball?",
+        "id": 6
+    },
+    {
+        "offers": [
+            "Yes",
+            "No"
+        ],
+        "answers": {},
+        "type": "mc",
+        "label": "Can your robot catch the ball out of the air?",
+        "id": 7
+    },
+    {
+        "offers": [
+            "Yes",
+            "No"
+        ],
+        "answers": {},
+        "type": "mc",
+        "label": "During autonomous, can your robot reliably get the 5pt movement score?",
+        "id": 8
+    },
+    {
+        "offers": [
+            "Yes",
+            "Yes w/ Vision",
+            "No"
+        ],
+        "answers": {},
+        "type": "mc",
+        "label": "Can your robot score in the high goal during autonomous?",
+        "id": 9
+    },
+    {
+        "offers": [],
+        "answers": {},
+        "type": "cam",
+        "label": "Take a picture of the robot from the side.",
+        "id": 10
+    },
+    {
+        "offers": [
+            "Yes",
+            "No"
+        ],
+        "answers": {},
+        "type": "cam",
+        "label": "If present, take a picture of a unique feature of the robot.",
+        "id": 11
+    },
+    {
+        "offers": [],
+        "answers": {
+            "1": {
+            	"772": {
+	                "bottom": 0,
+	                "value": 0,
+	                "func": "match",
+	                "score": 0,
+	                "balls": 0,
+	                "top": 0,
+	                "hot": 0,
+	                "scout": 772
+	            }
+            }
+        },
+        "type": "m_aaauto",
+        "label": "Autonomous",
+        "id": 12
+    },
+    {
+        "offers": [],
+        "answers": {
+            "1": {
+            	"772": {
+	                "truss": 1,
+	                "score": 0,
+	                "value": 0,
+	                "func": "match",
+	                "catches": 27,
+	                "scout": 772
+            	}
+            }
+        },
+        "type": "m_aateleop",
+        "label": "Teleop",
+        "id": 13
+    }
+]

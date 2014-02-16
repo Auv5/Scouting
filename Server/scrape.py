@@ -53,6 +53,20 @@ def usfirst_scrape_matches_impl(reg_id):
 
     return json.dumps(matchinfo)
 
+def mk_csv(headers, functions, outfname, item_list):
+    outf = open(outfname, 'w')
+
+    outf.write(','.join(headers) + ',\n')
+
+    for t in item_list:
+        for h in functions:
+            val = h(t)
+            if val:
+                outf.write("\"" + str(val).replace('"', '') + '\",')
+            else:
+                outf.write(',')
+        outf.write('\n')
+
 
 def cache_or_get_json(name, func, *args, **kwargs):
     quiet = False

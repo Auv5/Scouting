@@ -14,7 +14,6 @@ import org.json.JSONObject;
  * Created by Jack on 29/01/14.
  */
 public class AutoAAFactory<T> extends QCustomFactory<T> {
-
     @Override
     public Form getForm(Question<T> q, T t) {
         return new AutoAAForm<T>(q, t);
@@ -28,9 +27,9 @@ public class AutoAAFactory<T> extends QCustomFactory<T> {
     @Override
     public JSONObject getJSON(Question<T> q, T t) {
         try {
-            JSONObject json = new JSONObject(q.getAnswer(t));
-
-            return json;
+            String answer = q.getAnswer(t);
+            if (answer == null) return new JSONObject();
+            else return new JSONObject(answer);
         } catch (JSONException ignored) { }
 
         return null;

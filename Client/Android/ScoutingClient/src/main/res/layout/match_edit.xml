@@ -4,14 +4,14 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:orientation="horizontal"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:gravity="center_vertical">
+    android:layout_height="match_parent">
     <Button
 	    android:id="@+id/matchedit_prev"
 	    android:layout_width="0dip"
 	    android:layout_height="50dip"
 	    android:layout_weight="1"
 	    android:text="P"
+        android:layout_gravity="top"
 	    />
     <LinearLayout
 	    android:id="@+id/matchedit_root"
@@ -27,5 +27,6 @@
 	    android:layout_height="50dip"
 	    android:layout_weight="1"
 	    android:text="N"
+        android:layout_gravity="top"
 	    />
 </LinearLayout>

@@ -57,6 +57,8 @@ public class CameraForm<T> extends Form<T> {
 
         this.label = (TextView) view.findViewById(R.id.cam_label);
 
+        label.setText(question.getLabel());
+
         ImageButton takePic = (ImageButton) view.findViewById(R.id.take_pic_button);
 
         this.imgView = (ImageView) view.findViewById(R.id.pic_preview);
