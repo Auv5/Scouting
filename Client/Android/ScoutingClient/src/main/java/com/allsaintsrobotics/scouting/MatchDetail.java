@@ -79,14 +79,14 @@ public class MatchDetail extends Activity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == REQUEST_EDIT_MATCH && resultCode == RESULT_OK) {
+        if (requestCode == REQUEST_EDIT_MATCH && resultCode == RESULT_OK && adapter != null) {
             adapter.notifyDataSetChanged();
         }
     }
 
     private void populateQuestionList(List<MatchQuestion> result) {
         this.questions = result;
-        adapter = new QuestionAdapter<Match>(this, this.match, result);
+        this.adapter = new QuestionAdapter<Match>(this, this.match, result);
         this.mainLv.setAdapter(adapter);
     }
 

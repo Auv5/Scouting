@@ -20,7 +20,7 @@ public class Viewer<T> {
     }
 
     protected String textFilter(String text) {
-        return text == null ? question.getDefaultPrompt() : text;
+        return text;
     }
 
     public View getView(Context c) {

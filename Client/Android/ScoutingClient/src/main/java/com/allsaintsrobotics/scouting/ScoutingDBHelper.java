@@ -28,8 +28,10 @@ public class ScoutingDBHelper extends SQLiteOpenHelper {
     public static final String TABLE_TEAMS = "teams";
     public static final String TEAM_NUM = "number";
     public static final String TEAM_NAME = "nickname";
+    private static final String TEAM_CONFLICTED = "conflicted";
     private static final String TEAM_CREATE = "CREATE TABLE " + TABLE_TEAMS + "(" + TEAM_NUM +
-            " INTEGER PRIMARY KEY NOT NULL, " + TEAM_NAME + " TEXT" + ");";
+            " INTEGER PRIMARY KEY NOT NULL, " + TEAM_NAME + " TEXT, " + TEAM_CONFLICTED + " INTEGER"
+            + ");";
 
     public static final String TABLE_QUESTIONS = "questions";
     public static final String QUESTION_ID = "_id";
@@ -319,8 +321,6 @@ public class ScoutingDBHelper extends SQLiteOpenHelper {
 
         Cursor questionCursor = db.query(TABLE_QUESTIONS, null, QUESTION_TYPE + " LIKE 'm\\_%' ESCAPE '\\'", null, null, null, null);
 
-        Log.d("MatchQuestionRead", "Count: " + questionCursor.getCount());
-
         while (questionCursor.moveToNext()) {
             String label = questionCursor.getString(questionCursor.getColumnIndex(QUESTION_TEXT));
 
@@ -480,15 +480,19 @@ public class ScoutingDBHelper extends SQLiteOpenHelper {
         Collections.sort(matchCache, matchComparator);
     }
 
-    public void addTeam(int teamNum, String teamNickname) {
+    public Team addTeam(int teamNum, String teamNickname, boolean teamConflict) {
         ContentValues cv = new ContentValues();
 
         cv.put(TEAM_NUM, teamNum);
         cv.put(TEAM_NAME, teamNickname);
+        cv.put(TEAM_CONFLICTED, teamConflict);
 
         db.insert(TABLE_TEAMS, null, cv);
 
-        addToTeamCache(new Team(teamNum, teamNickname));
+        Team t = new Team(teamNum, teamNickname, teamConflict);
+        addToTeamCache(t);
+
+        return t;
     }
 
     public void setId(int id) {

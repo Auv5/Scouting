@@ -50,6 +50,7 @@ import java.util.List;
 public class MainActivity extends Activity {
     TeamList teamList;
     private MatchList matchList;
+    private boolean execTask = false;
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -177,6 +178,12 @@ public class MainActivity extends Activity {
 
         @Override
         protected Boolean doInBackground(Void... params) {
+            if (execTask) {
+                return null;
+            }
+
+            execTask = true;
+
             long t0 = System.currentTimeMillis();
             JSONObject jsObj = getRegisterJson();
 
@@ -196,9 +203,21 @@ public class MainActivity extends Activity {
                 ScoutingDBHelper.getInstance().sortMatches();
 
                 JSONArray teams = jsObj.getJSONArray("teams");
+                JSONArray conflicts = jsObj.getJSONArray("conflicts");
 
                 for (int i = 0; i < teams.length(); i ++) {
-                    SyncHelper.addTeamFromJson(teams.getJSONArray(i));
+                    boolean conflicted = false;
+
+                    JSONArray team = teams.getJSONArray(i);
+                    int num = team.getInt(0);
+                    for (int j = 0; j < conflicts.length(); j ++) {
+                        if (conflicts.getInt(j) == num) {
+                            conflicted = true;
+                            break;
+                        }
+                    }
+                    SyncHelper.addTeamFromJson(teams.getJSONArray(i), conflicted);
+
                 }
 
                 ScoutingDBHelper.getInstance().sortTeams();
@@ -223,18 +242,29 @@ public class MainActivity extends Activity {
         }
         @Override
         protected void onPostExecute(Boolean result) {
-            if (result) {
+            if (result == null) {
+                return;
+            }
+            else if (result) {
                 invalidateData();
             }
             else {
                 Toast.makeText(MainActivity.this, "Could not connect to scouting server. Check settings.", Toast.LENGTH_LONG).show();
             }
+
+            execTask = false;
         }
     }
 
     private class UploadDataTask extends AsyncTask<Void, Void, Boolean> {
         @Override
         protected Boolean doInBackground(Void... voids) {
+            if (execTask) {
+                return null;
+            }
+
+            execTask = true;
+
             long start = System.currentTimeMillis();
 
             JSONObject toSend = new JSONObject();
@@ -293,7 +323,9 @@ public class MainActivity extends Activity {
 
             HttpClient client = new DefaultHttpClient();
 
-            HttpPost post = new HttpPost("http://" + baseaddr + "/api/upload");
+            HttpPost post = new HttpPost("http://" + baseaddr + ":8000/api/upload");
+
+            Log.d("MATCHSYNC", post.getURI().toString());
 
             List<NameValuePair> params = new ArrayList<NameValuePair>();
 
@@ -350,13 +382,18 @@ public class MainActivity extends Activity {
 
         @Override
         protected void onPostExecute(Boolean result) {
-            if (result) {
+            if (result == null) {
+                return;
+            }
+            else if (result) {
                 Toast.makeText(MainActivity.this, "Data sync successful!", Toast.LENGTH_LONG).show();
             }
             else {
                 Toast.makeText(MainActivity.this, "An error occurred while syncing to the scouting " +
                         "server. Please check your settings.", Toast.LENGTH_LONG).show();
             }
+
+            execTask = false;
         }
     }
 

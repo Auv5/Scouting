@@ -35,8 +35,6 @@ public class TeamDetail extends Activity {
     private PitFragment pf;
     private MatchFragment mf;
 
-    private boolean menuRender = true;
-
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
@@ -52,13 +50,15 @@ public class TeamDetail extends Activity {
         ActionBar.Tab pitTab = actionBar.newTab().setText("Pit");
         ActionBar.Tab matchTab = actionBar.newTab().setText("Matches");
 
-        pf = PitFragment.getInstance(team);
+
+        if (!team.getConflicted()) {
+            pf = PitFragment.getInstance(team);
+            pitTab.setTabListener(new TeamDetail.DetailTabListener(pf));
+            actionBar.addTab(pitTab);
+        }
+
         mf = MatchFragment.getInstance(team);
-
-        pitTab.setTabListener(new TeamDetail.DetailTabListener(pf));
         matchTab.setTabListener(new TeamDetail.DetailTabListener(mf));
-
-        actionBar.addTab(pitTab);
         actionBar.addTab(matchTab);
 
         if (savedInstanceState != null && savedInstanceState.containsKey("tabstate")) {
@@ -69,31 +69,6 @@ public class TeamDetail extends Activity {
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         outState.putInt("tabstate", getActionBar().getSelectedNavigationIndex());
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        if (menuRender)
-        {
-            MenuInflater mi = this.getMenuInflater();
-            mi.inflate(R.menu.pit_scout, menu);
-
-            return true;
-        }
-        else
-        {
-            return super.onCreateOptionsMenu(menu);
-        }
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.action_editscout:
-                pf.openEditActivity();
-                return true;
-        }
-        return false;
     }
 
     public static class PitFragment extends Fragment {
@@ -120,7 +95,24 @@ public class TeamDetail extends Activity {
                 team = savedInstanceState.getParcelable("team");
             }
 
+            this.setHasOptionsMenu(true);
+
             return v;
+        }
+
+        @Override
+        public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+            inflater.inflate(R.menu.pit_scout, menu);
+        }
+
+        @Override
+        public boolean onOptionsItemSelected(MenuItem item) {
+            switch (item.getItemId()) {
+                case R.id.action_editscout:
+                    openEditActivity();
+                    return true;
+            }
+            return false;
         }
 
         @Override
@@ -193,7 +185,6 @@ public class TeamDetail extends Activity {
     }
 
     public static class MatchFragment extends Fragment {
-        private static final int MATCH_DETAIL = 8001;
         private ListView lv;
         private List<Match> matches;
         private Team team;
@@ -271,10 +262,8 @@ public class TeamDetail extends Activity {
         @Override
         public void onTabSelected(ActionBar.Tab tab, FragmentTransaction ft) {
             if (fragment instanceof PitFragment) {
-                menuRender = true;
             }
             else {
-                menuRender = false;
             }
 
             TeamDetail.this.invalidateOptionsMenu();

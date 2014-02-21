@@ -1,6 +1,7 @@
 package com.allsaintsrobotics.scouting;
 
 import com.allsaintsrobotics.scouting.models.Match;
+import com.allsaintsrobotics.scouting.models.Team;
 import com.allsaintsrobotics.scouting.survey.Question;
 
 import org.json.JSONArray;
@@ -36,11 +37,11 @@ public class SyncHelper {
         ScoutingDBHelper.getInstance().addMatch(matchId, scout, red, blue);
     }
 
-    public static void addTeamFromJson(JSONArray teamJson) throws JSONException {
+    public static Team addTeamFromJson(JSONArray teamJson, boolean conflicted) throws JSONException {
         int teamNum = teamJson.getInt(0);
         String teamNickname = teamJson.getString(1);
 
-        ScoutingDBHelper.getInstance().addTeam(teamNum, teamNickname);
+        return ScoutingDBHelper.getInstance().addTeam(teamNum, teamNickname, conflicted);
     }
 
     public static void addQuestionFromJson(JSONObject jsonObject) throws JSONException {

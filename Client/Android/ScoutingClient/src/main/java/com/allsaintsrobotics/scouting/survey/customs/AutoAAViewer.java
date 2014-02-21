@@ -17,7 +17,7 @@ public class AutoAAViewer<T> extends Viewer<T> {
     @Override
     protected String textFilter(String text) {
         if (text == null) {
-            return question.getDefaultPrompt();
+            return "";
         }
 
         try {
@@ -25,7 +25,7 @@ public class AutoAAViewer<T> extends Viewer<T> {
 
             return Integer.toString(json.getInt("score"));
         } catch (JSONException e) {
-            return question.getDefaultPrompt();
+            return "";
         }
     }
 }

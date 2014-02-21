@@ -17,9 +17,4 @@ public class MatchQuestion extends Question<Match> {
     public void dbWrite(Match match, String value) {
         ScoutingDBHelper.getInstance().setAnswer(this, match, value);
     }
-
-    @Override
-    public String getDefaultPrompt() {
-        return "";
-    }
 }

@@ -21,18 +21,29 @@ public abstract class Question<T> {
     private int id;
     private String label;
     private String[] offers;
+    private boolean optional;
 
     private static final String TAG = "Question";
 
     private Map<T, String> cache;
 
-    public Question(String label, QCustomFactory<T> factory, int id, String[] offers) {
+    public Question(String label, QCustomFactory<T> factory, int id, String[] offers, boolean optional) {
         this.factory = factory;
         this.id = id;
         this.label = label;
         this.offers = offers;
 
+        this.optional = optional;
+
         cache = new HashMap<T, String>();
+    }
+
+    public Question(String label, QCustomFactory<T> factory, int id, String[] offers) {
+        this(label, factory, id, offers, false);
+    }
+
+    public boolean isOptional() {
+        return optional;
     }
 
     public Form<T> getForm(T t) {
@@ -89,8 +100,6 @@ public abstract class Question<T> {
     protected abstract String dbRead(T t);
 
     protected abstract void dbWrite(T t, String value);
-
-    public abstract String getDefaultPrompt();
     
     public View getValueView(T t, Context c) {
         return factory.getValueView(this, t, c);

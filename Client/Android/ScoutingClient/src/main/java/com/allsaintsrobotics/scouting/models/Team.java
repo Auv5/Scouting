@@ -14,15 +14,36 @@ public class Team implements Parcelable {
     private int number;
     private String nickname;
 
+    private boolean conflicted;
+
     private static String TAG = "team";
 
-    public Team(int number, String nickname) {
+    public Team(int number, String nickname, boolean conflicted) {
         this.number = number;
         this.nickname = nickname;
+        this.conflicted = conflicted;
+    }
+
+    public Team(int number, String nickname) {
+        this(number, nickname, false);
     }
 
     public Team(Parcel in) {
         this(in.readInt(), in.readString());
+
+        boolean[] hack = new boolean[1];
+
+        in.readBooleanArray(hack);
+
+        this.conflicted = hack[0];
+    }
+
+    public void setConflicted(boolean conflicted) {
+        this.conflicted = conflicted;
+    }
+
+    public boolean getConflicted() {
+        return conflicted;
     }
 
     public int getNumber() {
@@ -43,6 +64,7 @@ public class Team implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeInt(this.number);
         dest.writeString(this.nickname);
+        dest.writeBooleanArray(new boolean[] {conflicted});
     }
 
     @Override
@@ -57,7 +79,6 @@ public class Team implements Parcelable {
 
         Team team = (Team) o;
         return number == team.number;
-
     }
 
     @Override

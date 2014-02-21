@@ -17,9 +17,4 @@ public class TeamQuestion extends Question<Team> {
     public void dbWrite(Team team, String value) {
         ScoutingDBHelper.getInstance().setAnswer(this, team, value);
     }
-    
-    @Override
-    public String getDefaultPrompt() {
-        return "";
-    }
 }

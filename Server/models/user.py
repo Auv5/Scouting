@@ -6,6 +6,7 @@ class User:
         self.id = userid
         self.matches = []
         self.teams = []
+        self.conflicts = []
 
 
 def _assign_to_teams(users, teams):
@@ -51,6 +52,8 @@ def divide_users(teams, matches, num_users):
         else:
             user_to_assign = min(m.free_users, key=lambda self: len(self.matches))
             user_to_assign.matches.append((t, m))
+
+            user_to_assign.conflicts.append(t)
 
             # Remove user_to_assign from the list of free users.
             m.free_users = [u for u in m.free_users if u != user_to_assign]

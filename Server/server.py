@@ -14,19 +14,25 @@ import models.match
 
 
 class Server:
-    def __init__(self):
+    def __init__(self, teams, matches):
         #TODO: Save users and id_counter
         self.id_counter = 0
         self.users = []
-        self.questions = config.get_questions(os.path.exists('data/questions.json'))
+        self.teams = teams
+        self.matches = matches
+        self.team_questions, self.match_questions = config.get_questions(os.path.exists('data/questions.json'))
 
     def register(self, request):
         if self.id_counter < len(self.users):
             user = self.users[self.id_counter]
-            user.name = request.params['name']
+            #user.name = request.params['name']
+            combine = {}
+            combine.update(self.team_questions)
+            combine.update(self.match_questions)
             to_send = {'id': user.id, 'teams': [t.to_json() for t in user.teams],
-                       'matches': [m.to_json(t) for t, m in user.matches], 'questions': [q.to_json() for q in
-                                                                                         self.questions.values()]}
+                       'matches': [m.to_json(t) for t, m in user.matches], 'questions': [q.to_small_json() for q in
+                                                                                            combine.values()],
+                       'conflicts': [t.id for t in user.teams if t in user.conflicts]}
             self.id_counter += 1
             return Response(json.dumps(to_send))
         else:
@@ -40,28 +46,72 @@ class Server:
                 m = models.match.get_match(int(mid))
                 for ans in assoc:
                     if 'value' in ans:
-                        q_to = self.questions[ans['id']]
+                        q_to = self.match_questions[ans['id']]
                         del ans['id']
-                        q_to.add_answer(m, ans, models.team.get_team(ans['scout']))
+                        q_to.add_answer(models.team.get_team(ans['scout']), m, ans)
 
             for (tid, assoc) in dict(data['team_ans']).items():
                 t = models.team.get_team(int(tid))
                 for ans in assoc:
                     if 'value' in ans:
-                        q_to = self.questions[ans['id']]
+                        q_to = self.team_questions[ans['id']]
                         del ans['id']
                         q_to.add_answer(t, ans)
 
             self.write_questions()
-            return Response("SUCCESS!!")
+            return Response('SUCCESS!!')
         else:
             return Response('ERROR: USE THE RIGHT METHOD YOU INCOMPETENT FOOL')
 
+    def make_spreadsheet(self):
+        team_labels = ["Team"] + [q.label for q in self.team_questions.values()]
+        outf = open('data/export_teams.csv', 'w')
+        outf.write('\"' + '\",'.join(team_labels) + '\",\n')
+
+        for t in self.teams:
+            outf.write("\"" + str(t.id) + "\",")
+            for tq in self.team_questions.values():
+                if tq.has(t):
+                    outf.write("\"" + tq.get(t) + "\",")
+                else:
+                    outf.write(",")
+            outf.write("\n")
+
+        outf = open('data/export_teams.csv', 'w')
+
+        outf.close()
+
+        outf = open('data/export_match.csv', 'w')
+
+        outf.write("\"Teams\",")
+
+        for m in self.matches:
+            for mq in self.match_questions.values():
+                outf.write("\"" + str(m.id) + " " + mq.label + "\",")
+
+        outf.write('\n')
+
+        for t in self.teams:
+            outf.write('\"' + str(t.id) + '\",')
+            tmatches = [m for m in self.matches if t in m.red or t in m.blue]
+            for mq in self.match_questions.values():
+                for m in self.matches:
+                    if m in tmatches and mq.has(m, t):
+                        outf.write('\"' + mq.get(m, t) + '\",')
+                    else:
+                        outf.write('\"\",')
+            outf.write('\n')
+
+        outf.close()
+
+        return Response("")
+
     def write_questions(self):
         with open('data/questions.json', 'w') as f:
-            json.dump([q.to_json(False) for q in self.questions.values()], f)
-            print('Questions saved to disk.')
-
+            combine = {}
+            combine.update(self.team_questions)
+            combine.update(self.match_questions)
+            json.dump([q.to_json() for q in combine.values()], f)
 
 def register(request):
     global server
@@ -74,12 +124,15 @@ def _render(request, template, params={}):
 def configure(request):
     return _render(request, 'configure')
 
+
 def upload(request):
     global server
     return server.upload(request)
 
+
 def make_spreadsheet(request):
-    return Response("Unimplemented.")
+    global server
+    return server.make_spreadsheet()
 
 def main():
     global server
@@ -90,7 +143,7 @@ def main():
 
     matches = scrape.usfirst_scrape_matches(reg_id)
 
-    server = Server()
+    server = Server(teams, matches)
 
     server.users = divide_users(teams, matches, 6)
 
@@ -106,7 +159,7 @@ def main():
     configuration.add_route('upload', '/api/upload')
     configuration.add_view(upload, route_name='upload')
 
-    configuration.add_route('make_spreadsheet', '/api/make_spreadsheet')
+    configuration.add_route('make_spreadsheet', '/make_spreadsheet')
     configuration.add_view(make_spreadsheet, route_name='make_spreadsheet')
 
     configuration.add_route('configure', '/configure')
