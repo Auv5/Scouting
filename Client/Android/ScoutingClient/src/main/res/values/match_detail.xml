@@ -1,4 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="md_actionbar_title">Match %d</string>
+    <string name="md_actionbar_title" formatted="false">Match %d (Scout: %d)</string>
 </resources>

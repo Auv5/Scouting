@@ -66,6 +66,9 @@ public class MatchEdit extends Activity {
                 }
             }
         });
+
+        getActionBar().setTitle(String.format(getString(R.string.match_edit_title), match.getNumber(),
+                match.getScout()));
     }
 
     @Override

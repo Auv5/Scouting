@@ -53,7 +53,7 @@ public class MatchDetail extends Activity {
         this.match = getIntent().getParcelableExtra("match");
 
         getActionBar().setTitle(String.format(getString(R.string.md_actionbar_title),
-                this.match.getNumber()));
+                this.match.getNumber(), this.match.getScout()));
 
         new LoadMatchQuestionsTask().execute();
     }
