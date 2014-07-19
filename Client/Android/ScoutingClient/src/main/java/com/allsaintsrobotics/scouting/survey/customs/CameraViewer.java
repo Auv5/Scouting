@@ -8,6 +8,7 @@ import com.allsaintsrobotics.scouting.survey.Viewer;
 
 /**
  * Created by Jack on 28/01/14.
+ * This file is a part of the ASTECHZ Scouting app.
  */
 public class CameraViewer<T> extends Viewer<T> {
     public CameraViewer(T t, Question<T> q) {

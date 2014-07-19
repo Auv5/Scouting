@@ -8,6 +8,7 @@ import org.json.JSONObject;
 
 /**
  * Created by Jack on 30/01/14.
+ * This file is a part of the ASTECHZ Scouting app.
  */
 public class AutoAAViewer<T> extends Viewer<T> {
     public AutoAAViewer(T t, Question<T> q) {

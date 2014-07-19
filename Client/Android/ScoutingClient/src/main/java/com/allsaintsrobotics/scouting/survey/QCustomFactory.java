@@ -19,9 +19,10 @@ import org.json.JSONObject;
 
 /**
  * Created by jack on 11/24/13.
+ * This file is a part of the ASTECHZ Scouting app.
  */
 public abstract class QCustomFactory<T> {
-    private static Map<String, QCustomFactory> factories;
+    private static final Map<String, QCustomFactory> factories;
 
     static {
         factories = new HashMap<String, QCustomFactory>();

@@ -3,16 +3,16 @@ package com.allsaintsrobotics.scouting.models;
 import android.database.Cursor;
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.util.Log;
 
 import com.allsaintsrobotics.scouting.ScoutingDBHelper;
 
 /**
  * Created by jack on 11/24/13.
+ * This file is a part of the ASTECHZ Scouting app.
  */
 public class Team implements Parcelable {
-    private int number;
-    private String nickname;
+    private final int number;
+    private final String nickname;
 
     private boolean conflicted;
 
@@ -24,11 +24,11 @@ public class Team implements Parcelable {
         this.conflicted = conflicted;
     }
 
-    public Team(int number, String nickname) {
+    private Team(int number, String nickname) {
         this(number, nickname, false);
     }
 
-    public Team(Parcel in) {
+    private Team(Parcel in) {
         this(in.readInt(), in.readString());
 
         boolean[] hack = new boolean[1];

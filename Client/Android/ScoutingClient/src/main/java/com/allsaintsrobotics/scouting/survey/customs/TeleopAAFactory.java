@@ -12,6 +12,7 @@ import org.json.JSONObject;
 
 /**
  * Created by Jack on 30/01/14.
+ * This file is a part of the ASTECHZ Scouting Client.
  */
 public class TeleopAAFactory<T> extends QCustomFactory<T> {
     @Override

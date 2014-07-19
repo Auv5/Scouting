@@ -12,6 +12,7 @@ import org.json.JSONObject;
 
 /**
  * Created by Jack on 29/01/14.
+ * This file is a part of the ASTECHZ Scouting app.
  */
 public class AutoAAFactory<T> extends QCustomFactory<T> {
     @Override

@@ -7,7 +7,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="Autonomous Mode"
+        android:text="@string/automode_title"
         android:id="@+id/aaauto_numballs_label"
         android:layout_gravity="center_horizontal" />
 
@@ -19,13 +19,13 @@
             android:id="@+id/aaauto_bottom"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Bottom"
+            android:text="@string/bottom_text"
             />
         <CheckBox
             android:id="@+id/aaauto_hot"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Hot"
+            android:text="@string/hot_text"
             />
     </LinearLayout>
 
@@ -42,7 +42,7 @@
             <Button
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="-"
+                android:text="@string/minus_text"
                 android:id="@+id/remove_score"
                 android:layout_gravity="center_vertical"
                 android:layout_marginLeft="5dp" />
@@ -51,7 +51,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="0"
+            android:text="@string/placeholder_score"
             android:id="@+id/aaauto_score"
             android:textSize="100dp" />
 
@@ -63,7 +63,7 @@
             <Button
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="+"
+                android:text="@string/plus_text"
                 android:id="@+id/add_score"
                 android:layout_gravity="center_vertical"
                 android:layout_marginLeft="5dp" />

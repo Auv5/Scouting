@@ -12,8 +12,9 @@ import java.util.List;
 
 /**
  * Created by jack on 12/2/13.
+ * This file is a part of the ASTECHZ Scouting app.
  */
-public class SyncHelper {
+class SyncHelper {
     public static void addMatchFromJson(JSONObject matchJson) throws JSONException {
         int matchId = matchJson.getInt("id");
         int scout = matchJson.getInt("scout");

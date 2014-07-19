@@ -7,10 +7,11 @@ import android.widget.TextView;
 
 /**
  * Created by Jack on 28/01/14.
+ * This file is a part of the ASTECHZ Scouting Client.
  */
 public class Viewer<T> {
-    private T t;
-    protected Question<T> question;
+    private final T t;
+    private final Question<T> question;
 
     private TextView tv;
 

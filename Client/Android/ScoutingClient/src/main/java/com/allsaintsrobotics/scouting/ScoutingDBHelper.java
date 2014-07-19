@@ -20,12 +20,13 @@ import java.util.List;
 
 /**
  * Created by jack on 11/24/13.
+ * This file is a part of the ASTECHZ Scouting app.
  */
 public class ScoutingDBHelper extends SQLiteOpenHelper {
-    public static final String DBNAME = "scouting.db";
-    public static final int VERSION = 1;
+    private static final String DBNAME = "scouting.db";
+    private static final int VERSION = 1;
 
-    public static final String TABLE_TEAMS = "teams";
+    private static final String TABLE_TEAMS = "teams";
     public static final String TEAM_NUM = "number";
     public static final String TEAM_NAME = "nickname";
     private static final String TEAM_CONFLICTED = "conflicted";
@@ -33,41 +34,41 @@ public class ScoutingDBHelper extends SQLiteOpenHelper {
             " INTEGER PRIMARY KEY NOT NULL, " + TEAM_NAME + " TEXT, " + TEAM_CONFLICTED + " INTEGER"
             + ");";
 
-    public static final String TABLE_QUESTIONS = "questions";
-    public static final String QUESTION_ID = "_id";
-    public static final String QUESTION_STRID = "strid";
-    public static final String QUESTION_TEXT = "text";
-    public static final String QUESTION_TYPE = "type";
+    private static final String TABLE_QUESTIONS = "questions";
+    private static final String QUESTION_ID = "_id";
+    private static final String QUESTION_STRID = "strid";
+    private static final String QUESTION_TEXT = "text";
+    private static final String QUESTION_TYPE = "type";
     private static final String QUESTION_CREATE = "CREATE TABLE " + TABLE_QUESTIONS + "(" + QUESTION_ID +
             " INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, " + QUESTION_STRID + " TEXT, " + QUESTION_TEXT + " TEXT, " + QUESTION_TYPE +
             " TEXT" + ");";
 
-    public static final String TABLE_ANSWERS = "answers";
-    public static final String ANSWER_ID = "_id";
-    public static final String ANSWER_QUESTION = "qid";
-    public static final String ANSWER_TEAM = "tid";
-    public static final String ANSWER_MATCH = "mid";
-    public static final String ANSWER_TEXT = "text";
+    private static final String TABLE_ANSWERS = "answers";
+    private static final String ANSWER_ID = "_id";
+    private static final String ANSWER_QUESTION = "qid";
+    private static final String ANSWER_TEAM = "tid";
+    private static final String ANSWER_MATCH = "mid";
+    private static final String ANSWER_TEXT = "text";
     private static final String ANSWER_CREATE = "CREATE TABLE " + TABLE_ANSWERS + "(" + ANSWER_ID +
             " INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, " + ANSWER_QUESTION + " INTEGER NOT NULL, " +
             ANSWER_TEAM + " INTEGER NOT NULL, " + ANSWER_MATCH + " INTEGER, " + ANSWER_TEXT + " TEXT" + ");";
 
-    public static final String TABLE_OFFERS = "offered_answers";
-    public static final String OFFER_QUESTION = "qid";
-    public static final String OFFER_NUMBER = "offer_order";
-    public static final String OFFER_TEXT = "text";
+    private static final String TABLE_OFFERS = "offered_answers";
+    private static final String OFFER_QUESTION = "qid";
+    private static final String OFFER_NUMBER = "offer_order";
+    private static final String OFFER_TEXT = "text";
     private static final String OFFER_CREATE = "CREATE TABLE " + TABLE_OFFERS + "(" + OFFER_QUESTION +
             " INTEGER NOT NULL, " + OFFER_NUMBER + " INTEGER NOT NULL, " + OFFER_TEXT + " TEXT" + ");";
 
-    public static final String TABLE_MATCHES = "matches";
-    public static final String MATCH_NUMBER = "_id";
-    public static final String MATCH_RED1 = "red1";
-    public static final String MATCH_RED2 = "red2";
-    public static final String MATCH_RED3 = "red3";
-    public static final String MATCH_BLUE1 = "blue1";
-    public static final String MATCH_BLUE2 = "blue2";
-    public static final String MATCH_BLUE3 = "blue3";
-    public static final String MATCH_SCOUT = "scout";
+    private static final String TABLE_MATCHES = "matches";
+    private static final String MATCH_NUMBER = "_id";
+    private static final String MATCH_RED1 = "red1";
+    private static final String MATCH_RED2 = "red2";
+    private static final String MATCH_RED3 = "red3";
+    private static final String MATCH_BLUE1 = "blue1";
+    private static final String MATCH_BLUE2 = "blue2";
+    private static final String MATCH_BLUE3 = "blue3";
+    private static final String MATCH_SCOUT = "scout";
     
     private static final String MATCH_CREATE = "CREATE TABLE " + TABLE_MATCHES + "(" + MATCH_NUMBER +
             " INTEGER PRIMARY KEY NOT NULL, " + MATCH_RED1 + " INTEGER NOT NULL, " + MATCH_RED2 +
@@ -75,13 +76,13 @@ public class ScoutingDBHelper extends SQLiteOpenHelper {
             + MATCH_BLUE2 + " INTEGER NOT NULL, " + MATCH_BLUE3 + " INTEGER NOT NULL, " + MATCH_SCOUT +
             " INTEGER NOT NULL" + ");";
 
-    public static final String TABLE_SCOUTMETA = "scout_meta";
-    public static final String SCOUTMETA_OPTION = "option";
-    public static final String SCOUTMETA_VALUE = "value";
+    private static final String TABLE_SCOUTMETA = "scout_meta";
+    private static final String SCOUTMETA_OPTION = "option";
+    private static final String SCOUTMETA_VALUE = "value";
     private static final String SCOUTMETA_CREATE = "CREATE TABLE " + TABLE_SCOUTMETA + "(" +
             SCOUTMETA_OPTION + " TEXT, " + SCOUTMETA_VALUE + " TEXT" + ");";
 
-    private SQLiteDatabase db;
+    private final SQLiteDatabase db;
 
     private static ScoutingDBHelper instance;
 
@@ -148,7 +149,7 @@ public class ScoutingDBHelper extends SQLiteOpenHelper {
 
     private List<Team> teamCache;
 
-    Comparator<Team> teamComparator = new Comparator<Team>() {
+    private final Comparator<Team> teamComparator = new Comparator<Team>() {
         @Override
         public int compare(Team lhs, Team rhs) {
             return lhs.getNumber() - rhs.getNumber();
@@ -256,7 +257,7 @@ public class ScoutingDBHelper extends SQLiteOpenHelper {
         }
     }
 
-    List<TeamQuestion> teamQuestionCache = null;
+    private List<TeamQuestion> teamQuestionCache = null;
 
     public TeamQuestion getTeamQuestion(int id) {
         for (TeamQuestion tq : teamQuestionCache) {
@@ -301,7 +302,7 @@ public class ScoutingDBHelper extends SQLiteOpenHelper {
         return teamQuestionCache;
     }
 
-    List<MatchQuestion> matchQuestionCache = null;
+    private List<MatchQuestion> matchQuestionCache = null;
     
     public MatchQuestion getMatchQuestion(int id) {
         for (MatchQuestion mq : matchQuestionCache) {
@@ -362,7 +363,7 @@ public class ScoutingDBHelper extends SQLiteOpenHelper {
         }
     }
 
-    private Comparator<TeamQuestion> questionComparator = new Comparator<TeamQuestion>() {
+    private final Comparator<TeamQuestion> questionComparator = new Comparator<TeamQuestion>() {
         @Override
         public int compare(TeamQuestion lhs, TeamQuestion rhs) {
             return lhs.getId() - rhs.getId();
@@ -390,7 +391,7 @@ public class ScoutingDBHelper extends SQLiteOpenHelper {
         return offers.toArray(new String[offers.size()]);
     }
 
-    List<Match> matchCache;
+    private List<Match> matchCache;
 
     public List<Match> getMatches(Team team) {
         List<Match> matches = new ArrayList<Match>();
@@ -405,7 +406,7 @@ public class ScoutingDBHelper extends SQLiteOpenHelper {
         return matches;
     }
 
-    Comparator<Match> matchComparator = new Comparator<Match>() {
+    private final Comparator<Match> matchComparator = new Comparator<Match>() {
         @Override
         public int compare(Match lhs, Match rhs) {
             return lhs.getNumber() - rhs.getNumber();

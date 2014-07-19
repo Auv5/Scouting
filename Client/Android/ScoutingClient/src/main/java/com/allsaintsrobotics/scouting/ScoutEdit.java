@@ -20,10 +20,9 @@ import java.util.List;
 
 /**
  * Created by jack on 11/25/13.
+ * This file is a part of the ASTECHZ Scouting app.
  */
 public class ScoutEdit extends Activity {
-    private Team team;
-
     private List<Form> forms;
 
     private ScrollView sv;
@@ -36,7 +35,7 @@ public class ScoutEdit extends Activity {
 
         Intent i = getIntent();
 
-        this.team = i.getParcelableExtra("team");
+        Team team = i.getParcelableExtra("team");
 
         getActionBar().setTitle(String.format(getString(R.string.se_actionbar_title), team.getNumber()));
 

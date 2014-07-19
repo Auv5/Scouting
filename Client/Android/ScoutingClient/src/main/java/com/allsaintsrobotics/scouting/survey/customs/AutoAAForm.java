@@ -19,21 +19,20 @@ import org.json.JSONObject;
 
 /**
  * Created by Jack on 29/01/14.
+ * This file is a part of the ASTECHZ Scouting app.
  */
 public class AutoAAForm<T> extends Form<T> {
     private LinearLayout view = null;
-
-    private Button minus, plus;
 
     private CheckBox hotBox, bottomBox;
 
     private TextView numBalls;
 
-    int score;
-    int balls;
-    int bottom;
-    int top;
-    int hot;
+    private int score;
+    private int balls;
+    private int bottom;
+    private int top;
+    private int hot;
 
 
 
@@ -49,22 +48,22 @@ public class AutoAAForm<T> extends Form<T> {
 
             this.view = (LinearLayout)li.inflate(R.layout.question_autoaa, null);
             this.numBalls = (TextView) view.findViewById(R.id.aaauto_score);
-            this.minus = (Button) view.findViewById(R.id.remove_score);
+            Button minus = (Button) view.findViewById(R.id.remove_score);
 
-            this.minus.setOnClickListener(new View.OnClickListener() {
+            minus.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     if (balls > 0) {
-                        balls --;
+                        balls--;
                     }
                     if (hotBox.isChecked() && hot > 0) {
-                        hot --;
+                        hot--;
                     }
                     if (bottomBox.isChecked() && bottom > 0) {
-                        bottom --;
+                        bottom--;
                     }
                     if (!bottomBox.isChecked() && top > 0) {
-                        top --;
+                        top--;
                     }
                     if (score > 0) {
                         score -= (hotBox.isChecked() ? 5 : 0) + (bottomBox.isChecked() ? 0 : 9) + (6);
@@ -78,23 +77,22 @@ public class AutoAAForm<T> extends Form<T> {
                 }
             });
 
-            this.plus = (Button) view.findViewById(R.id.add_score);
+            Button plus = (Button) view.findViewById(R.id.add_score);
 
-            this.plus.setOnClickListener(new View.OnClickListener() {
+            plus.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     int balls = Integer.valueOf(AutoAAForm.this.numBalls.getText().toString());
 
-                    balls ++;
+                    balls++;
 
                     if (hotBox.isChecked()) {
-                        hot ++;
+                        hot++;
                     }
                     if (bottomBox.isChecked()) {
-                        bottom ++;
-                    }
-                    else {
-                        top ++;
+                        bottom++;
+                    } else {
+                        top++;
                     }
 
                     score += (hotBox.isChecked() ? 5 : 0) + (bottomBox.isChecked() ? 0 : 9) + (6);

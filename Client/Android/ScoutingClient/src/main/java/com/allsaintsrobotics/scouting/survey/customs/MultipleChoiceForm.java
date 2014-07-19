@@ -12,14 +12,14 @@ import android.app.Activity;
 
 import com.allsaintsrobotics.scouting.R;
 import com.allsaintsrobotics.scouting.survey.Form;
-import com.allsaintsrobotics.scouting.survey.QCustomFactory;
 import com.allsaintsrobotics.scouting.survey.Question;
 
 /**
  * Created by jack on 11/25/13.
+ * This file is a part of the ASTECHZ Scouting app.
  */
 public class MultipleChoiceForm<T> extends Form<T> {
-    View view;
+    private View view;
 
     private RadioGroup group;
     private TextView label;

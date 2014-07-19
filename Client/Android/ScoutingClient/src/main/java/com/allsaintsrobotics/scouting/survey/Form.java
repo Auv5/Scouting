@@ -1,31 +1,29 @@
 package com.allsaintsrobotics.scouting.survey;
 
-import android.content.Context;
 import android.content.Intent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.app.Activity;
 
-import com.allsaintsrobotics.scouting.ScoutingDBHelper;
-
 /**
  * Created by jack on 11/24/13.
+ * This file is a part of the ASTECHZ Scouting app.
  */
 public abstract class Form<T> {
-    protected Question<T> question;
-    protected T t;
+    protected final Question<T> question;
+    protected final T t;
     private Validator validator;
 
-    public Form(Question<T> q, T t) {
+    protected Form(Question<T> q, T t) {
         this.question = q;
         this.t = t;
     }
 
     public abstract View getAnswerView(Activity c, ViewGroup parent);
 
-    public abstract String getAnswer();
+    protected abstract String getAnswer();
 
-    public abstract void setError(String error);
+    protected abstract void setError(String error);
 
     public void write() {
         String answer = this.getAnswer();

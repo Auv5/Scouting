@@ -7,13 +7,15 @@ import android.os.Parcelable;
 
 /**
  * Created by jack on 11/26/13.
+ * This file is a part of the ASTECHZ Scouting app.
  */
 public class Match implements Parcelable {
-    int number;
+    private final int number;
 
-    private int[] red, blue;
+    private final int[] red;
+    private final int[] blue;
 
-    private int scout;
+    private final int scout;
 
     public enum Alliance {
         BLUE,
@@ -29,7 +31,7 @@ public class Match implements Parcelable {
         this.scout = scout;
     }
 
-    public Match(Parcel in) {
+    private Match(Parcel in) {
         this(in.readInt(), in.createIntArray(), in.createIntArray(), in.readInt());
     }
 
@@ -73,7 +75,7 @@ public class Match implements Parcelable {
         }
     }
 
-    public Alliance getAlliance(int t) {
+    Alliance getAlliance(int t) {
         if (Arrays.asList(red).contains(t)) {
             return Alliance.RED;
         }

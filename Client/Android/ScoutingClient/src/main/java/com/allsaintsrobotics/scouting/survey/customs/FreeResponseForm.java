@@ -12,16 +12,15 @@ import android.widget.TextView;
 
 import com.allsaintsrobotics.scouting.R;
 import com.allsaintsrobotics.scouting.survey.Form;
-import com.allsaintsrobotics.scouting.survey.QCustomFactory;
 import com.allsaintsrobotics.scouting.survey.Question;
 
 /**
  * Created by jack on 11/24/13.
+ * This file is a part of the ASTECHZ Scouting app.
  */
 public class FreeResponseForm<T> extends Form<T> {
     private View view;
 
-    private TextView label;
     private EditText response;
 
     public FreeResponseForm(Question q, T t) {
@@ -37,7 +36,7 @@ public class FreeResponseForm<T> extends Form<T> {
             this.view = li.inflate(R.layout.question_freeresponse, null);
         }
 
-        this.label = (TextView) view.findViewById(R.id.fr_label);
+        TextView label = (TextView) view.findViewById(R.id.fr_label);
 
         this.response = (EditText) view.findViewById(R.id.fr_response);
 

@@ -9,19 +9,19 @@ import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import com.allsaintsrobotics.scouting.R;
-import com.allsaintsrobotics.scouting.models.Team;
 import com.allsaintsrobotics.scouting.survey.Question;
 
 import java.util.List;
 
 /**
  * Created by jack on 11/25/13.
+ * This file is a part of the ASTECHZ Scouting app.
  */
 public class QuestionAdapter<T> extends ArrayAdapter {
-    Context context;
-    List<? extends Question<T>> questions;
+    private final Context context;
+    private final List<? extends Question<T>> questions;
 
-    T team;
+    private final T team;
 
     public QuestionAdapter(Context context, T team, List<? extends Question<T>> questions) {
         super(context, R.layout.listitem_pitstats, (List)questions);
@@ -36,7 +36,7 @@ public class QuestionAdapter<T> extends ArrayAdapter {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         View row = convertView;
-        QuestionFieldHelper qfh = null;
+        QuestionFieldHelper qfh;
 
         if (row == null) {
             LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -53,7 +53,7 @@ public class QuestionAdapter<T> extends ArrayAdapter {
             qfh = (QuestionFieldHelper)row.getTag();
         }
 
-        Question q = (Question<T>)questions.get(position);
+        Question q = questions.get(position);
 
         qfh.label.setText(q.getLabel());
         qfh.value.removeAllViews();

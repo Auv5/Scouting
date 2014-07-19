@@ -6,11 +6,9 @@ import com.allsaintsrobotics.scouting.survey.MatchQuestion;
 
 import android.view.Menu;
 import android.view.MenuInflater;
-import android.widget.AdapterView;
 import android.widget.ListView;
 import android.app.Activity;
 import android.view.MenuItem;
-import android.view.View;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -18,13 +16,13 @@ import android.os.Bundle;
 import java.util.List;
 
 public class MatchDetail extends Activity {
-    public static final int REQUEST_EDIT_MATCH = 54;
+    private static final int REQUEST_EDIT_MATCH = 54;
 
-    ListView mainLv;
-    QuestionAdapter<Match> adapter;
+    private ListView mainLv;
+    private QuestionAdapter<Match> adapter;
 
-    Match match;
-    List<MatchQuestion> questions;
+    private Match match;
+    private List<MatchQuestion> questions;
 
     private void openMatchQuestion(int index) {
         Intent i = new Intent();

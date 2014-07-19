@@ -46,9 +46,10 @@ import java.util.List;
 
 /**
  * Created by jack on 12/2/13.
+ * This file is a part of the ASTECHZ Scouting app.
  */
 public class MainActivity extends Activity {
-    TeamList teamList;
+    private TeamList teamList;
     private MatchList matchList;
     private boolean execTask = false;
 
@@ -281,9 +282,7 @@ public class MainActivity extends Activity {
                 try {
                     matchQuestionAnswers.put(Integer.toString(m.getNumber()),
                             SyncHelper.getAnswersAsJSON(matchQuestions, m));
-                } catch (JSONException e) {
-                    continue;
-                }
+                } catch (JSONException ignored) { }
             }
 
             try {
@@ -305,9 +304,7 @@ public class MainActivity extends Activity {
                 try {
                     teamQuestionAnswers.put(Integer.toString(t.getNumber()),
                             SyncHelper.getAnswersAsJSON(teamQuestions, t));
-                } catch (JSONException e) {
-                    continue;
-                }
+                } catch (JSONException ignored) { }
             }
 
             try {
@@ -398,7 +395,7 @@ public class MainActivity extends Activity {
     }
 
     private class TabListener implements ActionBar.TabListener {
-        private Fragment fragment;
+        private final Fragment fragment;
 
         public TabListener(Fragment f) {
             this.fragment = f;

@@ -12,6 +12,6 @@
         android:showAsAction="never"/>
     <item
         android:id="@+id/action_clearscoutdata"
-        android:title="Clear Scouting Data"
+        android:title="@string/clear_debug"
         android:showAsAction="never"/>
 </menu>

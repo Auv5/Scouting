@@ -1,7 +1,6 @@
 package com.allsaintsrobotics.scouting;
 
 import android.app.Fragment;
-import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -16,6 +15,7 @@ import java.util.List;
 
 /**
  * Created by jack on 12/3/13.
+ * This file is a part of the ASTECHZ Scouting app.
  */
 public class MatchList extends Fragment {
     private ListView lv;

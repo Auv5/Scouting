@@ -2,7 +2,6 @@ package com.allsaintsrobotics.scouting.survey;
 
 import android.content.Context;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.TextView;
 
 import org.json.JSONException;
@@ -13,21 +12,22 @@ import java.util.Map;
 
 /**
  * Created by jack on 11/24/13.
+ * This file is a part of the ASTECHZ Scouting app.
  */
 public abstract class Question<T> {
-    private QCustomFactory<T> factory;
+    private final QCustomFactory<T> factory;
     private TextView tv;
 
-    private int id;
-    private String label;
-    private String[] offers;
-    private boolean optional;
+    private final int id;
+    private final String label;
+    private final String[] offers;
+    private final boolean optional;
 
     private static final String TAG = "Question";
 
-    private Map<T, String> cache;
+    private final Map<T, String> cache;
 
-    public Question(String label, QCustomFactory<T> factory, int id, String[] offers, boolean optional) {
+    private Question(String label, QCustomFactory<T> factory, int id, String[] offers, boolean optional) {
         this.factory = factory;
         this.id = id;
         this.label = label;
@@ -38,7 +38,7 @@ public abstract class Question<T> {
         cache = new HashMap<T, String>();
     }
 
-    public Question(String label, QCustomFactory<T> factory, int id, String[] offers) {
+    Question(String label, QCustomFactory<T> factory, int id, String[] offers) {
         this(label, factory, id, offers, false);
     }
 
@@ -76,7 +76,7 @@ public abstract class Question<T> {
     }
     
     // Marked final so that people don't accidentally override this method instead of dbRead().
-    private final String read(T t) {
+    private String read(T t) {
         if (cache.containsKey(t)) {
             return cache.get(t);
         }

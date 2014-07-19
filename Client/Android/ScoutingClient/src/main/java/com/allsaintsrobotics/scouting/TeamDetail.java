@@ -7,7 +7,6 @@ import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -15,7 +14,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
-import android.widget.TextView;
 
 import com.allsaintsrobotics.scouting.adapters.MatchAdapter;
 import com.allsaintsrobotics.scouting.adapters.QuestionAdapter;
@@ -27,13 +25,10 @@ import java.util.List;
 
 /**
  * Created by jack on 11/24/13.
+ * This file is a part of the ASTECHZ Scouting Client.
  */
 public class TeamDetail extends Activity {
     private static final String TAG = "TeamDetail";
-    private Team team;
-
-    private PitFragment pf;
-    private MatchFragment mf;
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -41,9 +36,10 @@ public class TeamDetail extends Activity {
         setContentView(R.layout.team_detail);
 
         Intent i = getIntent();
-        team = i.getParcelableExtra("team");
+        Team team = i.getParcelableExtra("team");
 
         ActionBar actionBar = getActionBar();
+        assert actionBar != null;
         actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
         actionBar.setTitle(String.format(getString(R.string.td_actionbar_title), team.getNumber()));
 
@@ -52,12 +48,12 @@ public class TeamDetail extends Activity {
 
 
         if (!team.getConflicted()) {
-            pf = PitFragment.getInstance(team);
+            PitFragment pf = PitFragment.getInstance(team);
             pitTab.setTabListener(new TeamDetail.DetailTabListener(pf));
             actionBar.addTab(pitTab);
         }
 
-        mf = MatchFragment.getInstance(team);
+        MatchFragment mf = MatchFragment.getInstance(team);
         matchTab.setTabListener(new TeamDetail.DetailTabListener(mf));
         actionBar.addTab(matchTab);
 
@@ -152,9 +148,8 @@ public class TeamDetail extends Activity {
         private class QuestionPopulateTask extends AsyncTask<Void, Void, List<TeamQuestion>> {
             @Override
             protected List<TeamQuestion> doInBackground(Void... params) {
-                List<TeamQuestion> questions = ScoutingDBHelper.getInstance().getTeamQuestions();
 
-                return questions;
+                return ScoutingDBHelper.getInstance().getTeamQuestions();
             }
 
             @Override
@@ -241,8 +236,7 @@ public class TeamDetail extends Activity {
         private class MatchPopulateTask extends AsyncTask<Void, Void, List<Match>> {
             @Override
             protected List<Match> doInBackground(Void... params) {
-                List<Match> matches = ScoutingDBHelper.getInstance().getMatches(team);
-                return matches;
+                return ScoutingDBHelper.getInstance().getMatches(team);
             }
 
             @Override
@@ -253,7 +247,7 @@ public class TeamDetail extends Activity {
     }
 
     private class DetailTabListener implements ActionBar.TabListener {
-        private Fragment fragment;
+        private final Fragment fragment;
 
         public DetailTabListener(Fragment f) {
             this.fragment = f;
@@ -261,11 +255,6 @@ public class TeamDetail extends Activity {
 
         @Override
         public void onTabSelected(ActionBar.Tab tab, FragmentTransaction ft) {
-            if (fragment instanceof PitFragment) {
-            }
-            else {
-            }
-
             TeamDetail.this.invalidateOptionsMenu();
 
             ft.replace(R.id.detail_fragcont, fragment);

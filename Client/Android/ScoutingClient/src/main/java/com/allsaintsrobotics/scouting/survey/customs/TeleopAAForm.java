@@ -6,7 +6,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -19,6 +18,7 @@ import org.json.JSONObject;
 
 /**
  * Created by Jack on 30/01/14.
+ * This file is a part of the ASTECHZ Scouting Client.
  */
 public class TeleopAAForm<T> extends Form<T> {
     private RelativeLayout view = null;
@@ -32,10 +32,6 @@ public class TeleopAAForm<T> extends Form<T> {
     private Button trussMinus;
     private Button catchPlus;
     private Button catchMinus;
-    private Button scorePlus;
-    private Button scoreMinus;
-    private Button assistPlus;
-    private Button assistMinus;
 
     private TextView assistsLabel;
     private TextView scoreLabel;
@@ -127,35 +123,35 @@ public class TeleopAAForm<T> extends Form<T> {
                 }
             });
 
-            this.assistPlus = (Button) view.findViewById(R.id.assist_plus);
-            this.assistPlus.setOnClickListener(new View.OnClickListener() {
+            Button assistPlus = (Button) view.findViewById(R.id.assist_plus);
+            assistPlus.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     if (assists < 3) {
-                        assists ++;
+                        assists++;
                     }
 
                     assistsLabel.setText(Integer.toString(assists));
                 }
             });
 
-            this.assistMinus = (Button) view.findViewById(R.id.assist_minus);
-            this.assistMinus.setOnClickListener(new View.OnClickListener() {
+            Button assistMinus = (Button) view.findViewById(R.id.assist_minus);
+            assistMinus.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     if (assists > 1) {
-                        assists --;
+                        assists--;
                     }
 
                     assistsLabel.setText(Integer.toString(assists));
                 }
             });
 
-            this.scorePlus = (Button) view.findViewById(R.id.score_plus);
-            this.scorePlus.setOnClickListener(new View.OnClickListener() {
+            Button scorePlus = (Button) view.findViewById(R.id.score_plus);
+            scorePlus.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    score += assists*10;
+                    score += assists * 10;
 
                     catchPlus.setEnabled(true);
                     trussPlus.setEnabled(true);
@@ -166,14 +162,13 @@ public class TeleopAAForm<T> extends Form<T> {
                 }
             });
 
-            this.scoreMinus = (Button) view.findViewById(R.id.score_minus);
-            this.scoreMinus.setOnClickListener(new View.OnClickListener() {
+            Button scoreMinus = (Button) view.findViewById(R.id.score_minus);
+            scoreMinus.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    if (score > assists*10) {
-                        score -= assists*10;
-                    }
-                    else {
+                    if (score > assists * 10) {
+                        score -= assists * 10;
+                    } else {
                         score = 0;
                     }
 

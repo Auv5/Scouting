@@ -19,11 +19,12 @@ import java.util.List;
 
 /**
  * Created by jack on 11/27/13.
+ * This file is a part of the ASTECHZ Scouting app.
  */
 public class MatchAdapter extends ArrayAdapter<Match> {
-    Team team;
-    Context context;
-    List<Match> matches;
+    private final Team team;
+    private final Context context;
+    private final List<Match> matches;
 
     public MatchAdapter(Context context, Team team, List<Match> matches) {
         super(context, R.layout.listitem_match, matches);
@@ -120,11 +121,11 @@ public class MatchAdapter extends ArrayAdapter<Match> {
                 public void onClick(View v) {
                     Intent i = new Intent();
                     
-                    i.setClass((Activity)context, MatchDetail.class);
+                    i.setClass(context, MatchDetail.class);
                     
                     i.putExtra("match", m);
 
-                    ((Activity)context).startActivity(i);
+                    context.startActivity(i);
                 }
             });
         }
@@ -138,10 +139,7 @@ public class MatchAdapter extends ArrayAdapter<Match> {
     @Override
     public boolean isEnabled(int position) {
         // If this isn't the team we're scouting for this match, disable it.
-        if (team != null && matches.get(position).getScout() != team.getNumber()) {
-            return false;
-        }
-        return super.isEnabled(position);
+        return !(team != null && matches.get(position).getScout() != team.getNumber()) && super.isEnabled(position);
     }
 
     private class MatchFieldHelper {

@@ -10,13 +10,14 @@ import com.allsaintsrobotics.scouting.models.Match;
 import com.allsaintsrobotics.scouting.survey.Form;
 
 public class MatchEdit extends Activity {
-    LinearLayout root;
-    Button prev, next;
+    private LinearLayout root;
+    private Button prev;
+    private Button next;
     
-    Form form;
-    Match match;
-    int[] questions;
-    int currentIndex;
+    private Form form;
+    private Match match;
+    private int[] questions;
+    private int currentIndex;
 
     private void setCurrentQuestion(int index) {
         currentIndex = index;

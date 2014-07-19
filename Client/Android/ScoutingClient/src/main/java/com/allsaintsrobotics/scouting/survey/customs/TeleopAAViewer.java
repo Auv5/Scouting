@@ -8,6 +8,7 @@ import org.json.JSONObject;
 
 /**
  * Created by Jack on 30/01/14.
+ * This file is a part of the ASTECHZ Scouting Client.
  */
 public class TeleopAAViewer<T> extends Viewer<T> {
     public TeleopAAViewer(T t, Question<T> q) {

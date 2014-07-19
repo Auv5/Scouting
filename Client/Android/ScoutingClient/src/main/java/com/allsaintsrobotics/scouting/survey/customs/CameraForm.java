@@ -8,7 +8,6 @@ import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Environment;
 import android.provider.MediaStore;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,7 +17,6 @@ import android.widget.TextView;
 
 import com.allsaintsrobotics.scouting.R;
 import com.allsaintsrobotics.scouting.survey.Form;
-import com.allsaintsrobotics.scouting.survey.QCustomFactory;
 import com.allsaintsrobotics.scouting.survey.Question;
 
 import java.io.File;
@@ -30,13 +28,14 @@ import java.io.OutputStream;
 
 /**
  * Created by jack on 11/27/13.
+ * This file is a part of the ASTECHZ Scouting app.
  */
 public class CameraForm<T> extends Form<T> {
     private static final int TAKE_PHOTO_CODE = 15;
 
     private View view = null;
     private TextView label;
-    private File finalImage;
+    private final File finalImage;
     private ImageView imgView;
 
     private File selectedImage = null;

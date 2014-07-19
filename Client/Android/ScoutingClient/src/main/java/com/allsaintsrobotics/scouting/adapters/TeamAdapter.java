@@ -1,16 +1,13 @@
 package com.allsaintsrobotics.scouting.adapters;
 
 import android.content.Context;
-import android.database.Cursor;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.CursorAdapter;
 import android.widget.TextView;
 
 import com.allsaintsrobotics.scouting.R;
-import com.allsaintsrobotics.scouting.ScoutingDBHelper;
 import com.allsaintsrobotics.scouting.models.Team;
 
 import java.util.List;
@@ -19,8 +16,8 @@ import java.util.List;
 * Created by jack on 11/24/13.
 */
 public class TeamAdapter extends ArrayAdapter<Team> {
-    List<Team> teams;
-    Context context;
+    private final List<Team> teams;
+    private final Context context;
 
     public TeamAdapter(Context context, List<Team> teams) {
         super(context, R.layout.listitem_team, teams);

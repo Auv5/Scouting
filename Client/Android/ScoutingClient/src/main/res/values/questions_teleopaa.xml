@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="truss_text">Truss Shot</string>
+    <string name="minus_text">-</string>
+    <string name="plus_text">+</string>
+    <string name="assists_text">Assists</string>
+    <string name="catch_text">Catch Points</string>
+    <string name="clear_debug">Clear Scouting Data</string>
+</resources>
