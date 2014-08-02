@@ -1,6 +1,2 @@
-.gradle
-/local.properties
-/.idea/workspace.xml
-.DS_Store
-Server/*.pyc
-Server/cache
+*\#*
+*~

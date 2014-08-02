@@ -1,3 +1,11 @@
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+# THE SOFTWARE.
+
 import json
 import os
 
@@ -7,7 +15,7 @@ from http.client import HTTPConnection
 from models.match import Match
 from models.team import Team, get_team
 
-DEF_HEADERS = {'User-Agent': 'TrueBlue bluealliance Scraper'}
+DEF_HEADERS = {'User-Agent': 'TrueBlue bluealliance Scraper', 'X-TBA-App-Id': '2994:scouting-system:v1'}
 
 def usfirst_scrape_matches(reg_id):
     return [Match(int(id), time, [get_team(int(red1)), get_team(int(red2)), get_team(int(red3))],
