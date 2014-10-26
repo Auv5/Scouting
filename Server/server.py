@@ -175,7 +175,7 @@ def main():
 
     app = configuration.make_wsgi_app()
 
-    server_app = make_server('0.0.0.0', 80, app)
+    server_app = make_server('0.0.0.0', 8000, app)
 
     print('Serving!')
 
