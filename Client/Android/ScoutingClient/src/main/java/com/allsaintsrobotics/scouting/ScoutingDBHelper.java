@@ -176,7 +176,7 @@ public class ScoutingDBHelper extends SQLiteOpenHelper {
 
     public List<Team> getTeams() {
         if (teamCache == null) {
-            teamCache = new ArrayList<Team>();
+            teamCache = new ArrayList<>();
 
             Cursor cursor = db.query(TABLE_TEAMS, new String[] {TEAM_NUM, TEAM_NAME},
                     null, null, null, null, null, null);
@@ -285,7 +285,7 @@ public class ScoutingDBHelper extends SQLiteOpenHelper {
             return teamQuestionCache;
         }
 
-        teamQuestionCache = new ArrayList<TeamQuestion>();
+        teamQuestionCache = new ArrayList<>();
 
         Cursor questionCursor = db.query(TABLE_QUESTIONS, null, QUESTION_TYPE + " NOT LIKE 'm\\_%' ESCAPE '\\'", null, null, null, null);
         
@@ -328,7 +328,7 @@ public class ScoutingDBHelper extends SQLiteOpenHelper {
             return matchQuestionCache;
         }
 
-        matchQuestionCache = new ArrayList<MatchQuestion>();
+        matchQuestionCache = new ArrayList<>();
 
         Cursor questionCursor = db.query(TABLE_QUESTIONS, null, QUESTION_TYPE + " LIKE 'm\\_%' ESCAPE '\\'", null, null, null, null);
 
@@ -392,7 +392,7 @@ public class ScoutingDBHelper extends SQLiteOpenHelper {
         Cursor offerCursor = db.query(TABLE_OFFERS, null, OFFER_QUESTION + " = ?", new String[] {Integer.toString(qid)},
                 null, null, OFFER_NUMBER);
 
-        List<String> offers = new ArrayList<String>();
+        List<String> offers = new ArrayList<>();
 
         while (offerCursor.moveToNext()) {
             offers.add(offerCursor.getString(offerCursor.getColumnIndex(OFFER_TEXT)));
@@ -404,7 +404,7 @@ public class ScoutingDBHelper extends SQLiteOpenHelper {
     private List<Match> matchCache;
 
     public List<Match> getMatches(Team team) {
-        List<Match> matches = new ArrayList<Match>();
+        List<Match> matches = new ArrayList<>();
         List<Match> allMatches = getMatches();
 
         for (Match m : allMatches) {
@@ -428,7 +428,7 @@ public class ScoutingDBHelper extends SQLiteOpenHelper {
             return matchCache;
         }
 
-        matchCache = new ArrayList<Match>();
+        matchCache = new ArrayList<>();
 
         Cursor matchCursor = db.query(TABLE_MATCHES, null, null, null, null, null, null);
 

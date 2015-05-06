@@ -115,7 +115,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             style="@android:style/TextAppearance.Medium"
-            android:text="Score"/>
+            android:text="@string/score"/>
 
         <LinearLayout
             android:layout_height="wrap_content"

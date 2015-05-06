@@ -27,12 +27,12 @@ import org.json.JSONObject;
 public class TeleopAAFactory<T> extends QCustomFactory<T> {
     @Override
     public Form getForm(Question<T> q, T t) {
-        return new TeleopAAForm<T>(q, t);
+        return new TeleopAAForm<>(q, t);
     }
 
     @Override
     public View getValueView(Question<T> q, T t, Context c) {
-        return new TeleopAAViewer<T>(t, q).getView(c);
+        return new TeleopAAViewer<>(t, q).getView(c);
     }
 
     @Override

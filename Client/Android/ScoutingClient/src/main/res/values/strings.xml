@@ -17,4 +17,5 @@
     <string name="teleop_average_default">Teleop: None</string>
     <string name="auto_average_default">Auto: None</string>
     <string name="next_text">N</string>
+    <string name="score">Score</string>
 </resources>

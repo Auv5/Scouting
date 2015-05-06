@@ -78,7 +78,7 @@ public class ScoutEdit extends Activity {
 
         sv = (ScrollView) findViewById(R.id.questions_scroll);
 
-        this.forms = new ArrayList<Form>();
+        this.forms = new ArrayList<>();
 
         for (TeamQuestion q : ScoutingDBHelper.getInstance().getTeamQuestions())
         {

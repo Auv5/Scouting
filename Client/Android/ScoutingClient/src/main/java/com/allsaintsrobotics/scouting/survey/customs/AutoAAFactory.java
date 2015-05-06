@@ -27,12 +27,12 @@ import org.json.JSONObject;
 public class AutoAAFactory<T> extends QCustomFactory<T> {
     @Override
     public Form getForm(Question<T> q, T t) {
-        return new AutoAAForm<T>(q, t);
+        return new AutoAAForm<>(q, t);
     }
 
     @Override
     public View getValueView(Question<T> q, T t, Context c) {
-        return new AutoAAViewer<T>(t, q).getView(c);
+        return new AutoAAViewer<>(t, q).getView(c);
     }
 
     @Override

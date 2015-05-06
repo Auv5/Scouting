@@ -40,6 +40,7 @@ public class CameraFactory<T> extends QCustomFactory<T> {
         File dirFile = new File(sdcard, dir);
 
         // Ensure directory exists.
+        //noinspection ResultOfMethodCallIgnored
         dirFile.mkdir();
 
         String filename = String.valueOf(q.getId()) + "_" + t.hashCode() + ".jpg";
@@ -48,11 +49,11 @@ public class CameraFactory<T> extends QCustomFactory<T> {
 
         File newFile = new File(dirFile, filename);
 
-        return new CameraForm<T>(q, t, newFile);
+        return new CameraForm<>(q, t, newFile);
     }
 
     @Override
     public View getValueView(Question<T> q, T m, Context c) {
-        return new CameraViewer<T>(m, q).getView(c);
+        return new CameraViewer<>(m, q).getView(c);
     }
 }

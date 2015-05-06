@@ -282,7 +282,7 @@ public class MainActivity extends Activity {
 
             JSONObject matchQuestionAnswers = new JSONObject();
 
-            List<Question<Match>> matchQuestions = new ArrayList<Question<Match>>();
+            List<Question<Match>> matchQuestions = new ArrayList<>();
 
             for (MatchQuestion mq : ScoutingDBHelper.getInstance().getMatchQuestions()) {
                 matchQuestions.add(mq);
@@ -302,7 +302,7 @@ public class MainActivity extends Activity {
                 return false;
             }
 
-            List<Question<Team>> teamQuestions = new ArrayList<Question<Team>>();
+            List<Question<Team>> teamQuestions = new ArrayList<>();
 
             JSONObject teamQuestionAnswers = new JSONObject();
 
@@ -334,7 +334,7 @@ public class MainActivity extends Activity {
 
             Log.d("MATCHSYNC", post.getURI().toString());
 
-            List<NameValuePair> params = new ArrayList<NameValuePair>();
+            List<NameValuePair> params = new ArrayList<>();
 
             params.add(new BasicNameValuePair("data", toSend.toString()));
 

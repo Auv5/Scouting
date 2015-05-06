@@ -45,7 +45,7 @@ public abstract class Question<T> {
 
         this.optional = optional;
 
-        cache = new HashMap<T, String>();
+        cache = new HashMap<>();
     }
 
     Question(String label, QCustomFactory<T> factory, int id, String[] offers) {

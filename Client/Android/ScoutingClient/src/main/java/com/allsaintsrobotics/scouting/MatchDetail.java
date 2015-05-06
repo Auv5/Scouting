@@ -34,7 +34,7 @@ public class MatchDetail extends Activity {
     private Match match;
     private List<MatchQuestion> questions;
 
-    private void openMatchQuestion(int index) {
+    private void openMatchQuestion() {
         Intent i = new Intent();
         i.setClass(MatchDetail.this, MatchEdit.class);
 
@@ -45,7 +45,7 @@ public class MatchDetail extends Activity {
         }
 
         i.putExtra("questions", questionIdArr);
-        i.putExtra("current", index);
+        i.putExtra("current", 0);
         i.putExtra("match", match);
 
         startActivityForResult(i, REQUEST_EDIT_MATCH);
@@ -78,7 +78,7 @@ public class MatchDetail extends Activity {
     public boolean onMenuItemSelected(int featureId, MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_editmatch:
-                openMatchQuestion(0);
+                openMatchQuestion();
                 return true;
             default:
                 return super.onMenuItemSelected(featureId, item);
@@ -94,7 +94,7 @@ public class MatchDetail extends Activity {
 
     private void populateQuestionList(List<MatchQuestion> result) {
         this.questions = result;
-        this.adapter = new QuestionAdapter<Match>(this, this.match, result);
+        this.adapter = new QuestionAdapter<>(this, this.match, result);
         this.mainLv.setAdapter(adapter);
     }
 

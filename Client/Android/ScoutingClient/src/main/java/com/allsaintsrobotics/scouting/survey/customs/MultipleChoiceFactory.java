@@ -22,6 +22,6 @@ public class MultipleChoiceFactory<M> extends QCustomFactory<M> {
 
     @Override
     public Form getForm(Question<M> q, M t) {
-        return new MultipleChoiceForm<M>(q, t);
+        return new MultipleChoiceForm<>(q, t);
     }
 }

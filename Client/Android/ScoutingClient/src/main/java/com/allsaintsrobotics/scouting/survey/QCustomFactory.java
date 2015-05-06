@@ -35,7 +35,7 @@ public abstract class QCustomFactory<T> {
     private static final Map<String, QCustomFactory> factories;
 
     static {
-        factories = new HashMap<String, QCustomFactory>();
+        factories = new HashMap<>();
 
         factories.put("fr", new FreeResponseFactory<Team>());
         factories.put("mc", new MultipleChoiceFactory<Team>());
