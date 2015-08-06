@@ -22,7 +22,7 @@ public class FreeResponseFactory<M> extends QCustomFactory<M> {
     public FreeResponseFactory() {}
 
     @Override
-    public Form getForm(Question<M> q, M t) {
+    public Form<M> getForm(Question<M> q, M t) {
         return new FreeResponseForm<>(q, t);
     }
 }
